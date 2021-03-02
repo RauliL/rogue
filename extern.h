@@ -14,9 +14,6 @@
 #ifdef HAVE_CONFIG_H
 #ifdef PDCURSES
 #undef HAVE_UNISTD_H
-#undef HAVE_LIMITS_H
-#undef HAVE_MEMORY_H
-#undef HAVE_STRING_H
 #endif
 #include "config.h"
 #elif defined(__DJGPP__)
