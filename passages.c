@@ -357,7 +357,7 @@ add_pass()
  *	Assign a number to each passageway
  */
 static int pnum;
-static bool newpnum;
+static int newpnum;
 
 
 void
