@@ -15,12 +15,9 @@
 #ifdef PDCURSES
 #undef HAVE_UNISTD_H
 #undef HAVE_LIMITS_H
-#undef HAVE_MEMORY_H
-#undef HAVE_STRING_H
 #endif
 #include "config.h"
 #elif defined(__DJGPP__)
-#define HAVE_SYS_TYPES_H 1
 #define HAVE_PROCESS_H 1
 #define HAVE_PWD_H 1
 #define HAVE_TERMIOS_H 1
@@ -37,12 +34,10 @@
 #define HAVE_CURSES_H
 #define HAVE_TERM_H
 #define HAVE__SPAWNL
-#define HAVE_SYS_TYPES_H
 #define HAVE_PROCESS_H
 #define HAVE_ERASECHAR 1
 #define HAVE_KILLCHAR 1
 #elif defined(__CYGWIN__)
-#define HAVE_SYS_TYPES_H 1
 #define HAVE_PWD_H 1
 #define HAVE_PWD_H 1
 #define HAVE_SYS_UTSNAME_H 1
@@ -64,8 +59,6 @@
 #define HAVE_ERASECHAR 1
 #define HAVE_KILLCHAR 1
 #else /* POSIX */
-#define HAVE_SYS_TYPES_H 1
-#define HAVE_PWD_H 1
 #define HAVE_PWD_H 1
 #define HAVE_SYS_UTSNAME_H 1
 #define HAVE_ARPA_INET_H 1

@@ -15,23 +15,11 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #cmakedefine HAVE_ARPA_INET_H 1
 
-/* Define to 1 if libcurses is requested */
-#undef HAVE_CURSES_H
-
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#undef HAVE_DOPRNT
-
 /* Define to 1 if you have the `erasechar' function. */
 #define HAVE_ERASECHAR
 
 /* Define if ncurses has ESCDELAY variable */
 #undef HAVE_ESCDELAY
-
-/* Define to 1 if you have the <fcntl.h> header file. */
-#cmakedefine HAVE_FCNTL_H 1
-
-/* Define to 1 if you have the `fork' function. */
-#cmakedefine HAVE_FORK 1
 
 /* Define to 1 if you have the `getgid' function. */
 #cmakedefine HAVE_GETGID 1
@@ -48,33 +36,14 @@
 /* Define to 1 if you have the `getuid' function. */
 #cmakedefine HAVE_GETUID 1
 
-/* Define to 1 if you have the <inttypes.h> header file. */
-#cmakedefine HAVE_INTTYPES_H 1
-
 /* Define to 1 if you have the `killchar' function. */
 #define HAVE_KILLCHAR
-
-/* Define to 1 if you have the <limits.h> header file. */
-#cmakedefine HAVE_LIMITS_H 1
 
 /* Define to 1 if you have the `loadav' function. */
 #undef HAVE_LOADAV
 
-/* Define to 1 if `lstat' has the bug that it succeeds when given the
-   zero-length file name argument. */
-#undef HAVE_LSTAT_EMPTY_STRING_BUG
-
-/* Define to 1 if you have the <memory.h> header file. */
-#cmakedefine HAVE_MEMORY_H 1
-
-/* Define to 1 if you have the `memset' function. */
-#cmakedefine HAVE_MEMSET 1
-
-/* Define to 1 if libncurses is requested */
-#undef HAVE_NCURSES_H
-
 /* Define to 1 if you have the <ncurses/term.h> header file. */
-#undef HAVE_NCURSES_TERM_H
+#cmakedefine HAVE_NCURSES_TERM_H 1
 
 /* Define to 1 if you have the `nlist' function. */
 #cmakedefine HAVE_NLIST 1
@@ -87,9 +56,6 @@
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #cmakedefine HAVE_PWD_H 1
-
-/* Define to 1 if you have the `setenv' function. */
-#cmakedefine HAVE_SETENV 1
 
 /* Define to 1 if you have the `setgid' function. */
 #cmakedefine HAVE_SETGID 1
@@ -112,40 +78,6 @@
 /* Define to 1 if you have the `spawnl' function. */
 #cmakedefine HAVE_SPAWNL 1
 
-/* Define to 1 if `stat' has the bug that it succeeds when given the
-   zero-length file name argument. */
-#undef HAVE_STAT_EMPTY_STRING_BUG
-
-/* Define to 1 if stdbool.h conforms to C99. */
-#cmakedefine HAVE_STDBOOL_H 1
-
-/* Define to 1 if you have the <stdint.h> header file. */
-#cmakedefine HAVE_STDINT_H 1
-
-/* Define to 1 if you have the <stdlib.h> header file. */
-#cmakedefine HAVE_STDLIB_H 1
-
-/* Define to 1 if you have the `strchr' function. */
-#cmakedefine HAVE_STRCHR 1
-
-/* Define to 1 if you have the `strerror' function. */
-#cmakedefine HAVE_STRERROR 1
-
-/* Define to 1 if you have the <strings.h> header file. */
-#cmakedefine HAVE_STRINGS_H 1
-
-/* Define to 1 if you have the <string.h> header file. */
-#cmakedefine HAVE_STRING_H 1
-
-/* Define to 1 if you have the <sys/ioctl.h> header file. */
-#cmakedefine HAVE_SYS_IOCTL_H 1
-
-/* Define to 1 if you have the <sys/stat.h> header file. */
-#cmakedefine HAVE_SYS_STAT_H 1
-
-/* Define to 1 if you have the <sys/types.h> header file. */
-#cmakedefine HAVE_SYS_TYPES_H 1
-
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 #cmakedefine HAVE_SYS_UTSNAME_H 1
 
@@ -157,18 +89,6 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine HAVE_UNISTD_H 1
-
-/* Define to 1 if you have the <utmp.h> header file. */
-#cmakedefine HAVE_UTMP_H 1
-
-/* Define to 1 if you have the `vfork' function. */
-#cmakedefine HAVE_VFORK 1
-
-/* Define to 1 if you have the <vfork.h> header file. */
-#cmakedefine HAVE_VFORK_H 1
-
-/* Define to 1 if you have the `vprintf' function. */
-#cmakedefine HAVE_VPRINTF 1
 
 /* Define to 1 if `fork' works. */
 #undef HAVE_WORKING_FORK
@@ -235,12 +155,6 @@
 
 /* Define to file to use for scoreboard */
 #undef SCOREFILE
-
-/* Define to 1 if you have the ANSI C header files. */
-#cmakedefine STDC_HEADERS 1
-
-/* Define to 1 if your <sys/time.h> declares `struct tm'. */
-#cmakedefine TM_IN_SYS_TIME 1
 
 /* define if we should use program's user counting function instead of
    system's */
