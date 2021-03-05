@@ -31,7 +31,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <curses.h>
+#include <ncurses.h>
 #include "rogue.h"
 
 /************************************************************************/

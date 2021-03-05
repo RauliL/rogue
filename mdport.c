@@ -47,7 +47,7 @@
 #undef MOUSE_MOVED
 #endif
 
-#include <curses.h>
+#include <ncurses.h>
 #include "extern.h"
 
 #if defined(HAVE_SYS_TYPES)
@@ -84,7 +84,7 @@
 #endif
 #endif
 
-#include <curses.h> /* AIX requires curses.h be included before term.h */
+#include <ncurses.h> /* AIX requires curses.h be included before term.h */
 
 #if defined(HAVE_TERM_H)
 #include <term.h>
