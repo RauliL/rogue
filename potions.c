@@ -10,7 +10,7 @@
  * See the file LICENSE.TXT for full copyright and licensing information.
  */
 
-#include <curses.h>
+#include <ncurses.h>
 #include <ctype.h>
 #include "rogue.h"
 
@@ -271,9 +271,9 @@ bool
 turn_see(bool turn_off)
 {
     THING *mp;
-    bool can_see, add_new;
+    bool can_see;
+    int add_new = FALSE;
 
-    add_new = FALSE;
     for (mp = mlist; mp != NULL; mp = next(mp))
     {
 	move(mp->t_pos.y, mp->t_pos.x);

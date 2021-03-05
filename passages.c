@@ -11,7 +11,7 @@
  */
 
 #include <stdlib.h>
-#include <curses.h>
+#include <ncurses.h>
 #include "rogue.h"
 
 /*
@@ -357,7 +357,7 @@ add_pass()
  *	Assign a number to each passageway
  */
 static int pnum;
-static bool newpnum;
+static int newpnum;
 
 
 void
