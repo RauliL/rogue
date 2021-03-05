@@ -140,7 +140,7 @@ void
 save_file(FILE *savef)
 {
     char buf[80];
-    mvcur(0, COLS - 1, LINES - 1, 0); 
+    mvcur(0, COLS - 1, LINES - 1, 0);
     putchar('\n');
     endwin();
     resetltchars();
@@ -169,8 +169,10 @@ restore(char *file, char **envp)
     auto STAT sbuf2;
     int lines, cols;
 
-    if (strcmp(file, "-r") == 0)
-	file = file_name;
+    if (!strcmp(file, "-r"))
+    {
+        file = file_name;
+    }
 
 	md_tstphold();
 
@@ -346,7 +348,7 @@ rd_score(SCORE *top_ten)
 	if (scoreboard == NULL)
 		return;
 
-	rewind(scoreboard); 
+	rewind(scoreboard);
 
 	for(i = 0; i < numscores; i++)
     {
@@ -358,7 +360,7 @@ rd_score(SCORE *top_ten)
             &top_ten[i].sc_level, &top_ten[i].sc_time);
     }
 
-	rewind(scoreboard); 
+	rewind(scoreboard);
 }
 
 /*
@@ -386,5 +388,5 @@ wr_score(SCORE *top_ten)
           encwrite(scoreline,100,scoreboard);
     }
 
-	rewind(scoreboard); 
+	rewind(scoreboard);
 }
