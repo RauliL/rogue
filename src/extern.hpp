@@ -63,9 +63,7 @@
 #define HAVE_WORKING_FORK 1
 #define HAVE_ERASECHAR 1
 #define HAVE_KILLCHAR 1
-#ifndef _AIX
 #define HAVE_GETLOADAVG 1
-#endif
 #define HAVE_ALARM 1
 #endif
 
