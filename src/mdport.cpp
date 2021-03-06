@@ -115,9 +115,7 @@
 void
 md_init()
 {
-#if defined(__DJGPP__)
-    _fmode = _O_BINARY;
-#elif defined(_WIN32)
+#if defined(_WIN32)
     _fmode = _O_BINARY;
 #endif
 
@@ -424,7 +422,7 @@ md_getusername()
     mybuffer = buffer;
     GetUserName(mybuffer,&size);
     l = mybuffer;
-#elif defined(HAVE_GETPWUID)&& !defined(__DJGPP__)
+#elif defined(HAVE_GETPWUID)
     struct passwd *pw;
 
     pw = getpwuid(getuid());
@@ -453,7 +451,7 @@ md_gethomedir()
 #if defined(_WIN32)
     TCHAR szPath[PATH_MAX];
 #endif
-#if defined(_WIN32) || defined(DJGPP)
+#if defined(_WIN32)
         char slash = '\\';
 #else
     char slash = '/';
@@ -518,8 +516,6 @@ md_getshell()
     const char* s = nullptr;
 #ifdef _WIN32
     const char* def = "C:\\WINDOWS\\SYSTEM32\\CMD.EXE";
-#elif defined(__DJGPP__)
-    const char* def = "C:\\COMMAND.COM";
 #else
     const char* def = "/bin/sh";
     auto pw = getpwuid(getuid());
@@ -602,7 +598,7 @@ char *
 md_getrealname(int uid)
 {
     static char uidstr[20];
-#if !defined(_WIN32) && !defined(DJGPP)
+#if !defined(_WIN32)
     struct passwd *pp;
 
 	if ((pp = getpwuid(uid)) == nullptr)
@@ -811,7 +807,6 @@ md_setsuspchar(int c)
     Cygwin:   Cursor Keys, Keypad, Alt-Cursor Keys
     MSYS:     Cursor Keys, Keypad, Ctl-Cursor Keys, Ctl-Keypad
     Win32:    Cursor Keys, Keypad, Ctl/Shift/Alt-Cursor Keys, Ctl/Alt-Keypad
-    DJGPP:    Cursor Keys, Keypad, Ctl/Shift/Alt-Cursor Keys, Ctl/Alt-Keypad
 
     Interix Console (raw, ncurses)
     ==============================
@@ -938,7 +933,6 @@ md_setsuspchar(int c)
     11,		11,		11,	    O		    /# Keypad 5     #/
 
     Win32 Console (raw, pdcurses)
-    DJGPP Console (raw, pdcurses)
     ==============================
     normal	shift		ctrl	    alt
     260,	391,		443,	    493		    /# Left	    #/
@@ -960,7 +954,6 @@ md_setsuspchar(int c)
     453,	53('5'),	512,	    522		    /# Keypad 5     #/
 
     Win32 Console (pdcurses, MSVC/MingW32)
-    DJGPP Console (pdcurses)
     ==============================
     normal	shift		ctrl	    alt
     KEY_LEFT,	KEY_SLEFT,	CTL_LEFT,   ALT_LEFT	    /# Left	    #/

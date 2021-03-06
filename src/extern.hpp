@@ -17,19 +17,6 @@
 #undef HAVE_LIMITS_H
 #endif
 #include "config.hpp"
-#elif defined(__DJGPP__)
-#define HAVE_PROCESS_H 1
-#define HAVE_PWD_H 1
-#define HAVE_TERMIOS_H 1
-#define HAVE_SETGID 1
-#define HAVE_GETGID 1
-#define HAVE_SETUID 1
-#define HAVE_GETUID 1
-#define HAVE_GETPASS 1
-#define HAVE_SPAWNL 1
-#define HAVE_ALARM 1
-#define HAVE_ERASECHAR 1
-#define HAVE_KILLCHAR 1
 #elif defined(_WIN32)
 #define HAVE_CURSES_H
 #define HAVE_TERM_H
@@ -80,10 +67,6 @@
 #define HAVE_GETLOADAVG 1
 #endif
 #define HAVE_ALARM 1
-#endif
-
-#ifdef __DJGPP__
-#undef HAVE_GETPWUID /* DJGPP's limited version doesn't even work as documented */
 #endif
 
 /*
