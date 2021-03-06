@@ -115,14 +115,7 @@
 void
 md_init()
 {
-#if defined(__INTERIX)
-    char *term;
-
-    term = std::getenv("TERM");
-
-    if (term == nullptr)
-        setenv("TERM","interix");
-#elif defined(__DJGPP__)
+#if defined(__DJGPP__)
     _fmode = _O_BINARY;
 #elif defined(_WIN32)
     _fmode = _O_BINARY;
