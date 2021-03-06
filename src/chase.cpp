@@ -45,14 +45,14 @@ runners(int)
 	    if (wastarget && !ce(orig_pos, tp->t_pos))
 	    {
 		tp->t_flags &= ~ISTARGET;
-		to_death = FALSE;
+		to_death = false;
 	    }
 	}
     }
     if (has_hit)
     {
 	endmsg();
-	has_hit = FALSE;
+	has_hit = false;
     }
 }
 
@@ -69,7 +69,7 @@ move_monst(THING *tp)
     if (on(*tp, ISHASTE))
 	if (do_chase(tp) == -1)
             return(-1);
-    tp->t_turn ^= TRUE;
+    tp->t_turn ^= true;
     return(0);
 }
 
@@ -117,7 +117,7 @@ do_chase(THING *th)
     coord *cp;
     struct room *rer, *ree;	/* room of chaser, room of chasee */
     int mindist = 32767, curdist;
-    bool stoprun = FALSE;	/* TRUE means we are there */
+    bool stoprun = false;	/* true means we are there */
     bool door;
     THING *obj;
     static coord this_;			/* Temporary destination for chaser */
@@ -153,7 +153,7 @@ over:
 	if (door)
 	{
 	    rer = &passages[flat(th->t_pos.y, th->t_pos.x) & F_PNUM];
-	    door = FALSE;
+	    door = false;
 	    goto over;
 	}
     }
@@ -175,13 +175,13 @@ over:
 	    if (has_hit)
 		endmsg();
 	    fire_bolt(&th->t_pos, &delta, "flame");
-	    running = FALSE;
+	    running = false;
 	    count = 0;
 	    quiet = 0;
 	    if (to_death && !on(*th, ISTARGET))
 	    {
-		to_death = FALSE;
-		kamikaze = FALSE;
+		to_death = false;
+		kamikaze = false;
 	    }
 	    return(0);
 	}
@@ -210,7 +210,7 @@ over:
 		    break;
 		}
 	    if (th->t_type != 'F')
-		stoprun = TRUE;
+		stoprun = true;
 	}
     }
     else
@@ -253,7 +253,7 @@ set_oldch(THING *tp, coord *cp)
 
 /*
  * see_monst:
- *	Return TRUE if the hero can see the monster
+ *	Return true if the hero can see the monster
  */
 bool
 see_monst(THING *mp)
@@ -261,20 +261,20 @@ see_monst(THING *mp)
     int y, x;
 
     if (on(player, ISBLIND))
-	return FALSE;
+	return false;
     if (on(*mp, ISINVIS) && !on(player, CANSEE))
-	return FALSE;
+	return false;
     y = mp->t_pos.y;
     x = mp->t_pos.x;
     if (dist(y, x, hero.y, hero.x) < LAMPDIST)
     {
 	if (y != hero.y && x != hero.x &&
 	    !step_ok(chat(y, hero.x)) && !step_ok(chat(hero.y, x)))
-		return FALSE;
-	return TRUE;
+		return false;
+	return true;
     }
     if (mp->t_room != proom)
-	return FALSE;
+	return false;
     return ((bool)!(mp->t_room->r_flags & ISDARK));
 }
 
@@ -307,8 +307,8 @@ runto(coord *runner)
 /*
  * chase:
  *	Find the spot for the chaser(er) to move closer to the
- *	chasee(ee).  Returns TRUE if we want to keep on chasing later
- *	FALSE if we reach the goal.
+ *	chasee(ee).  Returns true if we want to keep on chasing later
+ *	false if we reach the goal.
  */
 bool
 chase(THING *tp, coord *ee)
@@ -454,9 +454,9 @@ bool
 diag_ok(coord *sp, coord *ep)
 {
     if (ep->x < 0 || ep->x >= NUMCOLS || ep->y <= 0 || ep->y >= NUMLINES - 1)
-	return FALSE;
+	return false;
     if (ep->x == sp->x || ep->y == sp->y)
-	return TRUE;
+	return true;
     return (bool)(step_ok(chat(ep->y, sp->x)) && step_ok(chat(sp->y, ep->x)));
 }
 
@@ -471,14 +471,14 @@ cansee(int y, int x)
     static coord tp;
 
     if (on(player, ISBLIND))
-	return FALSE;
+	return false;
     if (dist(y, x, hero.y, hero.x) < LAMPDIST)
     {
 	if (flat(y, x) & F_PASS)
 	    if (y != hero.y && x != hero.x &&
 		!step_ok(chat(y, hero.x)) && !step_ok(chat(hero.y, x)))
-		    return FALSE;
-	return TRUE;
+		    return false;
+	return true;
     }
     /*
      * We can only see if the hero in the same room as

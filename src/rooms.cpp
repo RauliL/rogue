@@ -122,7 +122,7 @@ do_rooms()
 
 	    gold = new_item();
 	    gold->o_goldval = rp->r_goldval = GOLDCALC;
-	    find_floor(rp, &rp->r_gold, FALSE, FALSE);
+	    find_floor(rp, &rp->r_gold, false, false);
 	    gold->o_pos = rp->r_gold;
 	    chat(rp->r_gold.y, rp->r_gold.x) = GOLD;
 	    gold->o_flags = ISMANY;
@@ -136,8 +136,8 @@ do_rooms()
 	if (rnd(100) < (rp->r_goldval > 0 ? 80 : 25))
 	{
 	    tp = new_item();
-	    find_floor(rp, &mp, FALSE, TRUE);
-	    new_monster(tp, randmonster(FALSE), &mp);
+	    find_floor(rp, &mp, false, true);
+	    new_monster(tp, randmonster(false), &mp);
 	    give_pack(tp);
 	}
     }
@@ -219,7 +219,7 @@ do_maze(struct room *rp)
 
     for (sp = &maze[0][0]; sp <= &maze[NUMLINES / 3][NUMCOLS / 3]; sp++)
     {
-	sp->used = FALSE;
+	sp->used = false;
 	sp->nexits = 0;
     }
 
@@ -347,7 +347,7 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
     for (;;)
     {
 	if (limit && cnt-- == 0)
-	    return FALSE;
+	    return false;
 	if (pickroom)
 	{
 	    rp = &rooms[rnd_room()];
@@ -358,10 +358,10 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
 	if (monst)
 	{
 	    if (pp->p_monst == NULL && step_ok(pp->p_ch))
-		return TRUE;
+		return true;
 	}
 	else if (pp->p_ch == compchar)
-	    return TRUE;
+	    return true;
     }
 }
 

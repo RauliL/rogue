@@ -268,7 +268,7 @@ md_hasclreol()
 #endif
     return((clr_eol != NULL) && (*clr_eol != 0));
 #elif defined(__PDCURSES__)
-    return(TRUE);
+    return(true);
 #else
     return((CE != NULL) && (*CE != 0));
 #endif

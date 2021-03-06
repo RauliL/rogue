@@ -79,7 +79,7 @@ endmsg()
 	strcpy(huh, msgbuf);
     if (mpos)
     {
-	look(FALSE);
+	look(false);
 	mvaddstr(0, mpos, "--More--");
 	refresh();
 	if (!msg_esc)
@@ -145,7 +145,7 @@ step_ok(int ch)
 	case ' ':
 	case '|':
 	case '-':
-	    return FALSE;
+	    return false;
 	default:
 	    return (!isalpha(ch));
     }
@@ -280,6 +280,6 @@ show_win(char *message)
     wmove(win, hero.y, hero.x);
     wrefresh(win);
     wait_for(' ');
-    clearok(curscr, TRUE);
+    clearok(curscr, true);
     touchwin(stdscr);
 }

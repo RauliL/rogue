@@ -66,9 +66,9 @@
 #define READSTAT (format_error || read_error )
 #define WRITESTAT (write_error)
 
-static int read_error   = FALSE;
-static int write_error  = FALSE;
-static int format_error = FALSE;
+static bool read_error = false;
+static bool write_error = false;
+static bool format_error = false;
 static int endian = 0x01020304;
 #define  big_endian ( *((char *)&endian) == 0x01 )
 
@@ -104,7 +104,7 @@ rs_read(FILE* inf, void* ptr, std::size_t size)
     return READSTAT;
 }
 
-int
+static bool
 rs_write_int(FILE *savef, int c)
 {
     unsigned char bytes[4];
@@ -127,7 +127,7 @@ rs_write_int(FILE *savef, int c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_int(FILE *inf, int *i)
 {
     unsigned char bytes[4];
@@ -153,7 +153,7 @@ rs_read_int(FILE *inf, int *i)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_char(FILE *savef, char c)
 {
     if (write_error)
@@ -164,7 +164,7 @@ rs_write_char(FILE *savef, char c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_char(FILE *inf, char *c)
 {
     if (read_error || format_error)
@@ -175,7 +175,7 @@ rs_read_char(FILE *inf, char *c)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_chars(FILE *savef, char *c, int count)
 {
     if (write_error)
@@ -187,7 +187,7 @@ rs_write_chars(FILE *savef, char *c, int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_chars(FILE *inf, char *i, int count)
 {
     int value = 0;
@@ -198,14 +198,14 @@ rs_read_chars(FILE *inf, char *i, int count)
     rs_read_int(inf, &value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     rs_read(inf, i, count);
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_ints(FILE *savef, int *c, int count)
 {
     int n = 0;
@@ -216,13 +216,13 @@ rs_write_ints(FILE *savef, int *c, int count)
     rs_write_int(savef, count);
 
     for(n = 0; n < count; n++)
-        if( rs_write_int(savef,c[n]) != 0)
+        if( rs_write_int(savef,c[n]))
             break;
 
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_ints(FILE *inf, int *i, int count)
 {
     int n, value;
@@ -233,16 +233,16 @@ rs_read_ints(FILE *inf, int *i, int count)
     rs_read_int(inf,&value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < count; n++)
-        if (rs_read_int(inf, &i[n]) != 0)
+        if (rs_read_int(inf, &i[n]))
             break;
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_boolean(FILE *savef, int c)
 {
     unsigned char buf = (c == 0) ? 0 : 1;
@@ -255,7 +255,7 @@ rs_write_boolean(FILE *savef, int c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_boolean(FILE *inf, bool *i)
 {
     unsigned char buf = 0;
@@ -270,7 +270,7 @@ rs_read_boolean(FILE *inf, bool *i)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_booleans(FILE *savef, bool *c, int count)
 {
     int n = 0;
@@ -281,13 +281,13 @@ rs_write_booleans(FILE *savef, bool *c, int count)
     rs_write_int(savef, count);
 
     for(n = 0; n < count; n++)
-        if (rs_write_boolean(savef, c[n]) != 0)
+        if (rs_write_boolean(savef, c[n]))
             break;
 
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_booleans(FILE *inf, bool *i, int count)
 {
     int n = 0, value = 0;
@@ -298,16 +298,16 @@ rs_read_booleans(FILE *inf, bool *i, int count)
     rs_read_int(inf,&value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < count; n++)
-        if (rs_read_boolean(inf, &i[n]) != 0)
+        if (rs_read_boolean(inf, &i[n]))
             break;
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_short(FILE *savef, short c)
 {
     unsigned char bytes[2];
@@ -328,7 +328,7 @@ rs_write_short(FILE *savef, short c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_short(FILE *inf, short *i)
 {
     unsigned char bytes[2];
@@ -352,7 +352,7 @@ rs_read_short(FILE *inf, short *i)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_shorts(FILE *savef, short *c, int count)
 {
     int n = 0;
@@ -363,13 +363,13 @@ rs_write_shorts(FILE *savef, short *c, int count)
     rs_write_int(savef, count);
 
     for(n = 0; n < count; n++)
-        if (rs_write_short(savef, c[n]) != 0)
+        if (rs_write_short(savef, c[n]))
             break;
 
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_shorts(FILE *inf, short *i, int count)
 {
     int n = 0, value = 0;
@@ -380,16 +380,16 @@ rs_read_shorts(FILE *inf, short *i, int count)
     rs_read_int(inf,&value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < value; n++)
-        if (rs_read_short(inf, &i[n]) != 0)
+        if (rs_read_short(inf, &i[n]))
             break;
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_ushort(FILE *savef, unsigned short c)
 {
     unsigned char bytes[2];
@@ -410,7 +410,7 @@ rs_write_ushort(FILE *savef, unsigned short c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_ushort(FILE *inf, unsigned short *i)
 {
     unsigned char bytes[2];
@@ -434,7 +434,7 @@ rs_read_ushort(FILE *inf, unsigned short *i)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_uint(FILE *savef, unsigned int c)
 {
     unsigned char bytes[4];
@@ -457,7 +457,7 @@ rs_write_uint(FILE *savef, unsigned int c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_uint(FILE *inf, unsigned int *i)
 {
     unsigned char bytes[4];
@@ -483,7 +483,7 @@ rs_read_uint(FILE *inf, unsigned int *i)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_marker(FILE *savef, int id)
 {
     if (write_error)
@@ -494,7 +494,7 @@ rs_write_marker(FILE *savef, int id)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_marker(FILE *inf, int id)
 {
     int nid;
@@ -513,7 +513,7 @@ rs_read_marker(FILE *inf, int id)
 
 /******************************************************************************/
 
-int
+static bool
 rs_write_string(FILE *savef, char *s)
 {
     int len = 0;
@@ -529,7 +529,7 @@ rs_write_string(FILE *savef, char *s)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_string(FILE *inf, char *s, int max)
 {
     int len = 0;
@@ -540,14 +540,14 @@ rs_read_string(FILE *inf, char *s, int max)
     rs_read_int(inf, &len);
 
     if (len > max)
-        format_error = TRUE;
+        format_error = true;
 
     rs_read_chars(inf, s, len);
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_read_new_string(FILE *inf, char **s)
 {
     int len=0;
@@ -565,7 +565,7 @@ rs_read_new_string(FILE *inf, char **s)
         buf = static_cast<char*>(std::malloc(len));
 
         if (buf == NULL)
-            read_error = TRUE;
+            read_error = true;
     }
 
     rs_read_chars(inf, buf, len);
@@ -575,7 +575,7 @@ rs_read_new_string(FILE *inf, char **s)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_strings(FILE *savef, char *s[], int count)
 {
     int n = 0;
@@ -586,13 +586,13 @@ rs_write_strings(FILE *savef, char *s[], int count)
     rs_write_int(savef, count);
 
     for(n = 0; n < count; n++)
-        if (rs_write_string(savef, s[n]) != 0)
+        if (rs_write_string(savef, s[n]))
             break;
 
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_strings(FILE *inf, char **s, int count, int max)
 {
     int n     = 0;
@@ -604,16 +604,16 @@ rs_read_strings(FILE *inf, char **s, int count, int max)
     rs_read_int(inf, &value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < count; n++)
-        if (rs_read_string(inf, s[n], max) != 0)
+        if (rs_read_string(inf, s[n], max))
             break;
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_read_new_strings(FILE *inf, char **s, int count)
 {
     int n     = 0;
@@ -625,16 +625,16 @@ rs_read_new_strings(FILE *inf, char **s, int count)
     rs_read_int(inf, &value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < count; n++)
-        if (rs_read_new_string(inf, &s[n]) != 0)
+        if (rs_read_new_string(inf, &s[n]))
             break;
 
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_string_index(FILE *savef, char *master[], int max, const char *str)
 {
     int i;
@@ -649,7 +649,7 @@ rs_write_string_index(FILE *savef, char *master[], int max, const char *str)
     return( rs_write_int(savef,-1) );
 }
 
-int
+static bool
 rs_read_string_index(FILE *inf, char *master[], int maxindex, char **str)
 {
     int i;
@@ -660,7 +660,7 @@ rs_read_string_index(FILE *inf, char *master[], int maxindex, char **str)
     rs_read_int(inf, &i);
 
     if (i > maxindex)
-        format_error = TRUE;
+        format_error = true;
     else if (i >= 0)
         *str = master[i];
     else
@@ -669,7 +669,7 @@ rs_read_string_index(FILE *inf, char *master[], int maxindex, char **str)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_str_t(FILE *savef, str_t st)
 {
     if (write_error)
@@ -680,7 +680,7 @@ rs_write_str_t(FILE *savef, str_t st)
     return( WRITESTAT );
 }
 
-int
+static bool
 rs_read_str_t(FILE *inf, str_t *st)
 {
     if (read_error || format_error)
@@ -691,7 +691,7 @@ rs_read_str_t(FILE *inf, str_t *st)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_coord(FILE *savef, coord c)
 {
     if (write_error)
@@ -703,7 +703,7 @@ rs_write_coord(FILE *savef, coord c)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_coord(FILE *inf, coord *c)
 {
     coord in;
@@ -723,7 +723,7 @@ rs_read_coord(FILE *inf, coord *c)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_window(FILE *savef, WINDOW *win)
 {
     int row,col,height,width;
@@ -740,13 +740,13 @@ rs_write_window(FILE *savef, WINDOW *win)
 
     for(row=0;row<height;row++)
         for(col=0;col<width;col++)
-            if (rs_write_int(savef, mvwinch(win,row,col)) != 0)
+            if (rs_write_int(savef, mvwinch(win,row,col)))
                 return(WRITESTAT);
 
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_window(FILE *inf, WINDOW *win)
 {
     int row,col,maxlines,maxcols,value,width,height;
@@ -765,7 +765,7 @@ rs_read_window(FILE *inf, WINDOW *win)
     for(row = 0; row < maxlines; row++)
         for(col = 0; col < maxcols; col++)
         {
-            if (rs_read_int(inf, &value) != 0)
+            if (rs_read_int(inf, &value))
                 return(READSTAT);
 
             if ((row < height) && (col < width))
@@ -791,7 +791,7 @@ get_list_item(THING* l, int i)
     return nullptr;
 }
 
-int
+static int
 find_list_ptr(THING *l, void *ptr)
 {
     int count;
@@ -803,7 +803,7 @@ find_list_ptr(THING *l, void *ptr)
     return(-1);
 }
 
-int
+static int
 list_size(THING *l)
 {
     int count;
@@ -816,7 +816,7 @@ list_size(THING *l)
 
 /******************************************************************************/
 
-int
+static bool
 rs_write_stats(FILE *savef, struct stats *s)
 {
     if (write_error)
@@ -834,7 +834,7 @@ rs_write_stats(FILE *savef, struct stats *s)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_stats(FILE *inf, struct stats *s)
 {
     if (read_error || format_error)
@@ -852,7 +852,7 @@ rs_read_stats(FILE *inf, struct stats *s)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_stone_index(FILE *savef, STONE master[], int max, const char *str)
 {
     int i;
@@ -872,7 +872,7 @@ rs_write_stone_index(FILE *savef, STONE master[], int max, const char *str)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_stone_index(FILE *inf, STONE master[], int maxindex, char **str)
 {
     int i = 0;
@@ -883,7 +883,7 @@ rs_read_stone_index(FILE *inf, STONE master[], int maxindex, char **str)
     rs_read_int(inf,&i);
 
     if (i > maxindex)
-        format_error = TRUE;
+        format_error = true;
     else if (i >= 0)
         *str = master[i].st_name;
     else
@@ -892,7 +892,7 @@ rs_read_stone_index(FILE *inf, STONE master[], int maxindex, char **str)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_scrolls(FILE *savef)
 {
     int i;
@@ -906,7 +906,7 @@ rs_write_scrolls(FILE *savef)
     return(READSTAT);
 }
 
-int
+static bool
 rs_read_scrolls(FILE *inf)
 {
     int i;
@@ -920,7 +920,7 @@ rs_read_scrolls(FILE *inf)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_potions(FILE *savef)
 {
     int i;
@@ -934,7 +934,7 @@ rs_write_potions(FILE *savef)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_potions(FILE *inf)
 {
     int i;
@@ -948,7 +948,7 @@ rs_read_potions(FILE *inf)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_rings(FILE *savef)
 {
     int i;
@@ -962,7 +962,7 @@ rs_write_rings(FILE *savef)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_rings(FILE *inf)
 {
     int i;
@@ -976,7 +976,7 @@ rs_read_rings(FILE *inf)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_sticks(FILE *savef)
 {
     int i;
@@ -1001,7 +1001,7 @@ rs_write_sticks(FILE *savef)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_sticks(FILE *inf)
 {
     int i = 0, list = 0;
@@ -1028,7 +1028,7 @@ rs_read_sticks(FILE *inf)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_daemons(FILE *savef, struct delayed_action *d_list, int count)
 {
     int i = 0;
@@ -1074,7 +1074,7 @@ rs_write_daemons(FILE *savef, struct delayed_action *d_list, int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
 {
     int i = 0;
@@ -1088,7 +1088,7 @@ rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
     rs_read_int(inf, &value);
 
     if (value > count)
-        format_error = TRUE;
+        format_error = true;
 
     for(i=0; i < count; i++)
     {
@@ -1133,7 +1133,7 @@ rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_obj_info(FILE *savef, struct obj_info *i, int count)
 {
     int n;
@@ -1156,7 +1156,7 @@ rs_write_obj_info(FILE *savef, struct obj_info *i, int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
 {
     int n;
@@ -1170,7 +1170,7 @@ rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
     rs_read_int(inf, &value);
 
     if (value > count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < value; n++)
     {
@@ -1184,7 +1184,7 @@ rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_room(FILE *savef, struct room *r)
 {
     if (write_error)
@@ -1212,7 +1212,7 @@ rs_write_room(FILE *savef, struct room *r)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_room(FILE *inf, struct room *r)
 {
     if (read_error || format_error)
@@ -1240,7 +1240,7 @@ rs_read_room(FILE *inf, struct room *r)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_rooms(FILE *savef, struct room r[], int count)
 {
     int n = 0;
@@ -1256,7 +1256,7 @@ rs_write_rooms(FILE *savef, struct room r[], int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_rooms(FILE *inf, struct room *r, int count)
 {
     int value = 0, n = 0;
@@ -1267,7 +1267,7 @@ rs_read_rooms(FILE *inf, struct room *r, int count)
     rs_read_int(inf,&value);
 
     if (value > count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < value; n++)
         rs_read_room(inf,&r[n]);
@@ -1275,7 +1275,7 @@ rs_read_rooms(FILE *inf, struct room *r, int count)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_room_reference(FILE *savef, struct room *rp)
 {
     int i, room = -1;
@@ -1292,7 +1292,7 @@ rs_write_room_reference(FILE *savef, struct room *rp)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_room_reference(FILE *inf, struct room **rp)
 {
     int i;
@@ -1307,7 +1307,7 @@ rs_read_room_reference(FILE *inf, struct room **rp)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_monsters(FILE *savef, struct monster *m, int count)
 {
     int n;
@@ -1324,7 +1324,7 @@ rs_write_monsters(FILE *savef, struct monster *m, int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_monsters(FILE *inf, struct monster *m, int count)
 {
     int value = 0, n = 0;
@@ -1337,7 +1337,7 @@ rs_read_monsters(FILE *inf, struct monster *m, int count)
     rs_read_int(inf, &value);
 
     if (value != count)
-        format_error = TRUE;
+        format_error = true;
 
     for(n = 0; n < count; n++)
         rs_read_stats(inf, &m[n].m_stats);
@@ -1345,7 +1345,7 @@ rs_read_monsters(FILE *inf, struct monster *m, int count)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_object(FILE *savef, THING *o)
 {
     if (write_error)
@@ -1369,7 +1369,7 @@ rs_write_object(FILE *savef, THING *o)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_object(FILE *inf, THING *o)
 {
     if (read_error || format_error)
@@ -1394,7 +1394,7 @@ rs_read_object(FILE *inf, THING *o)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_object_list(FILE *savef, THING *l)
 {
     if (write_error)
@@ -1409,7 +1409,7 @@ rs_write_object_list(FILE *savef, THING *l)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_object_list(FILE *inf, THING **list)
 {
     int i, cnt;
@@ -1448,7 +1448,7 @@ rs_read_object_list(FILE *inf, THING **list)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_object_reference(FILE *savef, THING *list, THING *item)
 {
     int i;
@@ -1463,7 +1463,7 @@ rs_write_object_reference(FILE *savef, THING *list, THING *item)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_object_reference(FILE *inf, THING *list, THING **item)
 {
     int i;
@@ -1478,7 +1478,7 @@ rs_read_object_reference(FILE *inf, THING *list, THING **item)
     return(READSTAT);
 }
 
-int
+static int
 find_room_coord(struct room *rmlist, coord *c, int n)
 {
     int i = 0;
@@ -1490,7 +1490,7 @@ find_room_coord(struct room *rmlist, coord *c, int n)
     return(-1);
 }
 
-int
+static int
 find_thing_coord(THING *monlist, coord *c)
 {
     THING *mitem;
@@ -1510,7 +1510,7 @@ find_thing_coord(THING *monlist, coord *c)
     return(-1);
 }
 
-int
+static int
 find_object_coord(THING *objlist, coord *c)
 {
     THING *oitem;
@@ -1530,7 +1530,7 @@ find_object_coord(THING *objlist, coord *c)
     return(-1);
 }
 
-int
+static bool
 rs_write_thing(FILE *savef, THING *t)
 {
     int i = -1;
@@ -1619,7 +1619,7 @@ rs_write_thing(FILE *savef, THING *t)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_thing(FILE *inf, THING *t)
 {
     int listid = 0, index = -1;
@@ -1696,7 +1696,7 @@ rs_read_thing(FILE *inf, THING *t)
     return(READSTAT);
 }
 
-void
+static void
 rs_fix_thing(THING *t)
 {
     THING *item;
@@ -1714,7 +1714,7 @@ rs_fix_thing(THING *t)
     }
 }
 
-int
+static bool
 rs_write_thing_list(FILE *savef, THING *l)
 {
     int cnt = 0;
@@ -1777,7 +1777,7 @@ rs_read_thing_list(FILE *inf, THING **list)
     return(READSTAT);
 }
 
-void
+static void
 rs_fix_thing_list(THING *list)
 {
     THING *item;
@@ -1786,7 +1786,7 @@ rs_fix_thing_list(THING *list)
         rs_fix_thing(item);
 }
 
-int
+static bool
 rs_write_thing_reference(FILE *savef, THING *list, THING *item)
 {
     int i;
@@ -1806,7 +1806,7 @@ rs_write_thing_reference(FILE *savef, THING *list, THING *item)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_thing_reference(FILE *inf, THING *list, THING **item)
 {
     int i;
@@ -1824,7 +1824,7 @@ rs_read_thing_reference(FILE *inf, THING *list, THING **item)
     return(READSTAT);
 }
 
-int
+static bool
 rs_write_thing_references(FILE *savef, THING *list, THING *items[], int count)
 {
     int i;
@@ -1838,7 +1838,7 @@ rs_write_thing_references(FILE *savef, THING *list, THING *items[], int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_thing_references(FILE *inf, THING *list, THING *items[], int count)
 {
     int i;
@@ -1852,7 +1852,7 @@ rs_read_thing_references(FILE *inf, THING *list, THING *items[], int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_write_places(FILE *savef, PLACE *places, int count)
 {
     int i = 0;
@@ -1870,7 +1870,7 @@ rs_write_places(FILE *savef, PLACE *places, int count)
     return(WRITESTAT);
 }
 
-int
+static bool
 rs_read_places(FILE *inf, PLACE *places, int count)
 {
     int i = 0;
@@ -1888,7 +1888,7 @@ rs_read_places(FILE *inf, PLACE *places, int count)
     return(READSTAT);
 }
 
-int
+bool
 rs_save_file(FILE *savef)
 {
     if (write_error)
@@ -2016,7 +2016,7 @@ rs_save_file(FILE *savef)
     return(WRITESTAT);
 }
 
-int
+bool
 rs_restore_file(FILE *inf)
 {
     int dummyint;

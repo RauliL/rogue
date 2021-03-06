@@ -149,7 +149,7 @@ drop()
     ch = chat(hero.y, hero.x);
     if (ch != FLOOR && ch != PASSAGE)
     {
-	after = FALSE;
+	after = false;
 	msg("there is something there already");
 	return;
     }
@@ -157,7 +157,7 @@ drop()
 	return;
     if (!dropcheck(obj))
 	return;
-    obj = leave_pack(obj, TRUE, (bool)!ISMULT(obj->o_type));
+    obj = leave_pack(obj, true, (bool)!ISMULT(obj->o_type));
     /*
      * Link it into the level object list
      */
@@ -166,8 +166,8 @@ drop()
     flat(hero.y, hero.x) |= F_DROPPED;
     obj->o_pos = hero;
     if (obj->o_type == AMULET)
-	amulet = FALSE;
-    msg("dropped %s", inv_name(obj, TRUE));
+	amulet = false;
+    msg("dropped %s", inv_name(obj, true));
 }
 
 /*
@@ -178,14 +178,14 @@ bool
 dropcheck(THING *obj)
 {
     if (obj == NULL)
-	return TRUE;
+	return true;
     if (obj != cur_armor && obj != cur_weapon
 	&& obj != cur_ring[LEFT] && obj != cur_ring[RIGHT])
-	    return TRUE;
+	    return true;
     if (obj->o_flags & ISCURSED)
     {
 	msg("you can't.  It appears to be cursed");
-	return FALSE;
+	return false;
     }
     if (obj == cur_weapon)
 	cur_weapon = NULL;
@@ -208,7 +208,7 @@ dropcheck(THING *obj)
 		break;
 	}
     }
-    return TRUE;
+    return true;
 }
 
 /*
@@ -336,7 +336,7 @@ pick_one(struct obj_info *info, int nitems)
  */
 static int line_cnt = 0;
 
-static bool newpage = FALSE;
+static bool newpage = false;
 
 static char *lastfmt, *lastarg;
 
@@ -348,7 +348,7 @@ discovered()
     bool disc_list;
 
     do {
-	disc_list = FALSE;
+	disc_list = false;
 	if (!terse)
 	    addmsg("for ");
 	addmsg("what type");
@@ -366,7 +366,7 @@ discovered()
 	    case RING:
 	    case STICK:
 	    case '*':
-		disc_list = TRUE;
+		disc_list = true;
 		break;
 	    default:
 		if (terse)
@@ -437,7 +437,7 @@ print_disc(char type)
 	{
 	    obj.o_type = type;
 	    obj.o_which = order[i];
-	    add_line("%s", inv_name(&obj, FALSE));
+	    add_line("%s", inv_name(&obj, false));
 	    num_found++;
 	}
     if (num_found == 0)
@@ -528,7 +528,7 @@ add_line(char *fmt, char *arg)
                 if (md_hasclreol())
 		{
 		    werase(tw);
-		    leaveok(tw, TRUE);
+		    leaveok(tw, true);
 		    wrefresh(tw);
 		}
 		delwin(tw);
@@ -540,11 +540,11 @@ add_line(char *fmt, char *arg)
 		waddstr(hw, prompt);
 		wrefresh(hw);
 		wait_for(' ');
-		clearok(curscr, TRUE);
+		clearok(curscr, true);
 		wclear(hw);
 		touchwin(stdscr);
 	    }
-	    newpage = TRUE;
+	    newpage = true;
 	    line_cnt = 0;
 	    maxlen = (int) strlen(prompt);
 	}
@@ -580,7 +580,7 @@ end_line()
 	    add_line((char *) NULL, NULL);
     }
     line_cnt = 0;
-    newpage = FALSE;
+    newpage = false;
 }
 
 /*

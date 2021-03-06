@@ -53,7 +53,7 @@ missile(int ydelta, int xdelta)
 	return;
     if (!dropcheck(obj) || is_current(obj))
 	return;
-    obj = leave_pack(obj, TRUE, FALSE);
+    obj = leave_pack(obj, true, false);
     do_motion(obj, ydelta, xdelta);
     /*
      * AHA! Here it has hit something.  If it is a wall or a door,
@@ -61,7 +61,7 @@ missile(int ydelta, int xdelta)
      */
     if (moat(obj->o_pos.y, obj->o_pos.x) == NULL ||
 	!hit_monster(unc(obj->o_pos), obj))
-	    fall(obj, TRUE);
+	    fall(obj, true);
 }
 
 /*
@@ -144,7 +144,7 @@ fall(THING *obj, bool pr)
 	if (has_hit)
 	{
 	    endmsg();
-	    has_hit = FALSE;
+	    has_hit = false;
 	}
 	msg("the %s vanishes as it hits the ground",
 	    weap_info[obj->o_which].oi_name);
@@ -199,7 +199,7 @@ hit_monster(int y, int x, THING *obj)
 
     mp.y = y;
     mp.x = x;
-    return fight(&mp, obj, TRUE);
+    return fight(&mp, obj, true);
 }
 
 /*
@@ -238,7 +238,7 @@ wield()
     if ((obj = get_item("wield", WEAPON)) == NULL)
     {
 bad:
-	after = FALSE;
+	after = false;
 	return;
     }
 
@@ -250,7 +250,7 @@ bad:
     if (is_current(obj))
         goto bad;
 
-    sp = inv_name(obj, TRUE);
+    sp = inv_name(obj, true);
     cur_weapon = obj;
     if (!terse)
 	addmsg("you are now ");

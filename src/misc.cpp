@@ -36,11 +36,11 @@ look(bool wakeup)
     char pfl, *fp, pch;
     int sy, sx, sumhero = 0, diffhero = 0;
 # ifdef DEBUG
-    static bool done = FALSE;
+    static bool done = false;
 
     if (done)
 	return;
-    done = TRUE;
+    done = true;
 # endif /* DEBUG */
     passcount = 0;
     rp = proom;
@@ -96,7 +96,7 @@ look(bool wakeup)
 		if (on(player, SEEMONST) && on(*tp, ISINVIS))
 		{
 		    if (door_stop && !firstmove)
-			running = FALSE;
+			running = false;
 		    continue;
 		}
 		else
@@ -155,7 +155,7 @@ look(bool wakeup)
 		{
 		    case DOOR:
 			if (x == hero.x || y == hero.y)
-			    running = FALSE;
+			    running = false;
 			break;
 		    case PASSAGE:
 			if (x == hero.x || y == hero.y)
@@ -167,17 +167,17 @@ look(bool wakeup)
 		    case ' ':
 			break;
 		    default:
-			running = FALSE;
+			running = false;
 			break;
 		}
 	    }
 	}
     if (door_stop && !firstmove && passcount > 1)
-	running = FALSE;
+	running = false;
     if (!running || !jump)
 	mvaddch(hero.y, hero.x, PLAYER);
 # ifdef DEBUG
-    done = FALSE;
+    done = false;
 # endif /* DEBUG */
 }
 
@@ -246,7 +246,7 @@ show_floor()
     if ((proom->r_flags & (ISGONE|ISDARK)) == ISDARK && !on(player, ISBLIND))
 	return see_floor;
     else
-	return TRUE;
+	return true;
 }
 
 /*
@@ -311,7 +311,7 @@ eat()
 	}
 	else
 	    msg("%s, that tasted good", choose_str("oh, wow", "yum"));
-    leave_pack(obj, FALSE, FALSE);
+    leave_pack(obj, false, false);
 }
 
 /*
@@ -388,14 +388,14 @@ add_haste(bool potion)
 	player.t_flags &= ~(ISRUN|ISHASTE);
 	extinguish(nohaste);
 	msg("you faint from exhaustion");
-	return FALSE;
+	return false;
     }
     else
     {
 	player.t_flags |= ISHASTE;
 	if (potion)
 	    fuse(nohaste, 0, rnd(4)+4, AFTER);
-	return TRUE;
+	return true;
     }
 }
 
@@ -443,16 +443,16 @@ bool
 is_current(THING *obj)
 {
     if (obj == NULL)
-	return FALSE;
+	return false;
     if (obj == cur_armor || obj == cur_weapon || obj == cur_ring[LEFT]
 	|| obj == cur_ring[RIGHT])
     {
 	if (!terse)
 	    addmsg("That's already ");
 	msg("in use");
-	return TRUE;
+	return true;
     }
-    return FALSE;
+    return false;
 }
 
 /*
@@ -481,7 +481,7 @@ get_dir()
 	    prompt = "direction: ";
 	do
 	{
-	    gotit = TRUE;
+	    gotit = true;
 	    switch (dir_ch = readchar())
 	    {
 		case 'h': case'H': delta.y =  0; delta.x = -1;
@@ -492,11 +492,11 @@ get_dir()
 		when 'u': case'U': delta.y = -1; delta.x =  1;
 		when 'b': case'B': delta.y =  1; delta.x = -1;
 		when 'n': case'N': delta.y =  1; delta.x =  1;
-		when ESCAPE: last_dir = '\0'; reset_last(); return FALSE;
+		when ESCAPE: last_dir = '\0'; reset_last(); return false;
 		otherwise:
 		    mpos = 0;
 		    msg(prompt);
-		    gotit = FALSE;
+		    gotit = false;
 	    }
 	} until (gotit);
 	if (isupper(dir_ch))
@@ -512,7 +512,7 @@ get_dir()
 	    delta.x = rnd(3) - 1;
 	} while (delta.y == 0 && delta.x == 0);
     mpos = 0;
-    return TRUE;
+    return true;
 }
 
 /*

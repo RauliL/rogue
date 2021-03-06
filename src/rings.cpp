@@ -82,7 +82,7 @@ ring_on()
 
     if (!terse)
 	addmsg("you are now wearing ");
-    msg("%s (%c)", inv_name(obj, TRUE), obj->o_packch);
+    msg("%s (%c)", inv_name(obj, true), obj->o_packch);
 }
 
 /*
@@ -119,7 +119,7 @@ ring_off()
 	return;
     }
     if (dropcheck(obj))
-	msg("was wearing %s(%c)", inv_name(obj, TRUE), obj->o_packch);
+	msg("was wearing %s(%c)", inv_name(obj, true), obj->o_packch);
 }
 
 /*

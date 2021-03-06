@@ -60,9 +60,9 @@ unsigned int numscores = NUMSCORES;
 const char* Numname = NUMNAME;
 
 # ifdef ALLSCORES
-bool allscore = TRUE;
+bool allscore = true;
 # else  /* ALLSCORES */
-bool allscore = FALSE;
+bool allscore = false;
 # endif /* ALLSCORES */
 
 #ifdef CHECKTIME
@@ -165,7 +165,7 @@ setup()
 void
 getltchars()
 {
-    got_ltc = TRUE;
+    got_ltc = true;
     orig_dsusp = md_dsuspchar();
     md_setdsuspchar( md_suspchar() );
 }
@@ -218,12 +218,12 @@ is_symlink(char *sp)
     struct stat sbuf2;
 
     if (lstat(sp, &sbuf2) < 0)
-        return FALSE;
+        return false;
     else
         return ((sbuf2.st_mode & S_IFMT) != S_IFREG);
 #else
 	NOOP(sp);
-    return FALSE;
+    return false;
 #endif
 }
 
@@ -244,13 +244,13 @@ too_much()
 #ifdef MAXLOAD
     md_loadav(avec);
     if (avec[1] > (MAXLOAD / 10.0))
-	return TRUE;
+	return true;
 #endif
 #ifdef MAXUSERS
     if (ucount() > MAXUSERS)
-	return TRUE;
+	return true;
 #endif
-    return FALSE;
+    return false;
 }
 
 /*
@@ -262,14 +262,14 @@ author()
 {
 #ifdef MASTER
     if (wizard)
-	return TRUE;
+	return true;
 #endif
     switch (md_getuid())
     {
 	case -1:
-	    return TRUE;
+	    return true;
 	default:
-	    return FALSE;
+	    return false;
     }
 }
 #endif
@@ -371,7 +371,7 @@ static FILE* lfd = NULL;
 /*
  * lock_sc:
  *	lock the score file.  If it takes too long, ask the user if
- *	they care to wait.  Return TRUE if the lock is successful.
+ *	they care to wait.  Return true if the lock is successful.
  */
 bool
 lock_sc()
@@ -383,22 +383,22 @@ lock_sc()
 
 over:
     if ((lfd=fopen(lockfile, "w+")) != NULL)
-	return TRUE;
+	return true;
     for (cnt = 0; cnt < 5; cnt++)
     {
 	md_sleep(1);
 	if ((lfd=fopen(lockfile, "w+")) != NULL)
-	    return TRUE;
+	    return true;
     }
     if (stat(lockfile, &sbuf) < 0)
     {
 	lfd=fopen(lockfile, "w+");
-	return TRUE;
+	return true;
     }
     if (time(NULL) - sbuf.st_mtime > 10)
     {
 	if (md_unlink(lockfile) < 0)
-	    return FALSE;
+	    return false;
 	goto over;
     }
     else
@@ -411,24 +411,24 @@ over:
 	    for (;;)
 	    {
 		if ((lfd=fopen(lockfile, "w+")) != 0)
-		    return TRUE;
+		    return true;
 		if (stat(lockfile, &sbuf) < 0)
 		{
 		    lfd=fopen(lockfile, "w+");
-		    return TRUE;
+		    return true;
 		}
 		if (time(NULL) - sbuf.st_mtime > 10)
 		{
 		    if (md_unlink(lockfile) < 0)
-			return FALSE;
+			return false;
 		}
 		md_sleep(1);
 	    }
 	else
-	    return FALSE;
+	    return false;
     }
 #else
-    return TRUE;
+    return true;
 #endif
 }
 

@@ -73,7 +73,7 @@ new_level()
 	     */
 	    do
 	    {
-		find_floor((struct room *) NULL, &stairs, FALSE, FALSE);
+		find_floor((struct room *) NULL, &stairs, false, false);
 	    } while (chat(stairs.y, stairs.x) != FLOOR);
 	    sp = &flat(stairs.y, stairs.x);
 	    *sp &= ~F_REAL;
@@ -83,18 +83,18 @@ new_level()
     /*
      * Place the staircase down.
      */
-    find_floor((struct room *) NULL, &stairs, FALSE, FALSE);
+    find_floor((struct room *) NULL, &stairs, false, false);
     chat(stairs.y, stairs.x) = STAIRS;
-    seenstairs = FALSE;
+    seenstairs = false;
 
     for (tp = mlist; tp != NULL; tp = next(tp))
 	tp->t_room = roomin(&tp->t_pos);
 
-    find_floor((struct room *) NULL, &hero, FALSE, TRUE);
+    find_floor((struct room *) NULL, &hero, false, true);
     enter_room(&hero);
     mvaddch(hero.y, hero.x, PLAYER);
     if (on(player, SEEMONST))
-	turn_see(FALSE);
+	turn_see(false);
     if (on(player, ISHALU))
 	visuals(0);
 }
@@ -151,7 +151,7 @@ put_things()
 	    /*
 	     * Put it somewhere
 	     */
-	    find_floor((struct room *) NULL, &obj->o_pos, FALSE, FALSE);
+	    find_floor((struct room *) NULL, &obj->o_pos, false, false);
 	    chat(obj->o_pos.y, obj->o_pos.x) = (char) obj->o_type;
 	}
     /*
@@ -171,7 +171,7 @@ put_things()
 	/*
 	 * Put it somewhere
 	 */
-	find_floor((struct room *) NULL, &obj->o_pos, FALSE, FALSE);
+	find_floor((struct room *) NULL, &obj->o_pos, false, false);
 	chat(obj->o_pos.y, obj->o_pos.x) = AMULET;
     }
 }
@@ -199,7 +199,7 @@ treas_room()
     num_monst = nm = rnd(spots) + MINTREAS;
     while (nm--)
     {
-	find_floor(rp, &mp, 2 * MAXTRIES, FALSE);
+	find_floor(rp, &mp, 2 * MAXTRIES, false);
 	tp = new_thing();
 	tp->o_pos = mp;
 	attach(lvl_obj, tp);
@@ -219,10 +219,10 @@ treas_room()
     while (nm--)
     {
 	spots = 0;
-	if (find_floor(rp, &mp, MAXTRIES, TRUE))
+	if (find_floor(rp, &mp, MAXTRIES, true))
 	{
 	    tp = new_item();
-	    new_monster(tp, randmonster(FALSE), &mp);
+	    new_monster(tp, randmonster(false), &mp);
 	    tp->t_flags |= ISMEAN;	/* no sloughers in THIS room */
 	    give_pack(tp);
 	}

@@ -34,7 +34,7 @@ main(int argc, char **argv, char **envp)
     if (argc >= 2 && argv[1][0] == '\0')
 	if (strcmp(PASSWD, md_crypt(md_getpass("wizard's password: "), "mT")) == 0)
 	{
-	    wizard = TRUE;
+	    wizard = true;
 	    player.t_flags |= SEEMONST;
 	    argv++;
 	    argc--;
@@ -82,7 +82,7 @@ main(int argc, char **argv, char **envp)
     {
 	if (strcmp(argv[1], "-s") == 0)
 	{
-	    noscore = TRUE;
+	    noscore = true;
 	    score(0, -1, 0);
 	    exit(0);
 	}
@@ -135,8 +135,8 @@ main(int argc, char **argv, char **envp)
      * Set up windows
      */
     hw = newwin(LINES, COLS, 0, 0);
-    idlok(stdscr, TRUE);
-    idlok(hw, TRUE);
+    idlok(stdscr, true);
+    idlok(hw, true);
 #ifdef MASTER
     noscore = wizard;
 #endif
@@ -232,7 +232,7 @@ tstp(int ignored)
     noecho();
     keypad(stdscr,1);
     playltchars();
-    clearok(curscr, TRUE);
+    clearok(curscr, true);
     wrefresh(curscr);
     getyx(curscr, y, x);
     mvcur(y, x, oy, ox);
@@ -258,9 +258,9 @@ playit()
 
     if (baudrate() <= 1200)
     {
-	terse = TRUE;
-	jump = TRUE;
-	see_floor = FALSE;
+	terse = true;
+	jump = true;
+	see_floor = false;
     }
 
     if (md_hasclreol())
@@ -318,7 +318,7 @@ quit(int sig)
 	refresh();
 	mpos = 0;
 	count = 0;
-	to_death = FALSE;
+	to_death = false;
     }
 }
 
@@ -362,8 +362,8 @@ shell()
     endwin();
     resetltchars();
     putchar('\n');
-    in_shell = TRUE;
-    after = FALSE;
+    in_shell = true;
+    after = false;
     fflush(stdout);
     /*
      * Fork and do a shell
@@ -376,9 +376,9 @@ shell()
     raw();
     keypad(stdscr,1);
     playltchars();
-    in_shell = FALSE;
+    in_shell = false;
     wait_for('\n');
-    clearok(stdscr, TRUE);
+    clearok(stdscr, true);
 }
 
 /*

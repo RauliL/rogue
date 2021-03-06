@@ -180,7 +180,7 @@ restore(char *file, char **envp)
 	if ((inf = fopen(file,"r")) == NULL)
     {
 	perror(file);
-	return FALSE;
+	return false;
     }
     stat(file, &sbuf2);
     syml = is_symlink(file);
@@ -190,7 +190,7 @@ restore(char *file, char **envp)
     if (strcmp(buf, version) != 0)
     {
 	printf("Sorry, saved game is out of date.\n");
-	return FALSE;
+	return false;
     }
     encread(buf,80,inf);
     sscanf(buf,"%d x %d\n", &lines, &cols);
@@ -203,14 +203,14 @@ restore(char *file, char **envp)
         endwin();
         printf("Sorry, original game was played on a screen with %d lines.\n",lines);
         printf("Current screen only has %d lines. Unable to restore game\n",LINES);
-        return(FALSE);
+        return(false);
     }
     if (cols > COLS)
     {
         endwin();
         printf("Sorry, original game was played on a screen with %d columns.\n",cols);
         printf("Current screen only has %d columns. Unable to restore game\n",COLS);
-        return(FALSE);
+        return(false);
     }
 
     hw = newwin(LINES, COLS, 0, 0);
@@ -229,14 +229,14 @@ restore(char *file, char **envp)
         md_unlink_open_file(file, inf) < 0)
     {
 	printf("Cannot unlink file\n");
-	return FALSE;
+	return false;
     }
     mpos = 0;
 /*    printw(0, 0, "%s: %s", file, ctime(&sbuf2.st_mtime)); */
 /*
     printw("%s: %s", file, ctime(&sbuf2.st_mtime));
 */
-    clearok(stdscr,TRUE);
+    clearok(stdscr,true);
     /*
      * defeat multiple restarting from the same place
      */
@@ -247,21 +247,21 @@ restore(char *file, char **envp)
 	{
 	    endwin();
 	    printf("\nCannot restore from a linked file\n");
-	    return FALSE;
+	    return false;
 	}
 
     if (pstats.s_hpt <= 0)
     {
 	endwin();
 	printf("\n\"He's dead, Jim\"\n");
-	return FALSE;
+	return false;
     }
 
 	md_tstpresume();
 
     environ = envp;
     strcpy(file_name, file);
-    clearok(curscr, TRUE);
+    clearok(curscr, true);
     srand(md_getpid());
     msg("file name: %s", file);
     playit();

@@ -33,7 +33,7 @@ init_player()
     obj = new_item();
     obj->o_type = FOOD;
     obj->o_count = 1;
-    add_pack(obj, TRUE);
+    add_pack(obj, true);
     /*
      * And his suit of armor
      */
@@ -44,7 +44,7 @@ init_player()
     obj->o_flags |= ISKNOW;
     obj->o_count = 1;
     cur_armor = obj;
-    add_pack(obj, TRUE);
+    add_pack(obj, true);
     /*
      * Give him his weaponry.  First a mace.
      */
@@ -53,7 +53,7 @@ init_player()
     obj->o_hplus = 1;
     obj->o_dplus = 1;
     obj->o_flags |= ISKNOW;
-    add_pack(obj, TRUE);
+    add_pack(obj, true);
     cur_weapon = obj;
     /*
      * Now a +1 bow
@@ -62,7 +62,7 @@ init_player()
     init_weapon(obj, BOW);
     obj->o_hplus = 1;
     obj->o_flags |= ISKNOW;
-    add_pack(obj, TRUE);
+    add_pack(obj, true);
     /*
      * Now some arrows
      */
@@ -70,7 +70,7 @@ init_player()
     init_weapon(obj, ARROW);
     obj->o_count = rnd(15) + 25;
     obj->o_flags |= ISKNOW;
-    add_pack(obj, TRUE);
+    add_pack(obj, true);
 }
 
 /*
@@ -242,13 +242,13 @@ init_colors()
     int i, j;
 
     for (i = 0; i < NCOLORS; i++)
-	used[i] = FALSE;
+	used[i] = false;
     for (i = 0; i < MAXPOTIONS; i++)
     {
 	do
 	    j = rnd(NCOLORS);
 	until (!used[j]);
-	used[j] = TRUE;
+	used[j] = true;
 	p_colors[i] = rainbow[j];
     }
 }
@@ -299,13 +299,13 @@ init_stones()
     int i, j;
 
     for (i = 0; i < NSTONES; i++)
-	used[i] = FALSE;
+	used[i] = false;
     for (i = 0; i < MAXRINGS; i++)
     {
 	do
 	    j = rnd(NSTONES);
 	until (!used[j]);
-	used[j] = TRUE;
+	used[j] = true;
 	r_stones[i] = stones[j].st_name;
 	ring_info[i].oi_worth += stones[j].st_value;
     }
@@ -323,9 +323,9 @@ init_materials()
     static bool metused[NMETAL];
 
     for (i = 0; i < NWOOD; i++)
-	used[i] = FALSE;
+	used[i] = false;
     for (i = 0; i < NMETAL; i++)
-	metused[i] = FALSE;
+	metused[i] = false;
     for (i = 0; i < MAXSTICKS; i++)
     {
 	for (;;)
@@ -336,7 +336,7 @@ init_materials()
 		{
 		    ws_type[i] = "wand";
 		    str = metal[j];
-		    metused[j] = TRUE;
+		    metused[j] = true;
 		    break;
 		}
 	    }
@@ -347,7 +347,7 @@ init_materials()
 		{
 		    ws_type[i] = "staff";
 		    str = wood[j];
-		    used[j] = TRUE;
+		    used[j] = true;
 		    break;
 		}
 	    }

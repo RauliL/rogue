@@ -30,7 +30,7 @@ wear()
 	if (!terse)
 	    addmsg(".  You'll have to take it off first");
 	endmsg();
-	after = FALSE;
+	after = false;
 	return;
     }
     if (obj->o_type != ARMOR)
@@ -40,7 +40,7 @@ wear()
     }
     waste_time();
     obj->o_flags |= ISKNOW;
-    sp = inv_name(obj, TRUE);
+    sp = inv_name(obj, true);
     cur_armor = obj;
     if (!terse)
 	addmsg("you are now ");
@@ -58,7 +58,7 @@ take_off()
 
     if ((obj = cur_armor) == NULL)
     {
-	after = FALSE;
+	after = false;
 	if (terse)
 		msg("not wearing armor");
 	else
@@ -72,7 +72,7 @@ take_off()
 	addmsg("was");
     else
 	addmsg("you used to be");
-    msg(" wearing %c) %s", obj->o_packch, inv_name(obj, TRUE));
+    msg(" wearing %c) %s", obj->o_packch, inv_name(obj, true));
 }
 
 /*

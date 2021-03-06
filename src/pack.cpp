@@ -28,12 +28,12 @@ add_pack(THING *obj, bool silent)
     THING *op, *lp;
     bool from_floor;
 
-    from_floor = FALSE;
+    from_floor = false;
     if (obj == NULL)
     {
 	if ((obj = find_obj(hero.y, hero.x)) == NULL)
 	    return;
-	from_floor = TRUE;
+	from_floor = true;
     }
 
     /*
@@ -145,7 +145,7 @@ out:
 	    op->t_dest = &hero;
 
     if (obj->o_type == AMULET)
-	amulet = TRUE;
+	amulet = true;
     /*
      * Notify the user
      */
@@ -176,7 +176,7 @@ pack_room(bool from_floor, THING *obj)
 	if (from_floor)
 	    move_msg(obj);
 	inpack = MAXPACK;
-	return FALSE;
+	return false;
     }
 
     if (from_floor)
@@ -186,7 +186,7 @@ pack_room(bool from_floor, THING *obj)
 	chat(hero.y, hero.x) = (proom->r_flags & ISGONE) ? PASSAGE : FLOOR;
     }
 
-    return TRUE;
+    return true;
 }
 
 /*
@@ -218,7 +218,7 @@ leave_pack(THING *obj, bool newobj, bool all)
     else
     {
 	last_pick = NULL;
-	pack_used[obj->o_packch - 'a'] = FALSE;
+	pack_used[obj->o_packch - 'a'] = false;
 	detach(pack, obj);
     }
     return nobj;
@@ -235,13 +235,13 @@ pack_char()
 
     for (bp = pack_used; *bp; bp++)
 	continue;
-    *bp = TRUE;
+    *bp = true;
     return (char)((int)(bp - pack_used) + 'a');
 }
 
 /*
  * inventory:
- *	List what is in the pack.  Return TRUE if there is something of
+ *	List what is in the pack.  Return true if there is something of
  *	the given type.
  */
 bool
@@ -263,14 +263,14 @@ inventory(THING *list, int type)
 	else
 #endif
 	    sprintf(inv_temp, "%c) %%s", list->o_packch);
-	msg_esc = TRUE;
-	if (add_line(inv_temp, inv_name(list, FALSE)) == ESCAPE)
+	msg_esc = true;
+	if (add_line(inv_temp, inv_name(list, false)) == ESCAPE)
 	{
-	    msg_esc = FALSE;
+	    msg_esc = false;
 	    msg("");
-	    return TRUE;
+	    return true;
 	}
-	msg_esc = FALSE;
+	msg_esc = false;
     }
     if (n_objs == 0)
     {
@@ -280,10 +280,10 @@ inventory(THING *list, int type)
 	else
 	    msg(type == 0 ? "you are empty handed" :
 			    "you don't have anything appropriate");
-	return FALSE;
+	return false;
     }
     end_line();
-    return TRUE;
+    return true;
 }
 
 /*
@@ -325,7 +325,7 @@ pick_up(char ch)
 	    case AMULET:
 	    case RING:
 	    case STICK:
-		add_pack((THING *) NULL, FALSE);
+		add_pack((THING *) NULL, false);
 		break;
 	}
 }
@@ -340,7 +340,7 @@ move_msg(THING *obj)
 {
     if (!terse)
 	addmsg("you ");
-    msg("moved onto %s", inv_name(obj, TRUE));
+    msg("moved onto %s", inv_name(obj, true));
 }
 
 /*
@@ -357,7 +357,7 @@ picky_inven()
     if (pack == NULL)
 	msg("you aren't carrying anything");
     else if (next(pack) == NULL)
-	msg("a) %s", inv_name(pack, FALSE));
+	msg("a) %s", inv_name(pack, false));
     else
     {
 	msg(terse ? "item: " : "which item do you wish to inventory: ");
@@ -370,7 +370,7 @@ picky_inven()
 	for (obj = pack; obj != NULL; obj = next(obj))
 	    if (mch == obj->o_packch)
 	    {
-		msg("%c) %s", mch, inv_name(obj, FALSE));
+		msg("%c) %s", mch, inv_name(obj, false));
 		return;
 	    }
 	msg("'%s' not in pack", unctrl(mch));
@@ -412,7 +412,7 @@ get_item(char *purpose, int type)
 	    if (ch == ESCAPE)
 	    {
 		reset_last();
-		after = FALSE;
+		after = false;
 		msg("");
 		return NULL;
 	    }
@@ -422,7 +422,7 @@ get_item(char *purpose, int type)
 		mpos = 0;
 		if (inventory(pack, type) == 0)
 		{
-		    after = FALSE;
+		    after = false;
 		    return NULL;
 		}
 		continue;

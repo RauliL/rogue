@@ -70,7 +70,7 @@ int
 fight(coord *mp, THING *weap, bool thrown)
 {
     THING *tp;
-    bool did_hit = TRUE;
+    bool did_hit = true;
     const char* mname;
     char ch;
 
@@ -104,32 +104,32 @@ fight(coord *mp, THING *weap, bool thrown)
 	msg(choose_str("heavy!  That's a nasty critter!",
 		       "wait!  That's a xeroc!"));
 	if (!thrown)
-	    return FALSE;
+	    return false;
     }
     mname = set_mname(tp);
-    did_hit = FALSE;
+    did_hit = false;
     has_hit = (terse && !to_death);
     if (roll_em(&player, tp, weap, thrown))
     {
-	did_hit = FALSE;
+	did_hit = false;
 	if (thrown)
 	    thunk(weap, mname, terse);
 	else
 	    hit((char *) NULL, mname, terse);
 	if (on(player, CANHUH))
 	{
-	    did_hit = TRUE;
+	    did_hit = true;
 	    tp->t_flags |= ISHUH;
 	    player.t_flags &= ~CANHUH;
 	    endmsg();
-	    has_hit = FALSE;
+	    has_hit = false;
 	    msg("your hands stop glowing %s", pick_color("red"));
 	}
 	if (tp->t_stats.s_hpt <= 0)
-	    killed(tp, TRUE);
+	    killed(tp, true);
 	else if (did_hit && !on(player, ISBLIND))
 	    msg("%s appears confused", mname);
-	did_hit = TRUE;
+	did_hit = true;
     }
     else
 	if (thrown)
@@ -153,13 +153,13 @@ attack(THING *mp)
      * Since this is an attack, stop running and any healing that was
      * going on at the time.
      */
-    running = FALSE;
+    running = false;
     count = 0;
     quiet = 0;
     if (to_death && !on(*mp, ISTARGET))
     {
-	to_death = FALSE;
-	kamikaze = FALSE;
+	to_death = false;
+	kamikaze = false;
     }
     if (mp->t_type == 'X' && mp->t_disguise != 'X' && !on(player, ISBLIND))
     {
@@ -169,18 +169,18 @@ attack(THING *mp)
     }
     mname = set_mname(mp);
     oldhp = pstats.s_hpt;
-    if (roll_em(mp, &player, (THING *) NULL, FALSE))
+    if (roll_em(mp, &player, (THING *) NULL, false))
     {
 	if (mp->t_type != 'I')
 	{
 	    if (has_hit)
 		addmsg(".  ");
-	    hit(mname, nullptr, FALSE);
+	    hit(mname, nullptr, false);
 	}
 	else
 	    if (has_hit)
 		endmsg();
-	has_hit = FALSE;
+	has_hit = false;
 	if (pstats.s_hpt <= 0)
 	    death(mp->t_type);	/* Bye bye life ... */
 	else if (!kamikaze)
@@ -189,7 +189,7 @@ attack(THING *mp)
 	    if (oldhp > max_hit)
 		max_hit = oldhp;
 	    if (pstats.s_hpt <= max_hit)
-		to_death = FALSE;
+		to_death = false;
 	}
 	if (!on(*mp, ISCANC))
 	    switch (mp->t_type)
@@ -290,7 +290,7 @@ attack(THING *mp)
 			purse -= GOLDCALC + GOLDCALC + GOLDCALC + GOLDCALC;
 		    if (purse < 0)
 			purse = 0;
-		    remove_mon(&mp->t_pos, mp, FALSE);
+		    remove_mon(&mp->t_pos, mp, false);
                     mp=NULL;
 		    if (purse != lastpurse)
 			msg("your purse feels lighter");
@@ -312,10 +312,10 @@ attack(THING *mp)
 				steal = obj;
 		    if (steal != NULL)
 		    {
-			remove_mon(&mp->t_pos, moat(mp->t_pos.y, mp->t_pos.x), FALSE);
+			remove_mon(&mp->t_pos, moat(mp->t_pos.y, mp->t_pos.x), false);
                         mp=NULL;
-			leave_pack(steal, FALSE, FALSE);
-			msg("she stole %s!", inv_name(steal, TRUE));
+			leave_pack(steal, false, false);
+			msg("she stole %s!", inv_name(steal, true));
 			discard(steal);
 		    }
 		}
@@ -328,7 +328,7 @@ attack(THING *mp)
 	if (has_hit)
 	{
 	    addmsg(".  ");
-	    has_hit = FALSE;
+	    has_hit = false;
 	}
 	if (mp->t_type == 'F')
 	{
@@ -336,7 +336,7 @@ attack(THING *mp)
 	    if (pstats.s_hpt <= 0)
 		death(mp->t_type);	/* Bye bye life ... */
 	}
-	miss(mname, nullptr, FALSE);
+	miss(mname, nullptr, false);
     }
     if (fight_flush && !to_death)
 	flush_type();
@@ -400,7 +400,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
     struct stats *att, *def;
     char *cp;
     int ndice, nsides, def_arm;
-    bool did_hit = FALSE;
+    bool did_hit = false;
     int hplus;
     int dplus;
     int damage;
@@ -475,7 +475,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 #endif
 	    damage = dplus + proll + add_dam[att->s_str];
 	    def->s_hpt -= max(0, damage);
-	    did_hit = TRUE;
+	    did_hit = true;
 	}
 	if ((cp = strchr(cp, '/')) == NULL)
 	    break;
@@ -539,7 +539,7 @@ hit(const char* er, const char* ee, bool noend)
 
     if (to_death)
 	return;
-    addmsg(prname(er, TRUE));
+    addmsg(prname(er, true));
     if (terse)
 	s = " hit";
     else
@@ -551,7 +551,7 @@ hit(const char* er, const char* ee, bool noend)
     }
     addmsg(s);
     if (!terse)
-	addmsg(prname(ee, FALSE));
+	addmsg(prname(ee, false));
     if (!noend)
 	endmsg();
 }
@@ -568,7 +568,7 @@ miss(const char* er, const char* ee, bool noend)
 
     if (to_death)
 	return;
-    addmsg(prname(er, TRUE));
+    addmsg(prname(er, true));
     if (terse)
 	i = 0;
     else
@@ -577,7 +577,7 @@ miss(const char* er, const char* ee, bool noend)
 	i += 4;
     addmsg(m_names[i]);
     if (!terse)
-	addmsg(" %s", prname(ee, FALSE));
+	addmsg(" %s", prname(ee, false));
     if (!noend)
 	endmsg();
 }
@@ -615,7 +615,7 @@ remove_mon(coord *mp, THING *tp, bool waskill)
 	obj->o_pos = tp->t_pos;
 	detach(tp->t_pack, obj);
 	if (waskill)
-	    fall(obj, FALSE);
+	    fall(obj, false);
 	else
 	    discard(obj);
     }
@@ -624,8 +624,8 @@ remove_mon(coord *mp, THING *tp, bool waskill)
     detach(mlist, tp);
     if (on(*tp, ISTARGET))
     {
-	kamikaze = FALSE;
-	to_death = FALSE;
+	kamikaze = false;
+	to_death = false;
 	if (fight_flush)
 	    flush_type();
     }
@@ -672,13 +672,13 @@ killed(THING *tp, bool pr)
      * Get rid of the monster.
      */
     mname = set_mname(tp);
-    remove_mon(&tp->t_pos, tp, TRUE);
+    remove_mon(&tp->t_pos, tp, true);
     if (pr)
     {
 	if (has_hit)
 	{
 	    addmsg(".  Defeated ");
-	    has_hit = FALSE;
+	    has_hit = false;
 	}
 	else
 	{
