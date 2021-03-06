@@ -11,6 +11,7 @@
  * See the file LICENSE.TXT for full copyright and licensing information.
  */
 
+#include <array>
 #include <cctype>
 #include <csignal>
 #include <cstdlib>
@@ -49,6 +50,13 @@ static const char* rip[] =
 void
 score(int amount, int flags, char monst)
 {
+    static const std::array<const char*, 4> reason =
+    {
+        "killed",
+        "quit",
+        "A total winner",
+        "killed with Amulet",
+    };
     SCORE *scp;
     int i;
     SCORE *sc2;
@@ -58,12 +66,6 @@ score(int amount, int flags, char monst)
 # endif
     void (*fp)(int);
     unsigned int uid;
-    static char *reason[] = {
-	"killed",
-	"quit",
-	"A total winner",
-	"killed with Amulet"
-    };
 
     start_score();
 
@@ -394,7 +396,7 @@ char *
 killname(char monst, bool doart)
 {
     struct h_list *hp;
-    char *sp;
+    const char* sp;
     bool article;
     static struct h_list nlist[] = {
 	{'a',	"arrow",		true},

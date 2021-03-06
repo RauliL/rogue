@@ -77,8 +77,8 @@ init_player()
  * Contains defintions and functions for dealing with things like
  * potions and scrolls
  */
-
-char *rainbow[] = {
+const char* rainbow[] =
+{
     "amber",
     "aquamarine",
     "black",
@@ -109,9 +109,10 @@ char *rainbow[] = {
 };
 
 #define NCOLORS (sizeof rainbow / sizeof (char *))
-int cNCOLORS = NCOLORS;
+const int cNCOLORS = NCOLORS;
 
-static char *sylls[] = {
+static const char *sylls[] =
+{
     "a", "ab", "ag", "aks", "ala", "an", "app", "arg", "arze", "ash",
     "bek", "bie", "bit", "bjor", "blu", "bot", "bu", "byt", "comp",
     "con", "cos", "cre", "dalf", "dan", "den", "do", "e", "eep", "el",
@@ -162,7 +163,8 @@ STONE stones[] = {
 #define NSTONES (sizeof stones / sizeof (STONE))
 int cNSTONES = NSTONES;
 
-char *wood[] = {
+const char* wood[] =
+{
     "avocado wood",
     "balsa",
     "bamboo",
@@ -199,9 +201,10 @@ char *wood[] = {
 };
 
 #define NWOOD (sizeof wood / sizeof (char *))
-int cNWOOD = NWOOD;
+const int cNWOOD = NWOOD;
 
-char *metal[] = {
+const char* metal[] =
+{
     "aluminum",
     "beryllium",
     "bone",
@@ -227,7 +230,7 @@ char *metal[] = {
 };
 
 #define NMETAL (sizeof metal / sizeof (char *))
-int cNMETAL = NMETAL;
+const int cNMETAL = NMETAL;
 #define MAX3(a,b,c)	(a > b ? (a > c ? a : c) : (b > c ? b : c))
 
 static bool used[MAX3(NCOLORS, NSTONES, NWOOD)];
@@ -263,7 +266,8 @@ void
 init_names()
 {
     int nsyl;
-    char *cp, *sp;
+    char* cp;
+    const char* sp;
     int i, nwords;
 
     for (i = 0; i < MAXSCROLLS; i++)
@@ -319,7 +323,7 @@ void
 init_materials()
 {
     int i, j;
-    char *str;
+    const char* str;
     static bool metused[NMETAL];
 
     for (i = 0; i < NWOOD; i++)
@@ -434,14 +438,3 @@ badcheck(char *name, struct obj_info *info, int bound)
 	continue;
 }
 #endif
-
-/*
- * pick_color:
- *	If he is halucinating, pick a random color name and return it,
- *	otherwise return the given color.
- */
-char *
-pick_color(char *col)
-{
-    return (on(player, ISHALU) ? rainbow[rnd(NCOLORS)] : col);
-}

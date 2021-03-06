@@ -25,9 +25,12 @@
 /*
  * description of an option and what to do with it
  */
-struct optstruct {
-    char	*o_name;	/* option name */
-    char	*o_prompt;	/* prompt for interactive entry */
+struct optstruct
+{
+    /** Option name. */
+    const char* o_name;
+    /** Prompt for interactive entry. */
+    const char* o_prompt;
     void 	*o_opt;		/* pointer to thing to set */
 				/* function to print value */
     void 	(*o_putfunc)(void *opt);
@@ -405,7 +408,7 @@ parse_opts(char *str)
     char *sp;
     OPTION *op;
     int len;
-    char **i;
+    const char** i;
     char *start;
 
     while (*str)

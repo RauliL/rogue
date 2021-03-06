@@ -14,8 +14,11 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+#include <unordered_map>
 #include <ncurses.h>
 #include "rogue.hpp"
+
+static const char* type_name(int);
 
 /*
  * whatis:
@@ -96,26 +99,23 @@ set_know(THING *obj, struct obj_info *info)
  * type_name:
  *	Return a pointer to the name of the type
  */
-char *
+static const char*
 type_name(int type)
 {
-    struct h_list *hp;
-    static struct h_list tlist[] = {
-	{POTION, "potion",		false},
-	{SCROLL, "scroll",		false},
-	{FOOD,	 "food",		false},
-	{R_OR_S, "ring, wand or staff",	false},
-	{RING,	 "ring",		false},
-	{STICK,	 "wand or staff",	false},
-	{WEAPON, "weapon",		false},
-	{ARMOR,	 "suit of armor",	false},
-    };
+    static const std::unordered_map<int, const char*> mapping =
+    {{
+        { POTION, "potion" },
+        { SCROLL, "scroll" },
+        { FOOD,   "food" },
+        { R_OR_S, "ring, wand or staff" },
+        { RING,   "ring" },
+        { STICK,  "wand or staff" },
+        { WEAPON, "weapon" },
+        { ARMOR,  "suit of armor" },
+    }};
+    const auto entry = mapping.find(type);
 
-    for (hp = tlist; hp->h_ch; hp++)
-	if (type == hp->h_ch)
-	    return hp->h_desc;
-    /* NOTREACHED */
-    return(0);
+    return entry != std::end(mapping) ? entry->second : nullptr;
 }
 
 #ifdef MASTER

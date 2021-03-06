@@ -10,6 +10,7 @@
  * See the file LICENSE.TXT for full copyright and licensing information.
  */
 
+#include <cstdio>
 #include <ncurses.h>
 #include "rogue.hpp"
 
@@ -183,22 +184,27 @@ ring_eat(int hand)
  * ring_num:
  *	Print ring bonuses
  */
-char *
-ring_num(THING *obj)
+const char*
+ring_num(const THING* obj)
 {
     static char buf[10];
 
     if (!(obj->o_flags & ISKNOW))
-	return "";
+    {
+        return "";
+    }
     switch (obj->o_which)
     {
-	case R_PROTECT:
-	case R_ADDSTR:
-	case R_ADDDAM:
-	case R_ADDHIT:
-	    sprintf(buf, " [%s]", num(obj->o_arm, 0, RING));
-	otherwise:
-	    return "";
+        case R_PROTECT:
+        case R_ADDSTR:
+        case R_ADDDAM:
+        case R_ADDHIT:
+            std::snprintf(buf, 10, " [%s]", num(obj->o_arm, 0, RING));
+            break;
+
+        default:
+            return "";
     }
+
     return buf;
 }

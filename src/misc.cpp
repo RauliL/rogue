@@ -463,7 +463,7 @@ is_current(THING *obj)
 bool
 get_dir()
 {
-    char *prompt;
+    const char* prompt;
     bool gotit;
     static coord last_delt= {0,0};
 
@@ -584,15 +584,4 @@ rnd_thing()
     else
         i = rnd(sizeof thing_list / sizeof (char) - 1);
     return thing_list[i];
-}
-
-/*
- str str:
- *	Choose the first or second string depending on whether it the
- *	player is tripping
- */
-char *
-choose_str(char *ts, char *ns)
-{
-	return (on(player, ISHALU) ? ts : ns);
 }

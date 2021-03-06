@@ -145,11 +145,9 @@ void unconfuse(int);
 void unsee(int);
 void visuals(int);
 
-char	add_line(char *fmt, char *arg);
+char add_line(const char* fmt, const char* arg);
 
 char	*killname(char monst, bool doart);
-char	*nothing(char type);
-char	*type_name(int type);
 
 #ifdef CHECKTIME
 int	checkout();
