@@ -422,7 +422,7 @@ char *
 md_getusername()
 {
     static char login[80];
-    char *l = nullptr;
+    const char* l = nullptr;
 #ifdef _WIN32
     LPSTR mybuffer;
     DWORD size = UNLEN + 1;
@@ -455,8 +455,8 @@ char *
 md_gethomedir()
 {
     static char homedir[PATH_MAX];
-    char *h = nullptr;
-    size_t len;
+    const char* h = nullptr;
+    std::size_t len;
 #if defined(_WIN32)
     TCHAR szPath[PATH_MAX];
 #endif
@@ -522,15 +522,15 @@ char *
 md_getshell()
 {
     static char shell[PATH_MAX];
-    char *s = nullptr;
+    const char* s = nullptr;
 #ifdef _WIN32
-    char *def = "C:\\WINDOWS\\SYSTEM32\\CMD.EXE";
+    const char* def = "C:\\WINDOWS\\SYSTEM32\\CMD.EXE";
 #elif defined(__DJGPP__)
-    char *def = "C:\\COMMAND.COM";
+    const char* def = "C:\\COMMAND.COM";
 #else
-    char *def = "/bin/sh";
-    struct passwd *pw;
-    pw = getpwuid(getuid());
+    const char* def = "/bin/sh";
+    auto pw = getpwuid(getuid());
+
     s = pw->pw_shell;
 #endif
     if ((s == nullptr) || (*s == '\0'))

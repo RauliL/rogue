@@ -14,13 +14,14 @@
 #include <ncurses.h>
 #include "rogue.hpp"
 
-typedef struct
+struct PACT
 {
     int pa_flags;
     delayed_action::callback_type pa_daemon;
     int pa_time;
-    char *pa_high, *pa_straight;
-} PACT;
+    const char* pa_high;
+    const char* pa_straight;
+};
 
 static PACT p_actions[] =
 {

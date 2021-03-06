@@ -13,6 +13,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+#include <unordered_map>
 #include <ncurses.h>
 #include "rogue.hpp"
 
@@ -607,50 +608,47 @@ help()
 void
 identify()
 {
+    static const std::unordered_map<char, const char*> mapping =
+    {{
+        { '|',     "wall of a room"        },
+        { '-',     "wall of a room"        },
+        { GOLD,    "gold"                  },
+        { STAIRS,  "a staircase"           },
+        { DOOR,    "door"                  },
+        { FLOOR,   "room floor"            },
+        { PLAYER,  "you"                   },
+        { PASSAGE, "passage"               },
+        { TRAP,     "trap"                 },
+        { POTION,   "potion"               },
+        { SCROLL,   "scroll"               },
+        { FOOD,     "food"                 },
+        { WEAPON,   "weapon"               },
+        { ' ',      "solid rock"           },
+        { ARMOR,    "armor"                },
+        { AMULET,   "the Amulet of Yendor" },
+        { RING,     "ring"                 },
+        { STICK,    "wand or staff"        },
+    }};
     int ch;
-    struct h_list *hp;
-    char *str;
-    static struct h_list ident_list[] = {
-	{'|',		"wall of a room",		false},
-	{'-',		"wall of a room",		false},
-	{GOLD,		"gold",				false},
-	{STAIRS,	"a staircase",			false},
-	{DOOR,		"door",				false},
-	{FLOOR,		"room floor",			false},
-	{PLAYER,	"you",				false},
-	{PASSAGE,	"passage",			false},
-	{TRAP,		"trap",				false},
-	{POTION,	"potion",			false},
-	{SCROLL,	"scroll",			false},
-	{FOOD,		"food",				false},
-	{WEAPON,	"weapon",			false},
-	{' ',		"solid rock",			false},
-	{ARMOR,		"armor",			false},
-	{AMULET,	"the Amulet of Yendor",		false},
-	{RING,		"ring",				false},
-	{STICK,		"wand or staff",		false},
-	{'\0'}
-    };
+    const char* str = "unknown character";
+    std::unordered_map<char, const char*>::const_iterator entry;
 
     msg("what do you want identified? ");
     ch = readchar();
     mpos = 0;
     if (ch == ESCAPE)
     {
-	msg("");
-	return;
+        msg("");
+        return;
     }
-    if (isupper(ch))
-	str = monsters[ch-'A'].m_name;
-    else
+    if (std::isupper(ch))
     {
-	str = "unknown character";
-	for (hp = ident_list; hp->h_ch != '\0'; hp++)
-	    if (hp->h_ch == ch)
-	    {
-		str = hp->h_desc;
-		break;
-	    }
+        str = monsters[ch - 'A'].m_name;
+    }
+    entry = mapping.find(ch);
+    if (entry != std::end(mapping))
+    {
+        str = entry->second;
     }
     msg("'%s': %s", unctrl(ch), str);
 }
@@ -721,7 +719,8 @@ call()
 {
     THING *obj;
     struct obj_info *op = nullptr;
-    char **guess, *elsewise = nullptr;
+    char** guess;
+    const char* elsewise = nullptr;
     bool *know;
 
     obj = get_item("call", CALLABLE);

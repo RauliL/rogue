@@ -381,8 +381,8 @@ picky_inven()
  * get_item:
  *	Pick something out of a pack for a purpose
  */
-THING *
-get_item(char *purpose, int type)
+THING*
+get_item(const char* purpose, int type)
 {
     THING *obj;
     char ch;

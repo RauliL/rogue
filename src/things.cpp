@@ -12,11 +12,21 @@
  */
 
 #include <cctype>
+#include <cstdio>
 #include <cstring>
 #include <ncurses.h>
 #include "rogue.hpp"
 
 static void set_order(int*, int);
+static const char* nothing(char);
+static const char* nullstr(const THING*);
+static void nameit(
+    THING*,
+    const char*,
+    const char*,
+    obj_info*,
+    const char*(*)(const THING*)
+);
 
 /*
  * inv_name:
@@ -28,7 +38,7 @@ inv_name(THING *obj, bool drop)
 {
     char *pb;
     struct obj_info *op;
-    char *sp;
+    const char* sp;
     int which;
 
     pb = prbuf;
@@ -338,7 +348,8 @@ static int line_cnt = 0;
 
 static bool newpage = false;
 
-static char *lastfmt, *lastarg;
+static const char* lastfmt;
+static const char* lastarg;
 
 
 void
@@ -472,11 +483,11 @@ set_order(int* order, int numthings)
  */
 /* VARARGS1 */
 char
-add_line(char *fmt, char *arg)
+add_line(const char* fmt, const char* arg)
 {
     WINDOW *tw, *sw;
     int x, y;
-    char *prompt = "--Press space to continue--";
+    const char* prompt = "--Press space to continue--";
     static int maxlen = -1;
 
     if (line_cnt == 0)
@@ -587,27 +598,31 @@ end_line()
  * nothing:
  *	Set up prbuf so that message for "nothing found" is there
  */
-char *
+static const char*
 nothing(char type)
 {
-    char *sp, *tystr = nullptr;
+    const char* tystr = nullptr;
 
     if (terse)
-	sprintf(prbuf, "Nothing");
-    else
-	sprintf(prbuf, "Haven't discovered anything");
+    {
+	    std::sprintf(prbuf, "Nothing");
+    } else {
+	    std::sprintf(prbuf, "Haven't discovered anything");
+    }
     if (type != '*')
     {
-	sp = &prbuf[strlen(prbuf)];
-	switch (type)
-	{
-	    case POTION: tystr = "potion";
-	    when SCROLL: tystr = "scroll";
-	    when RING: tystr = "ring";
-	    when STICK: tystr = "stick";
-	}
-	sprintf(sp, " about any %ss", tystr);
+	    auto sp = &prbuf[strlen(prbuf)];
+
+        switch (type)
+        {
+            case POTION: tystr = "potion"; break;
+            case SCROLL: tystr = "scroll"; break;
+            case RING: tystr = "ring"; break;
+            case STICK: tystr = "stick"; break;
+        }
+        std::sprintf(sp, " about any %ss", tystr);
     }
+
     return prbuf;
 }
 
@@ -615,10 +630,14 @@ nothing(char type)
  * nameit:
  *	Give the proper name to a potion, stick, or ring
  */
-
-void
-nameit(THING *obj, char *type, char *which, struct obj_info *op,
-    char *(*prfunc)(THING *))
+static void
+nameit(
+    THING* obj,
+    const char* type,
+    const char* which,
+    obj_info *op,
+    const char* (*prfunc)(const THING*)
+)
 {
     char *pb;
 
@@ -644,10 +663,9 @@ nameit(THING *obj, char *type, char *which, struct obj_info *op,
  * nullstr:
  *	Return a pointer to a null-length string
  */
-char *
-nullstr(THING *ignored)
+static const char*
+nullstr(const THING*)
 {
-    NOOP(ignored);
     return "";
 }
 

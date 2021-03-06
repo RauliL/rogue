@@ -19,26 +19,30 @@
 
 #define	EQSTR(a, b)	(std::strcmp(a, b) == 0)
 
-char *h_names[] = {		/* strings for hitting */
-	" scored an excellent hit on ",
-	" hit ",
-	" have injured ",
-	" swing and hit ",
-	" scored an excellent hit on ",
-	" hit ",
-	" has injured ",
-	" swings and hits "
+/** Strings for hitting. */
+static const char* h_names[] =
+{
+    " scored an excellent hit on ",
+    " hit ",
+    " have injured ",
+    " swing and hit ",
+    " scored an excellent hit on ",
+    " hit ",
+    " has injured ",
+    " swings and hits "
 };
 
-char *m_names[] = {		/* strings for missing */
-	" miss",
-	" swing and miss",
-	" barely miss",
-	" don't hit",
-	" misses",
-	" swings and misses",
-	" barely misses",
-	" doesn't hit",
+/** Strings for missing. */
+static const char* m_names[] =
+{
+    " miss",
+    " swing and miss",
+    " barely miss",
+    " don't hit",
+    " misses",
+    " swings and misses",
+    " barely misses",
+    " doesn't hit",
 };
 
 /*
@@ -356,7 +360,7 @@ const char*
 set_mname(THING *tp)
 {
     int ch;
-    char *mname;
+    const char* mname;
     static char tbuf[MAXSTR] = { 't', 'h', 'e', ' ' };
 
     if (!see_monst(tp) && !on(player, SEEMONST))
@@ -534,8 +538,7 @@ static void
 hit(const char* er, const char* ee, bool noend)
 {
     int i;
-    char *s;
-    extern char *h_names[];
+    const char* s;
 
     if (to_death)
 	return;
@@ -564,7 +567,6 @@ static void
 miss(const char* er, const char* ee, bool noend)
 {
     int i;
-    extern char *m_names[];
 
     if (to_death)
 	return;

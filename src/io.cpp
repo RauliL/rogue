@@ -4,6 +4,7 @@
  * @(#)io.c	4.32 (Berkeley) 02/05/99
  */
 
+#include <array>
 #include <cctype>
 #include <cstdarg>
 #include <cstdio>
@@ -178,6 +179,13 @@ readchar()
 void
 status()
 {
+    static const std::array<const char*, 4> state_name =
+    {{
+        "",
+        "Hungry",
+        "Weak",
+        "Faint",
+    }};
     int oy, ox, temp;
     static int hpwidth = 0;
     static int s_hungry = 0;
@@ -187,10 +195,6 @@ status()
     static int s_arm = 0;
     static str_t s_str = 0;
     static int s_exp = 0;
-    static char *state_name[] =
-    {
-	"", "Hungry", "Weak", "Faint"
-    };
 
     /*
      * If nothing has changed since the last status, don't
@@ -269,11 +273,10 @@ wait_for(int ch)
  *	Function used to display a window and wait before returning
  */
 void
-show_win(char *message)
+show_win(const char* message)
 {
-    WINDOW *win;
+    auto win = hw;
 
-    win = hw;
     wmove(win, 0, 0);
     waddstr(win, message);
     touchwin(win);

@@ -19,9 +19,12 @@
 
 int group = 2;
 
-static struct init_weaps {
-    char *iw_dam;	/* Damage when wielded */
-    char *iw_hrl;	/* Damage when thrown */
+static struct init_weaps
+{
+    /** Damage when wielded. */
+    const char* iw_dam;
+    /** Damage when thrown. */
+    const char* iw_hrl;
     char iw_launch;	/* Launching weapon */
     int iw_flags;	/* Miscellaneous flags */
 } init_dam[MAXWEAPONS] = {

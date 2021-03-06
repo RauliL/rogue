@@ -315,9 +315,10 @@
 /*
  * Help list
  */
-struct h_list {
+struct h_list
+{
     char h_ch;
-    char *h_desc;
+    const char* h_desc;
     bool h_print;
 };
 
@@ -334,11 +335,12 @@ typedef unsigned int str_t;
 /*
  * Stuff about objects
  */
-struct obj_info {
-    char *oi_name;
+struct obj_info
+{
+    const char* oi_name;
     int oi_prob;
     int oi_worth;
-    char *oi_guess;
+    char* oi_guess;
     bool oi_know;
 };
 
@@ -452,7 +454,8 @@ typedef struct {
  * Array containing information on all the various types of monsters
  */
 struct monster {
-    char *m_name;			/* What to call the monster */
+    /** What to call the monster. */
+    const char* m_name;
     int m_carry;			/* Probability of carrying something */
     short m_flags;			/* things about the monster */
     struct stats m_stats;		/* Initial stats */
@@ -478,10 +481,24 @@ extern bool	after, again, allscore, amulet, door_stop, fight_flush,
 		passgo, playing, q_comm, running, save_msg, see_floor,
 		seenstairs, stat_msg, terse, to_death, tombstone;
 
-extern char	dir_ch, file_name[], home[], huh[], *inv_t_name[],
+extern char	dir_ch, file_name[], home[], huh[],
 		l_last_comm, l_last_dir, last_comm, last_dir, *Numname,
-		outbuf[], *p_colors[], *r_stones[], *release, runch,
-		*s_names[], take, *tr_name[], *ws_made[], *ws_type[];
+		outbuf[], *release, runch,
+		take;
+
+extern const char* inv_t_name[];
+/** Names of the traps. */
+extern const char* tr_name[];
+/** Colors of the potions. */
+extern const char* p_colors[];
+/** Stone settings of the rings. */
+extern const char* r_stones[];
+/** Names of the scrolls. */
+extern char* s_names[];
+/** What sticks are made of. */
+extern const char* ws_made[];
+/** Is it a wand or a staff? */
+extern const char* ws_type[];
 
 extern int	a_class[], count, food_left, hungry_state, inpack,
 		inv_type, lastscore, level, max_hit, max_level, mpos,
@@ -570,7 +587,7 @@ void	erase_lamp(coord *pos, struct room *rp);
 int	exp_add(THING *tp);
 void extinguish(const delayed_action::callback_type& func);
 void	fall(THING *obj, bool pr);
-void	fire_bolt(coord *start, coord *dir, char *name);
+void fire_bolt(const coord* start, coord* dir, const char* name);
 char	floor_at();
 void	flush_type();
 int	fight(coord *mp, THING *weap, bool thrown);
@@ -605,7 +622,6 @@ void	money(int value);
 int	move_monst(THING *tp);
 void	move_msg(THING *obj);
 int msg(const char* fmt, ...);
-void	nameit(THING *obj, char *type, char *which, struct obj_info *op, char *(*prfunc)(THING *));
 void	new_level();
 void	new_monster(THING *tp, char type, coord *cp);
 void	numpass(int y, int x);
@@ -613,7 +629,6 @@ void	option();
 void	open_score();
 void	parse_opts(char *str);
 void 	passnum();
-char	*pick_color(char *col);
 int	pick_one(struct obj_info *info, int nitems);
 void	pick_up(char ch);
 void	picky_inven();
@@ -654,7 +669,7 @@ void	setup();
 void	shell();
 bool	show_floor();
 void	show_map();
-void	show_win(char *message);
+void show_win(const char* message);
 int	sign(int nm);
 int	spread(int nm);
 void start_daemon(const delayed_action::callback_type& func, int arg, int type);
@@ -703,12 +718,36 @@ char	pack_char();
 char	readchar();
 char	rnd_thing();
 
-char	*charge_str(THING *obj);
-char	*choose_str(char *ts, char *ns);
+const char* charge_str(const THING* obj);
+
+/*
+ * choose_str:
+ *	Choose the first or second string depending on whether it the
+ *	player is tripping
+ */
+inline const char*
+choose_str(const char* ts, const char* ns)
+{
+    return on(player, ISHALU) ? ts : ns;
+}
+
+extern const char* rainbow[];
+extern const int cNCOLORS;
+
+/*
+ * pick_color:
+ *	If he is halucinating, pick a random color name and return it,
+ *	otherwise return the given color.
+ */
+inline const char*
+pick_color(const char* col)
+{
+    return on(player, ISHALU) ? rainbow[rnd(cNCOLORS)] : col;
+}
+
 char	*inv_name(THING *obj, bool drop);
-char	*nullstr(THING *ignored);
 char	*num(int n1, int n2, char type);
-char	*ring_num(THING *obj);
+const char* ring_num(const THING* obj);
 const char* set_mname(THING* tp);
 const char* vowelstr(const char* str);
 
@@ -723,7 +762,7 @@ coord	*find_dest(THING *tp);
 coord	*rndmove(THING *who);
 
 THING	*find_obj(int y, int x);
-THING	*get_item(char *purpose, int type);
+THING* get_item(const char* purpose, int type);
 THING	*leave_pack(THING *obj, bool newobj, bool all);
 THING	*new_item();
 THING	*new_thing();
@@ -734,20 +773,19 @@ struct room	*roomin(coord *cp);
 
 extern delayed_action d_list[MAXDAEMONS];
 
-typedef struct {
-    char	*st_name;
-    int		st_value;
-} STONE;
+struct STONE
+{
+    const char* st_name;
+    int st_value;
+};
 
 extern int      total;
 extern int      between;
 extern int      group;
 extern coord    nh;
-extern char     *rainbow[];
-extern int      cNCOLORS;
 extern STONE    stones[];
 extern int      cNSTONES;
-extern char     *wood[];
-extern int      cNWOOD;
-extern char     *metal[];
-extern int      cNMETAL;
+extern const char* wood[];
+extern const int cNWOOD;
+extern const char* metal[];
+extern const int cNMETAL;
