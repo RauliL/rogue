@@ -1,6 +1,6 @@
 INSTALL(
   FILES
-    rogue.desktop
+    rogue++.desktop
   DESTINATION
     share/applications
 )
