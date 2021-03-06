@@ -24,27 +24,6 @@
 #define HAVE_PROCESS_H
 #define HAVE_ERASECHAR 1
 #define HAVE_KILLCHAR 1
-#elif defined(__CYGWIN__)
-#define HAVE_PWD_H 1
-#define HAVE_PWD_H 1
-#define HAVE_SYS_UTSNAME_H 1
-#define HAVE_ARPA_INET_H 1
-#define HAVE_UNISTD_H 1
-#define HAVE_TERMIOS_H 1
-#define HAVE_NCURSES_TERM_H 1
-#define HAVE_ESCDELAY
-#define HAVE_SETGID 1
-#define HAVE_GETGID 1
-#define HAVE_SETUID 1
-#define HAVE_GETUID 1
-#define HAVE_GETPASS 1
-#define HAVE_GETPWUID 1
-#define HAVE_WORKING_FORK 1
-#define HAVE_ALARM 1
-#define HAVE_SPAWNL 1
-#define HAVE__SPAWNL 1
-#define HAVE_ERASECHAR 1
-#define HAVE_KILLCHAR 1
 #else /* POSIX */
 #define HAVE_PWD_H 1
 #define HAVE_SYS_UTSNAME_H 1
