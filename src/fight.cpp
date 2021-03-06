@@ -78,7 +78,7 @@ fight(coord *mp, THING *weap, bool thrown)
      * Find the monster we want to fight
      */
 #ifdef MASTER
-    if ((tp = moat(mp->y, mp->x)) == NULL)
+    if ((tp = moat(mp->y, mp->x)) == nullptr)
 	debug("Fight what @ %d,%d", mp->y, mp->x);
 #else
     tp = moat(mp->y, mp->x);
@@ -115,7 +115,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	if (thrown)
 	    thunk(weap, mname, terse);
 	else
-	    hit((char *) NULL, mname, terse);
+	    hit((char *) nullptr, mname, terse);
 	if (on(player, CANHUH))
 	{
 	    did_hit = true;
@@ -135,7 +135,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	if (thrown)
 	    bounce(weap, mname, terse);
 	else
-	    miss((char *) NULL, mname, terse);
+	    miss((char *) nullptr, mname, terse);
     return did_hit;
 }
 
@@ -169,7 +169,7 @@ attack(THING *mp)
     }
     mname = set_mname(mp);
     oldhp = pstats.s_hpt;
-    if (roll_em(mp, &player, (THING *) NULL, false))
+    if (roll_em(mp, &player, (THING *) nullptr, false))
     {
 	if (mp->t_type != 'I')
 	{
@@ -291,7 +291,7 @@ attack(THING *mp)
 		    if (purse < 0)
 			purse = 0;
 		    remove_mon(&mp->t_pos, mp, false);
-                    mp=NULL;
+                    mp=nullptr;
 		    if (purse != lastpurse)
 			msg("your purse feels lighter");
 		}
@@ -304,16 +304,16 @@ attack(THING *mp)
 		     * Nymph's steal a magic item, look through the pack
 		     * and pick out one we like.
 		     */
-		    steal = NULL;
-		    for (nobj = 0, obj = pack; obj != NULL; obj = next(obj))
+		    steal = nullptr;
+		    for (nobj = 0, obj = pack; obj != nullptr; obj = next(obj))
 			if (obj != cur_armor && obj != cur_weapon
 			    && obj != cur_ring[LEFT] && obj != cur_ring[RIGHT]
 			    && is_magic(obj) && rnd(++nobj) == 0)
 				steal = obj;
-		    if (steal != NULL)
+		    if (steal != nullptr)
 		    {
 			remove_mon(&mp->t_pos, moat(mp->t_pos.y, mp->t_pos.x), false);
-                        mp=NULL;
+                        mp=nullptr;
 			leave_pack(steal, false, false);
 			msg("she stole %s!", inv_name(steal, true));
 			discard(steal);
@@ -342,7 +342,7 @@ attack(THING *mp)
 	flush_type();
     count = 0;
     status();
-    if (mp == NULL)
+    if (mp == nullptr)
         return(-1);
     else
         return(0);
@@ -407,7 +407,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 
     att = &thatt->t_stats;
     def = &thdef->t_stats;
-    if (weap == NULL)
+    if (weap == nullptr)
     {
 	cp = att->s_dmg;
 	dplus = 0;
@@ -415,8 +415,8 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
     }
     else
     {
-	hplus = (weap == NULL ? 0 : weap->o_hplus);
-	dplus = (weap == NULL ? 0 : weap->o_dplus);
+	hplus = (weap == nullptr ? 0 : weap->o_hplus);
+	dplus = (weap == nullptr ? 0 : weap->o_dplus);
 	if (weap == cur_weapon)
 	{
 	    if (ISRING(LEFT, R_ADDDAM))
@@ -431,7 +431,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	cp = weap->o_damage;
 	if (hurl)
 	{
-	    if ((weap->o_flags&ISMISL) && cur_weapon != NULL &&
+	    if ((weap->o_flags&ISMISL) && cur_weapon != nullptr &&
 	      cur_weapon->o_which == weap->o_launch)
 	    {
 		cp = weap->o_hurldmg;
@@ -451,19 +451,19 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
     def_arm = def->s_arm;
     if (def == &pstats)
     {
-	if (cur_armor != NULL)
+	if (cur_armor != nullptr)
 	    def_arm = cur_armor->o_arm;
 	if (ISRING(LEFT, R_PROTECT))
 	    def_arm -= cur_ring[LEFT]->o_arm;
 	if (ISRING(RIGHT, R_PROTECT))
 	    def_arm -= cur_ring[RIGHT]->o_arm;
     }
-    while(cp != NULL && *cp != '\0')
+    while(cp != nullptr && *cp != '\0')
     {
-	ndice = atoi(cp);
-	if ((cp = strchr(cp, 'x')) == NULL)
+	ndice = std::atoi(cp);
+	if ((cp = strchr(cp, 'x')) == nullptr)
 	    break;
-	nsides = atoi(++cp);
+	nsides = std::atoi(++cp);
 	if (swing(att->s_lvl, def_arm, hplus + str_plus[att->s_str]))
 	{
 	    int proll;
@@ -477,7 +477,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	    def->s_hpt -= max(0, damage);
 	    did_hit = true;
 	}
-	if ((cp = strchr(cp, '/')) == NULL)
+	if ((cp = strchr(cp, '/')) == nullptr)
 	    break;
 	cp++;
     }
@@ -545,7 +545,7 @@ hit(const char* er, const char* ee, bool noend)
     else
     {
 	i = rnd(4);
-	if (er != NULL)
+	if (er != nullptr)
 	    i += 4;
 	s = h_names[i];
     }
@@ -573,7 +573,7 @@ miss(const char* er, const char* ee, bool noend)
 	i = 0;
     else
 	i = rnd(4);
-    if (er != NULL)
+    if (er != nullptr)
 	i += 4;
     addmsg(m_names[i]);
     if (!terse)
@@ -609,7 +609,7 @@ remove_mon(coord *mp, THING *tp, bool waskill)
 {
     THING *obj, *nexti;
 
-    for (obj = tp->t_pack; obj != NULL; obj = nexti)
+    for (obj = tp->t_pack; obj != nullptr; obj = nexti)
     {
 	nexti = next(obj);
 	obj->o_pos = tp->t_pos;
@@ -619,7 +619,7 @@ remove_mon(coord *mp, THING *tp, bool waskill)
 	else
 	    discard(obj);
     }
-    moat(mp->y, mp->x) = NULL;
+    moat(mp->y, mp->x) = nullptr;
     mvaddch(mp->y, mp->x, tp->t_oldch);
     detach(mlist, tp);
     if (on(*tp, ISTARGET))

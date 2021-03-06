@@ -30,18 +30,18 @@ static PACT p_actions[] =
 	{ ISHALU,	come_down,	SEEDURATION,	/* P_LSD */
 		"Oh, wow!  Everything seems so cosmic!",
 		"Oh, wow!  Everything seems so cosmic!" },
-	{ 0,		NULL,	0 },			/* P_POISON */
-	{ 0,		NULL,	0 },			/* P_STRENGTH */
+	{ 0,		nullptr,	0 },			/* P_POISON */
+	{ 0,		nullptr,	0 },			/* P_STRENGTH */
 	{ CANSEE,	unsee,	SEEDURATION,		/* P_SEEINVIS */
 		prbuf,
 		prbuf },
-	{ 0,		NULL,	0 },			/* P_HEALING */
-	{ 0,		NULL,	0 },			/* P_MFIND */
-	{ 0,		NULL,	0 },			/* P_TFIND  */
-	{ 0,		NULL,	0 },			/* P_RAISE */
-	{ 0,		NULL,	0 },			/* P_XHEAL */
-	{ 0,		NULL,	0 },			/* P_HASTE */
-	{ 0,		NULL,	0 },			/* P_RESTORE */
+	{ 0,		nullptr,	0 },			/* P_HEALING */
+	{ 0,		nullptr,	0 },			/* P_MFIND */
+	{ 0,		nullptr,	0 },			/* P_TFIND  */
+	{ 0,		nullptr,	0 },			/* P_RAISE */
+	{ 0,		nullptr,	0 },			/* P_XHEAL */
+	{ 0,		nullptr,	0 },			/* P_HASTE */
+	{ 0,		nullptr,	0 },			/* P_RESTORE */
 	{ ISBLIND,	sight,	SEEDURATION,		/* P_BLIND */
 		"oh, bummer!  Everything is dark!  Help!",
 		"a cloak of darkness falls around you" },
@@ -72,7 +72,7 @@ quaff()
     /*
      * Make certain that it is somethings that we want to drink
      */
-    if (obj == NULL)
+    if (obj == nullptr)
 	return;
     if (obj->o_type != POTION)
     {
@@ -83,7 +83,7 @@ quaff()
 	return;
     }
     if (obj == cur_weapon)
-	cur_weapon = NULL;
+	cur_weapon = nullptr;
 
     /*
      * Calculate the effect it has on the poor guy.
@@ -126,10 +126,10 @@ quaff()
 	     * Potion of magic detection.  Show the potions and scrolls
 	     */
 	    show = false;
-	    if (lvl_obj != NULL)
+	    if (lvl_obj != nullptr)
 	    {
 		wclear(hw);
-		for (tp = lvl_obj; tp != NULL; tp = next(tp))
+		for (tp = lvl_obj; tp != nullptr; tp = next(tp))
 		{
 		    if (is_magic(tp))
 		    {
@@ -139,9 +139,9 @@ quaff()
 			pot_info[P_TFIND].oi_know = true;
 		    }
 		}
-		for (mp = mlist; mp != NULL; mp = next(mp))
+		for (mp = mlist; mp != nullptr; mp = next(mp))
 		{
-		    for (tp = mp->t_pack; tp != NULL; tp = next(tp))
+		    for (tp = mp->t_pack; tp != nullptr; tp = next(tp))
 		    {
 			if (is_magic(tp))
 			{
@@ -264,7 +264,7 @@ invis_on()
     THING *mp;
 
     player.t_flags |= CANSEE;
-    for (mp = mlist; mp != NULL; mp = next(mp))
+    for (mp = mlist; mp != nullptr; mp = next(mp))
 	if (on(*mp, ISINVIS) && see_monst(mp) && !on(player, ISHALU))
 	    mvaddch(mp->t_pos.y, mp->t_pos.x, mp->t_disguise);
 }
@@ -280,7 +280,7 @@ turn_see(bool turn_off)
     bool can_see;
     int add_new = false;
 
-    for (mp = mlist; mp != NULL; mp = next(mp))
+    for (mp = mlist; mp != nullptr; mp = next(mp))
     {
 	move(mp->t_pos.y, mp->t_pos.x);
 	can_see = see_monst(mp);
@@ -329,7 +329,7 @@ seen_stairs()
     /*
      * if a monster is on the stairs, this gets hairy
      */
-    if ((tp = moat(stairs.y, stairs.x)) != NULL)
+    if ((tp = moat(stairs.y, stairs.x)) != nullptr)
     {
 	if (see_monst(tp) && on(*tp, ISRUN))	/* if it's visible and awake */
 	    return true;			/* it must have moved there */

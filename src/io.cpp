@@ -196,7 +196,7 @@ status()
      * If nothing has changed since the last status, don't
      * bother.
      */
-    temp = (cur_armor != NULL ? cur_armor->o_arm : pstats.s_arm);
+    temp = (cur_armor != nullptr ? cur_armor->o_arm : pstats.s_arm);
     if (s_hp == pstats.s_hpt && s_exp == pstats.s_exp && s_pur == purse
 	&& s_arm == temp && s_str == pstats.s_str && s_lvl == level
 	&& s_hungry == hungry_state

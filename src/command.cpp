@@ -145,15 +145,15 @@ command()
 		l_last_pick = last_pick;
 		last_comm = ch;
 		last_dir = '\0';
-		last_pick = NULL;
+		last_pick = nullptr;
 	    }
 over:
 	    switch (ch)
 	    {
 		case ',': {
-		    THING *obj = NULL;
+		    THING *obj = nullptr;
 		    int found = 0;
-		    for (obj = lvl_obj; obj != NULL; obj = next(obj))
+		    for (obj = lvl_obj; obj != nullptr; obj = next(obj))
     			{
 			    if (obj->o_pos.y == hero.y && obj->o_pos.x == hero.x)
 			    {
@@ -222,7 +222,7 @@ over:
 		    }
 		    delta.y += hero.y;
 		    delta.x += hero.x;
-		    if ( ((mp = moat(delta.y, delta.x)) == NULL)
+		    if ( ((mp = moat(delta.y, delta.x)) == nullptr)
 			|| ((!see_monst(mp)) && !on(player, SEEMONST)))
 		    {
 			if (!terse)
@@ -351,8 +351,8 @@ over:
 			countch = dir_ch;
 			goto over;
 		    }
-		when ')': current(cur_weapon, "wielding", NULL);
-		when ']': current(cur_armor, "wearing", NULL);
+		when ')': current(cur_weapon, "wielding", nullptr);
+		when ']': current(cur_armor, "wearing", nullptr);
 		when '=':
 		    current(cur_ring[LEFT], "wearing",
 					    terse ? "(L)" : "on left hand");
@@ -384,7 +384,7 @@ over:
 			{
 			    THING *item;
 
-			    if ((item = get_item("charge", STICK)) != NULL)
+			    if ((item = get_item("charge", STICK)) != nullptr)
 				item->o_charges = 10000;
 			}
 			when CTRL('I'):
@@ -550,7 +550,7 @@ help()
     if (helpch != '*')
     {
 	move(0, 0);
-	for (strp = helpstr; strp->h_desc != NULL; strp++)
+	for (strp = helpstr; strp->h_desc != nullptr; strp++)
 	    if (strp->h_ch == helpch)
 	    {
 		lower_msg = true;
@@ -566,7 +566,7 @@ help()
      * Then wait before we return to command mode
      */
     numprint = 0;
-    for (strp = helpstr; strp->h_desc != NULL; strp++)
+    for (strp = helpstr; strp->h_desc != nullptr; strp++)
 	if (strp->h_print)
 	    numprint++;
     if (numprint & 01)		/* round odd numbers up */
@@ -577,7 +577,7 @@ help()
 
     wclear(hw);
     cnt = 0;
-    for (strp = helpstr; strp->h_desc != NULL; strp++)
+    for (strp = helpstr; strp->h_desc != nullptr; strp++)
 	if (strp->h_print)
 	{
 	    wmove(hw, cnt % numprint, cnt >= numprint ? COLS / 2 : 0);
@@ -720,15 +720,15 @@ void
 call()
 {
     THING *obj;
-    struct obj_info *op = NULL;
-    char **guess, *elsewise = NULL;
+    struct obj_info *op = nullptr;
+    char **guess, *elsewise = nullptr;
     bool *know;
 
     obj = get_item("call", CALLABLE);
     /*
      * Make certain that it is somethings that we want to wear
      */
-    if (obj == NULL)
+    if (obj == nullptr)
 	return;
     switch (obj->o_type)
     {
@@ -750,22 +750,22 @@ call()
 norm:
 	    know = &op->oi_know;
 	    guess = &op->oi_guess;
-	    if (*guess != NULL)
+	    if (*guess != nullptr)
 		elsewise = *guess;
 	when FOOD:
 	    msg("you can't call that anything");
 	    return;
 	otherwise:
 	    guess = &obj->o_label;
-	    know = NULL;
+	    know = nullptr;
 	    elsewise = obj->o_label;
     }
-    if (know != NULL && *know)
+    if (know != nullptr && *know)
     {
 	msg("that has already been identified");
 	return;
     }
-    if (elsewise != NULL && elsewise == *guess)
+    if (elsewise != nullptr && elsewise == *guess)
     {
 	if (!terse)
 	    addmsg("Was ");
@@ -776,13 +776,13 @@ norm:
     else
 	msg("what do you want to call it? ");
 
-    if (elsewise == NULL)
+    if (elsewise == nullptr)
 	strcpy(prbuf, "");
     else
 	strcpy(prbuf, elsewise);
     if (get_str(prbuf, stdscr) == NORM)
     {
-	if (*guess != NULL)
+	if (*guess != nullptr)
 	    free(*guess);
     *guess = static_cast<char*>(std::malloc(std::strlen(prbuf) + 1));
 	strcpy(*guess, prbuf);
@@ -797,7 +797,7 @@ void
 current(THING *cur, const char* how, const char* where)
 {
     after = false;
-    if (cur != NULL)
+    if (cur != nullptr)
     {
 	if (!terse)
 	    addmsg("you are %s (", how);

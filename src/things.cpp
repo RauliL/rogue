@@ -83,7 +83,7 @@ inv_name(THING *obj, bool drop)
 		sprintf(pb, "%s", sp);
 	    if (obj->o_count > 1)
 		strcat(pb, "s");
-	    if (obj->o_label != NULL)
+	    if (obj->o_label != nullptr)
 	    {
 		pb = &prbuf[strlen(prbuf)];
 		sprintf(pb, " called %s", obj->o_label);
@@ -101,7 +101,7 @@ inv_name(THING *obj, bool drop)
 	    }
 	    else
 		sprintf(pb, "%s", sp);
-	    if (obj->o_label != NULL)
+	    if (obj->o_label != nullptr)
 	    {
 		pb = &prbuf[strlen(prbuf)];
 		sprintf(pb, " called %s", obj->o_label);
@@ -153,7 +153,7 @@ drop()
 	msg("there is something there already");
 	return;
     }
-    if ((obj = get_item("drop", 0)) == NULL)
+    if ((obj = get_item("drop", 0)) == nullptr)
 	return;
     if (!dropcheck(obj))
 	return;
@@ -177,7 +177,7 @@ drop()
 bool
 dropcheck(THING *obj)
 {
-    if (obj == NULL)
+    if (obj == nullptr)
 	return true;
     if (obj != cur_armor && obj != cur_weapon
 	&& obj != cur_ring[LEFT] && obj != cur_ring[RIGHT])
@@ -188,15 +188,15 @@ dropcheck(THING *obj)
 	return false;
     }
     if (obj == cur_weapon)
-	cur_weapon = NULL;
+	cur_weapon = nullptr;
     else if (obj == cur_armor)
     {
 	waste_time();
-	cur_armor = NULL;
+	cur_armor = nullptr;
     }
     else
     {
-	cur_ring[obj == cur_ring[LEFT] ? LEFT : RIGHT] = NULL;
+	cur_ring[obj == cur_ring[LEFT] ? LEFT : RIGHT] = nullptr;
 	switch (obj->o_which)
 	{
 	    case R_ADDSTR:
@@ -378,11 +378,11 @@ discovered()
     if (ch == '*')
     {
 	print_disc(POTION);
-	add_line("", NULL);
+	add_line("", nullptr);
 	print_disc(SCROLL);
-	add_line("", NULL);
+	add_line("", nullptr);
 	print_disc(RING);
-	add_line("", NULL);
+	add_line("", nullptr);
 	print_disc(STICK);
 	end_line();
     }
@@ -404,7 +404,7 @@ discovered()
 void
 print_disc(char type)
 {
-    struct obj_info *info = NULL;
+    struct obj_info *info = nullptr;
     int i, maxnum = 0, num_found;
     static THING obj;
     static int order[MAX4(MAXSCROLLS, MAXPOTIONS, MAXRINGS, MAXSTICKS)];
@@ -441,7 +441,7 @@ print_disc(char type)
 	    num_found++;
 	}
     if (num_found == 0)
-	add_line(nothing(type), NULL);
+	add_line(nothing(type), nullptr);
 }
 
 /*
@@ -496,9 +496,9 @@ add_line(char *fmt, char *arg)
     {
 	if (maxlen < 0)
 	    maxlen = (int) strlen(prompt);
-	if (line_cnt >= LINES - 1 || fmt == NULL)
+	if (line_cnt >= LINES - 1 || fmt == nullptr)
 	{
-	    if (inv_type == INV_OVER && fmt == NULL && !newpage)
+	    if (inv_type == INV_OVER && fmt == nullptr && !newpage)
 	    {
 		msg("");
 		refresh();
@@ -548,7 +548,7 @@ add_line(char *fmt, char *arg)
 	    line_cnt = 0;
 	    maxlen = (int) strlen(prompt);
 	}
-	if (fmt != NULL && !(line_cnt == 0 && *fmt == '\0'))
+	if (fmt != nullptr && !(line_cnt == 0 && *fmt == '\0'))
 	{
 	    mvwprintw(hw, line_cnt++, 0, fmt, arg);
 	    getyx(hw, y, x);
@@ -577,7 +577,7 @@ end_line()
 	    msg(lastfmt, lastarg);
 	}
 	else
-	    add_line((char *) NULL, NULL);
+	    add_line(nullptr, nullptr);
     }
     line_cnt = 0;
     newpage = false;
@@ -590,7 +590,7 @@ end_line()
 char *
 nothing(char type)
 {
-    char *sp, *tystr = NULL;
+    char *sp, *tystr = nullptr;
 
     if (terse)
 	sprintf(prbuf, "Nothing");

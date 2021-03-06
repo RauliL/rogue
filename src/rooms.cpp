@@ -328,7 +328,7 @@ rnd_pos(struct room *rp, coord *cp)
 
 /*
  * find_floor:
- *	Find a valid floor spot in this room.  If rp is NULL, then
+ *	Find a valid floor spot in this room.  If rp is nullptr, then
  *	pick a new room each time around the loop.
  */
 bool
@@ -339,7 +339,7 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
     char compchar = 0;
     bool pickroom;
 
-    pickroom = (bool)(rp == NULL);
+    pickroom = (bool)(rp == nullptr);
 
     if (!pickroom)
 	compchar = ((rp->r_flags & ISMAZE) ? PASSAGE : FLOOR);
@@ -357,7 +357,7 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
 	pp = INDEX(cp->y, cp->x);
 	if (monst)
 	{
-	    if (pp->p_monst == NULL && step_ok(pp->p_ch))
+	    if (pp->p_monst == nullptr && step_ok(pp->p_ch))
 		return true;
 	}
 	else if (pp->p_ch == compchar)
@@ -388,7 +388,7 @@ enter_room(coord *cp)
 	    {
 		tp = moat(y, x);
 		ch = chat(y, x);
-		if (tp == NULL)
+		if (tp == nullptr)
 		    if (CCHAR(inch()) != ch)
 			addch(ch);
 		    else

@@ -30,7 +30,7 @@ runners(int)
     bool wastarget;
     static coord orig_pos;
 
-    for (tp = mlist; tp != NULL; tp = next)
+    for (tp = mlist; tp != nullptr; tp = next)
     {
         /* remember this in case the monster's "next" is changed */
         next = next(tp);
@@ -89,7 +89,7 @@ relocate(THING *th, coord *new_loc)
 	th->t_room = roomin(new_loc);
 	set_oldch(th, new_loc);
 	oroom = th->t_room;
-	moat(th->t_pos.y, th->t_pos.x) = NULL;
+	moat(th->t_pos.y, th->t_pos.x) = nullptr;
 
 	if (oroom != th->t_room)
 	    th->t_dest = find_dest(th);
@@ -199,7 +199,7 @@ over:
 	}
 	else if (ce(this_, *th->t_dest))
 	{
-	    for (obj = lvl_obj; obj != NULL; obj = next(obj))
+	    for (obj = lvl_obj; obj != nullptr; obj = next(obj))
 		if (th->t_dest == &obj->o_pos)
 		{
 		    detach(lvl_obj, obj);
@@ -291,7 +291,7 @@ runto(coord *runner)
      * If we couldn't find him, something is funny
      */
 #ifdef MASTER
-    if ((tp = moat(runner->y, runner->x)) == NULL)
+    if ((tp = moat(runner->y, runner->x)) == nullptr)
 	msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
 #else
     tp = moat(runner->y, runner->x);
@@ -380,18 +380,18 @@ chase(THING *tp, coord *ee)
 		     */
 		    if (ch == SCROLL)
 		    {
-			for (obj = lvl_obj; obj != NULL; obj = next(obj))
+			for (obj = lvl_obj; obj != nullptr; obj = next(obj))
 			{
 			    if (y == obj->o_pos.y && x == obj->o_pos.x)
 				break;
 			}
-			if (obj != NULL && obj->o_which == S_SCARE)
+			if (obj != nullptr && obj->o_which == S_SCARE)
 			    continue;
 		    }
 		    /*
 		     * It can also be a Xeroc, which we shouldn't step on
 		     */
-		    if ((obj = moat(y, x)) != NULL && obj->t_type == 'X')
+		    if ((obj = moat(y, x)) != nullptr && obj->t_type == 'X')
 			continue;
 		    /*
 		     * If we didn't find any scrolls at this place or it
@@ -418,7 +418,7 @@ chase(THING *tp, coord *ee)
 
 /*
  * roomin:
- *	Find what room some coordinates are in. NULL means they aren't
+ *	Find what room some coordinates are in. nullptr means they aren't
  *	in any room.
  */
 struct room *
@@ -440,9 +440,9 @@ roomin(coord *cp)
     msg("in some bizarre place (%d, %d)", unc(*cp));
 #ifdef MASTER
     abort();
-    return NULL;
+    return nullptr;
 #else
-    return NULL;
+    return nullptr;
 #endif
 }
 
@@ -502,16 +502,16 @@ find_dest(THING *tp)
     if ((prob = monsters[tp->t_type - 'A'].m_carry) <= 0 || tp->t_room == proom
 	|| see_monst(tp))
 	    return &hero;
-    for (obj = lvl_obj; obj != NULL; obj = next(obj))
+    for (obj = lvl_obj; obj != nullptr; obj = next(obj))
     {
 	if (obj->o_type == SCROLL && obj->o_which == S_SCARE)
 	    continue;
 	if (roomin(&obj->o_pos) == tp->t_room && rnd(100) < prob)
 	{
-	    for (tp = mlist; tp != NULL; tp = next(tp))
+	    for (tp = mlist; tp != nullptr; tp = next(tp))
 		if (tp->t_dest == &obj->o_pos)
 		    break;
-	    if (tp == NULL)
+	    if (tp == nullptr)
 		return &obj->o_pos;
 	}
     }

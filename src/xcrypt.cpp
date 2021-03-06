@@ -612,7 +612,7 @@ xcrypt(const char *key, const char *setting)
 			key++;
 	}
 	if (des_setkey((const char *) keybuf))
-		return(NULL);
+		return(nullptr);
 
 	if (*setting == _PASSWORD_EFMT1) {
 		/*
@@ -631,7 +631,7 @@ xcrypt(const char *key, const char *setting)
 			 * Encrypt the key with itself.
 			 */
 			if (des_cipher((const char*)keybuf, (char*)keybuf, 0, 1))
-				return(NULL);
+				return(nullptr);
 			/*
 			 * And XOR with the next 8 characters of the key.
 			 */
@@ -641,7 +641,7 @@ xcrypt(const char *key, const char *setting)
 				*q++ ^= *key++ << 1;
 
 			if (des_setkey((const char *) keybuf))
-				return(NULL);
+				return(nullptr);
 		}
 		strncpy((char *)output, setting, 9);
 
@@ -681,7 +681,7 @@ xcrypt(const char *key, const char *setting)
 	 * Do it.
 	 */
 	if (do_des(0, 0, &r0, &r1, count))
-		return(NULL);
+		return(nullptr);
 	/*
 	 * Now encode the result...
 	 */

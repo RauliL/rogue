@@ -53,7 +53,7 @@ do_zap()
     char monster, oldch;
     static THING bolt;
 
-    if ((obj = get_item("zap with", STICK)) == NULL)
+    if ((obj = get_item("zap with", STICK)) == nullptr)
 	return;
     if (obj->o_type != STICK)
     {
@@ -112,7 +112,7 @@ do_zap()
 		y += delta.y;
 		x += delta.x;
 	    }
-	    if ((tp = moat(y, x)) != NULL)
+	    if ((tp = moat(y, x)) != nullptr)
 	    {
 		monster = tp->t_type;
 		if (monster == 'F')
@@ -158,7 +158,7 @@ do_zap()
 			{
 			    do
 			    {
-				find_floor(NULL, &new_pos, false, true);
+				find_floor(nullptr, &new_pos, false, true);
 			    } while (ce(new_pos, hero));
 			}
 			else
@@ -179,10 +179,10 @@ do_zap()
 	    bolt.o_hplus = 100;
 	    bolt.o_dplus = 1;
 	    bolt.o_flags = ISMISL;
-	    if (cur_weapon != NULL)
+	    if (cur_weapon != nullptr)
 		bolt.o_launch = cur_weapon->o_which;
 	    do_motion(&bolt, delta.y, delta.x);
-	    if ((tp = moat(bolt.o_pos.y, bolt.o_pos.x)) != NULL
+	    if ((tp = moat(bolt.o_pos.y, bolt.o_pos.x)) != nullptr
 		&& !save_throw(VS_MAGIC, tp))
 		    hit_monster(unc(bolt.o_pos), &bolt);
 	    else if (terse)
@@ -198,7 +198,7 @@ do_zap()
 		y += delta.y;
 		x += delta.x;
 	    }
-	    if ((tp = moat(y, x)) != NULL)
+	    if ((tp = moat(y, x)) != nullptr)
 	    {
 		if (obj->o_which == WS_HASTE_M)
 		{
@@ -262,10 +262,10 @@ drain()
     if (chat(hero.y, hero.x) == DOOR)
 	corp = &passages[flat(hero.y, hero.x) & F_PNUM];
     else
-	corp = NULL;
+	corp = nullptr;
     inpass = (bool)(proom->r_flags & ISGONE);
     dp = drainee;
-    for (mp = mlist; mp != NULL; mp = next(mp))
+    for (mp = mlist; mp != nullptr; mp = next(mp))
 	if (mp->t_room == proom || mp->t_room == corp ||
 	    (inpass && chat(mp->t_pos.y, mp->t_pos.x) == DOOR &&
 	    &passages[flat(mp->t_pos.y, mp->t_pos.x) & F_PNUM] == proom))
@@ -275,7 +275,7 @@ drain()
 	msg("you have a tingling feeling");
 	return;
     }
-    *dp = NULL;
+    *dp = nullptr;
     pstats.s_hpt /= 2;
     cnt = pstats.s_hpt / cnt;
     /*
@@ -353,7 +353,7 @@ fire_bolt(coord *start, coord *dir, char *name)
 		break;
 	    default:
 def:
-		if (!hit_hero && (tp = moat(pos.y, pos.x)) != NULL)
+		if (!hit_hero && (tp = moat(pos.y, pos.x)) != nullptr)
 		{
 		    hit_hero = true;
 		    changed = !changed;

@@ -96,7 +96,7 @@ unsee(int)
 {
     THING *th;
 
-    for (th = mlist; th != NULL; th = next(th))
+    for (th = mlist; th != nullptr; th = next(th))
 	if (on(*th, ISINVIS) && see_monst(th))
 	    mvaddch(th->t_pos.y, th->t_pos.x, th->t_oldch);
     player.t_flags &= ~CANSEE;
@@ -208,7 +208,7 @@ come_down(int)
     /*
      * undo the things
      */
-    for (tp = lvl_obj; tp != NULL; tp = next(tp))
+    for (tp = lvl_obj; tp != nullptr; tp = next(tp))
 	if (cansee(tp->o_pos.y, tp->o_pos.x))
 	    mvaddch(tp->o_pos.y, tp->o_pos.x, tp->o_type);
 
@@ -216,7 +216,7 @@ come_down(int)
      * undo the monsters
      */
     seemonst = on(player, SEEMONST);
-    for (tp = mlist; tp != NULL; tp = next(tp))
+    for (tp = mlist; tp != nullptr; tp = next(tp))
     {
 	move(tp->t_pos.y, tp->t_pos.x);
 	if (cansee(tp->t_pos.y, tp->t_pos.x))
@@ -249,7 +249,7 @@ visuals(int)
     /*
      * change the things
      */
-    for (tp = lvl_obj; tp != NULL; tp = next(tp))
+    for (tp = lvl_obj; tp != nullptr; tp = next(tp))
 	if (cansee(tp->o_pos.y, tp->o_pos.x))
 	    mvaddch(tp->o_pos.y, tp->o_pos.x, rnd_thing());
 
@@ -263,7 +263,7 @@ visuals(int)
      * change the monsters
      */
     seemonst = on(player, SEEMONST);
-    for (tp = mlist; tp != NULL; tp = next(tp))
+    for (tp = mlist; tp != nullptr; tp = next(tp))
     {
 	move(tp->t_pos.y, tp->t_pos.x);
 	if (see_monst(tp))

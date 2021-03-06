@@ -108,7 +108,7 @@ int a_class[MAXARMORS] = {		/* Armor class for each armor type */
 };
 
 int count = 0;				/* Number of times to repeat command */
-FILE *scoreboard = NULL;	/* File descriptor for score file */
+FILE *scoreboard = nullptr;	/* File descriptor for score file */
 int food_left;				/* Amount of food in hero's stomach */
 int lastscore = -1;			/* Score before this turn */
 int no_command = 0;			/* Number of turns asleep */
@@ -152,14 +152,14 @@ PLACE places[MAXLINES*MAXCOLS];		/* level map */
 THING *cur_armor;			/* What he is wearing */
 THING *cur_ring[2];			/* Which rings are being worn */
 THING *cur_weapon;			/* Which weapon he is weilding */
-THING *l_last_pick = NULL;		/* Last last_pick */
-THING *last_pick = NULL;		/* Last object picked in get_item() */
-THING *lvl_obj = NULL;			/* List of objects on this level */
-THING *mlist = NULL;			/* List of monsters on the level */
+THING *l_last_pick = nullptr;		/* Last last_pick */
+THING *last_pick = nullptr;		/* Last object picked in get_item() */
+THING *lvl_obj = nullptr;			/* List of objects on this level */
+THING *mlist = nullptr;			/* List of monsters on the level */
 THING player;				/* His stats */
 					/* restart of game */
 
-WINDOW *hw = NULL;			/* used as a scratch window */
+WINDOW *hw = nullptr;			/* used as a scratch window */
 
 #define INIT_STATS { 16, 0, 1, 10, 12, "1x4", 12 }
 
@@ -231,94 +231,94 @@ struct obj_info things[NUMTHINGS] = {
 };
 
 struct obj_info arm_info[MAXARMORS] = {
-    { "leather armor",		 20,	 20, NULL, false },
-    { "ring mail",		 15,	 25, NULL, false },
-    { "studded leather armor",	 15,	 20, NULL, false },
-    { "scale mail",		 13,	 30, NULL, false },
-    { "chain mail",		 12,	 75, NULL, false },
-    { "splint mail",		 10,	 80, NULL, false },
-    { "banded mail",		 10,	 90, NULL, false },
-    { "plate mail",		  5,	150, NULL, false },
+    { "leather armor",		 20,	 20, nullptr, false },
+    { "ring mail",		 15,	 25, nullptr, false },
+    { "studded leather armor",	 15,	 20, nullptr, false },
+    { "scale mail",		 13,	 30, nullptr, false },
+    { "chain mail",		 12,	 75, nullptr, false },
+    { "splint mail",		 10,	 80, nullptr, false },
+    { "banded mail",		 10,	 90, nullptr, false },
+    { "plate mail",		  5,	150, nullptr, false },
 };
 struct obj_info pot_info[MAXPOTIONS] = {
-    { "confusion",		 7,   5, NULL, false },
-    { "hallucination",		 8,   5, NULL, false },
-    { "poison",			 8,   5, NULL, false },
-    { "gain strength",		13, 150, NULL, false },
-    { "see invisible",		 3, 100, NULL, false },
-    { "healing",		13, 130, NULL, false },
-    { "monster detection",	 6, 130, NULL, false },
-    { "magic detection",	 6, 105, NULL, false },
-    { "raise level",		 2, 250, NULL, false },
-    { "extra healing",		 5, 200, NULL, false },
-    { "haste self",		 5, 190, NULL, false },
-    { "restore strength",	13, 130, NULL, false },
-    { "blindness",		 5,   5, NULL, false },
-    { "levitation",		 6,  75, NULL, false },
+    { "confusion",		 7,   5, nullptr, false },
+    { "hallucination",		 8,   5, nullptr, false },
+    { "poison",			 8,   5, nullptr, false },
+    { "gain strength",		13, 150, nullptr, false },
+    { "see invisible",		 3, 100, nullptr, false },
+    { "healing",		13, 130, nullptr, false },
+    { "monster detection",	 6, 130, nullptr, false },
+    { "magic detection",	 6, 105, nullptr, false },
+    { "raise level",		 2, 250, nullptr, false },
+    { "extra healing",		 5, 200, nullptr, false },
+    { "haste self",		 5, 190, nullptr, false },
+    { "restore strength",	13, 130, nullptr, false },
+    { "blindness",		 5,   5, nullptr, false },
+    { "levitation",		 6,  75, nullptr, false },
 };
 struct obj_info ring_info[MAXRINGS] = {
-    { "protection",		 9, 400, NULL, false },
-    { "add strength",		 9, 400, NULL, false },
-    { "sustain strength",	 5, 280, NULL, false },
-    { "searching",		10, 420, NULL, false },
-    { "see invisible",		10, 310, NULL, false },
-    { "adornment",		 1,  10, NULL, false },
-    { "aggravate monster",	10,  10, NULL, false },
-    { "dexterity",		 8, 440, NULL, false },
-    { "increase damage",	 8, 400, NULL, false },
-    { "regeneration",		 4, 460, NULL, false },
-    { "slow digestion",		 9, 240, NULL, false },
-    { "teleportation",		 5,  30, NULL, false },
-    { "stealth",		 7, 470, NULL, false },
-    { "maintain armor",		 5, 380, NULL, false },
+    { "protection",		 9, 400, nullptr, false },
+    { "add strength",		 9, 400, nullptr, false },
+    { "sustain strength",	 5, 280, nullptr, false },
+    { "searching",		10, 420, nullptr, false },
+    { "see invisible",		10, 310, nullptr, false },
+    { "adornment",		 1,  10, nullptr, false },
+    { "aggravate monster",	10,  10, nullptr, false },
+    { "dexterity",		 8, 440, nullptr, false },
+    { "increase damage",	 8, 400, nullptr, false },
+    { "regeneration",		 4, 460, nullptr, false },
+    { "slow digestion",		 9, 240, nullptr, false },
+    { "teleportation",		 5,  30, nullptr, false },
+    { "stealth",		 7, 470, nullptr, false },
+    { "maintain armor",		 5, 380, nullptr, false },
 };
 struct obj_info scr_info[MAXSCROLLS] = {
-    { "monster confusion",		 7, 140, NULL, false },
-    { "magic mapping",			 4, 150, NULL, false },
-    { "hold monster",			 2, 180, NULL, false },
-    { "sleep",				 3,   5, NULL, false },
-    { "enchant armor",			 7, 160, NULL, false },
-    { "identify potion",		10,  80, NULL, false },
-    { "identify scroll",		10,  80, NULL, false },
-    { "identify weapon",		 6,  80, NULL, false },
-    { "identify armor",		 	 7, 100, NULL, false },
-    { "identify ring, wand or staff",	10, 115, NULL, false },
-    { "scare monster",			 3, 200, NULL, false },
-    { "food detection",			 2,  60, NULL, false },
-    { "teleportation",			 5, 165, NULL, false },
-    { "enchant weapon",			 8, 150, NULL, false },
-    { "create monster",			 4,  75, NULL, false },
-    { "remove curse",			 7, 105, NULL, false },
-    { "aggravate monsters",		 3,  20, NULL, false },
-    { "protect armor",			 2, 250, NULL, false },
+    { "monster confusion",		 7, 140, nullptr, false },
+    { "magic mapping",			 4, 150, nullptr, false },
+    { "hold monster",			 2, 180, nullptr, false },
+    { "sleep",				 3,   5, nullptr, false },
+    { "enchant armor",			 7, 160, nullptr, false },
+    { "identify potion",		10,  80, nullptr, false },
+    { "identify scroll",		10,  80, nullptr, false },
+    { "identify weapon",		 6,  80, nullptr, false },
+    { "identify armor",		 	 7, 100, nullptr, false },
+    { "identify ring, wand or staff",	10, 115, nullptr, false },
+    { "scare monster",			 3, 200, nullptr, false },
+    { "food detection",			 2,  60, nullptr, false },
+    { "teleportation",			 5, 165, nullptr, false },
+    { "enchant weapon",			 8, 150, nullptr, false },
+    { "create monster",			 4,  75, nullptr, false },
+    { "remove curse",			 7, 105, nullptr, false },
+    { "aggravate monsters",		 3,  20, nullptr, false },
+    { "protect armor",			 2, 250, nullptr, false },
 };
 struct obj_info weap_info[MAXWEAPONS + 1] = {
-    { "mace",				11,   8, NULL, false },
-    { "long sword",			11,  15, NULL, false },
-    { "short bow",			12,  15, NULL, false },
-    { "arrow",				12,   1, NULL, false },
-    { "dagger",				 8,   3, NULL, false },
-    { "two handed sword",		10,  75, NULL, false },
-    { "dart",				12,   2, NULL, false },
-    { "shuriken",			12,   5, NULL, false },
-    { "spear",				12,   5, NULL, false },
-    { NULL, 0 },	/* DO NOT REMOVE: fake entry for dragon's breath */
+    { "mace",				11,   8, nullptr, false },
+    { "long sword",			11,  15, nullptr, false },
+    { "short bow",			12,  15, nullptr, false },
+    { "arrow",				12,   1, nullptr, false },
+    { "dagger",				 8,   3, nullptr, false },
+    { "two handed sword",		10,  75, nullptr, false },
+    { "dart",				12,   2, nullptr, false },
+    { "shuriken",			12,   5, nullptr, false },
+    { "spear",				12,   5, nullptr, false },
+    { nullptr, 0 },	/* DO NOT REMOVE: fake entry for dragon's breath */
 };
 struct obj_info ws_info[MAXSTICKS] = {
-    { "light",			12, 250, NULL, false },
-    { "invisibility",		 6,   5, NULL, false },
-    { "lightning",		 3, 330, NULL, false },
-    { "fire",			 3, 330, NULL, false },
-    { "cold",			 3, 330, NULL, false },
-    { "polymorph",		15, 310, NULL, false },
-    { "magic missile",		10, 170, NULL, false },
-    { "haste monster",		10,   5, NULL, false },
-    { "slow monster",		11, 350, NULL, false },
-    { "drain life",		 9, 300, NULL, false },
-    { "nothing",		 1,   5, NULL, false },
-    { "teleport away",		 6, 340, NULL, false },
-    { "teleport to",		 6,  50, NULL, false },
-    { "cancellation",		 5, 280, NULL, false },
+    { "light",			12, 250, nullptr, false },
+    { "invisibility",		 6,   5, nullptr, false },
+    { "lightning",		 3, 330, nullptr, false },
+    { "fire",			 3, 330, nullptr, false },
+    { "cold",			 3, 330, nullptr, false },
+    { "polymorph",		15, 310, nullptr, false },
+    { "magic missile",		10, 170, nullptr, false },
+    { "haste monster",		10,   5, nullptr, false },
+    { "slow monster",		11, 350, nullptr, false },
+    { "drain life",		 9, 300, nullptr, false },
+    { "nothing",		 1,   5, nullptr, false },
+    { "teleport away",		 6, 340, nullptr, false },
+    { "teleport to",		 6,  50, nullptr, false },
+    { "cancellation",		 5, 280, nullptr, false },
 };
 
 struct h_list helpstr[] = {
@@ -387,5 +387,5 @@ struct h_list helpstr[] = {
     {'!',	"	shell escape",				true},
     {'F',	"<dir>	fight till either of you dies",		true},
     {'v',	"	print version number",			true},
-    {0,		NULL }
+    {0,		nullptr }
 };

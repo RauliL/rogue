@@ -22,9 +22,9 @@ wear()
     THING *obj;
     char *sp;
 
-    if ((obj = get_item("wear", ARMOR)) == NULL)
+    if ((obj = get_item("wear", ARMOR)) == nullptr)
 	return;
-    if (cur_armor != NULL)
+    if (cur_armor != nullptr)
     {
 	addmsg("you are already wearing some");
 	if (!terse)
@@ -56,7 +56,7 @@ take_off()
 {
     THING *obj;
 
-    if ((obj = cur_armor) == NULL)
+    if ((obj = cur_armor) == nullptr)
     {
 	after = false;
 	if (terse)
@@ -67,7 +67,7 @@ take_off()
     }
     if (!dropcheck(cur_armor))
 	return;
-    cur_armor = NULL;
+    cur_armor = nullptr;
     if (terse)
 	addmsg("was");
     else

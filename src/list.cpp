@@ -28,12 +28,12 @@ _detach(THING **list, THING *item)
 {
     if (*list == item)
 	*list = next(item);
-    if (prev(item) != NULL)
+    if (prev(item) != nullptr)
 	item->l_prev->l_next = next(item);
-    if (next(item) != NULL)
+    if (next(item) != nullptr)
 	item->l_next->l_prev = prev(item);
-    item->l_next = NULL;
-    item->l_prev = NULL;
+    item->l_next = nullptr;
+    item->l_prev = nullptr;
 }
 
 /*
@@ -44,16 +44,16 @@ _detach(THING **list, THING *item)
 void
 _attach(THING **list, THING *item)
 {
-    if (*list != NULL)
+    if (*list != nullptr)
     {
 	item->l_next = *list;
 	(*list)->l_prev = item;
-	item->l_prev = NULL;
+	item->l_prev = nullptr;
     }
     else
     {
-	item->l_next = NULL;
-	item->l_prev = NULL;
+	item->l_next = nullptr;
+	item->l_prev = nullptr;
     }
     *list = item;
 }
@@ -68,7 +68,7 @@ _free_list(THING **ptr)
 {
     THING *item;
 
-    while (*ptr != NULL)
+    while (*ptr != nullptr)
     {
 	item = *ptr;
 	*ptr = next(item);

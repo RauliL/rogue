@@ -105,9 +105,9 @@ gotfile:
 	    md_unlink(file_name);
 	}
 	strcpy(file_name, buf);
-	if ((savef = fopen(file_name, "w")) == NULL)
+	if ((savef = std::fopen(file_name, "w")) == nullptr)
 	    msg(strerror(errno));
-    } while (savef == NULL);
+    } while (savef == nullptr);
 
     save_file(savef);
     /* NOTREACHED */
@@ -126,8 +126,8 @@ auto_save(int sig)
     NOOP(sig);
 
     md_ignoreallsignals();
-    if (file_name[0] != '\0' && ((savef = fopen(file_name, "w")) != NULL ||
-	(md_unlink_open_file(file_name, savef) >= 0 && (savef = fopen(file_name, "w")) != NULL)))
+    if (file_name[0] != '\0' && ((savef = std::fopen(file_name, "w")) != nullptr ||
+	(md_unlink_open_file(file_name, savef) >= 0 && (savef = std::fopen(file_name, "w")) != nullptr)))
 	    save_file(savef);
     exit(0);
 }
@@ -177,7 +177,7 @@ restore(char *file, char **envp)
 
 	md_tstphold();
 
-	if ((inf = fopen(file,"r")) == NULL)
+	if ((inf = std::fopen(file,"r")) == nullptr)
     {
 	perror(file);
 	return false;
@@ -355,7 +355,7 @@ rd_score(SCORE *top_ten)
 {
     unsigned int i;
 
-	if (scoreboard == NULL)
+	if (scoreboard == nullptr)
 		return;
 
 	rewind(scoreboard);
@@ -382,7 +382,7 @@ wr_score(SCORE *top_ten)
 {
     unsigned int i;
 
-	if (scoreboard == NULL)
+	if (scoreboard == nullptr)
 		return;
 
 	rewind(scoreboard);

@@ -27,7 +27,7 @@ whatis(bool insist, int type)
 {
     THING *obj;
 
-    if (pack == NULL)
+    if (pack == nullptr)
     {
 	msg("you don't have anything in your pack to identify");
 	return;
@@ -40,7 +40,7 @@ whatis(bool insist, int type)
 	{
 	    if (n_objs == 0)
 		return;
-	    else if (obj == NULL)
+	    else if (obj == nullptr)
 		msg("you must identify something");
 	    else if (type && obj->o_type != type &&
 	       !(type == R_OR_S && (obj->o_type == RING || obj->o_type == STICK)) )
@@ -52,7 +52,7 @@ whatis(bool insist, int type)
 	    break;
     }
 
-    if (obj == NULL)
+    if (obj == nullptr)
 	return;
 
     switch (obj->o_type)
@@ -88,7 +88,7 @@ set_know(THING *obj, struct obj_info *info)
     if (*guess)
     {
 	free(*guess);
-	*guess = NULL;
+	*guess = nullptr;
     }
 }
 
@@ -202,7 +202,7 @@ teleport()
     static coord c;
 
     mvaddch(hero.y, hero.x, floor_at());
-    find_floor((struct room *) NULL, &c, false, true);
+    find_floor(nullptr, &c, false, true);
     if (roomin(&c) != proom)
     {
 	leave_room(&hero);

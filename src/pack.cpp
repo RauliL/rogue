@@ -29,9 +29,9 @@ add_pack(THING *obj, bool silent)
     bool from_floor;
 
     from_floor = false;
-    if (obj == NULL)
+    if (obj == nullptr)
     {
-	if ((obj = find_obj(hero.y, hero.x)) == NULL)
+	if ((obj = find_obj(hero.y, hero.x)) == nullptr)
 	    return;
 	from_floor = true;
     }
@@ -50,7 +50,7 @@ add_pack(THING *obj, bool silent)
 	    return;
 	}
 
-    if (pack == NULL)
+    if (pack == nullptr)
     {
 	pack = obj;
 	obj->o_packch = pack_char();
@@ -58,8 +58,8 @@ add_pack(THING *obj, bool silent)
     }
     else
     {
-	lp = NULL;
-	for (op = pack; op != NULL; op = next(op))
+	lp = nullptr;
+	for (op = pack; op != nullptr; op = next(op))
 	{
 	    if (op->o_type != obj->o_type)
 		lp = op;
@@ -68,7 +68,7 @@ add_pack(THING *obj, bool silent)
 		while (op->o_type == obj->o_type && op->o_which != obj->o_which)
 		{
 		    lp = op;
-		    if (next(op) == NULL)
+		    if (next(op) == nullptr)
 			break;
 		    else
 			op = next(op);
@@ -83,7 +83,7 @@ add_pack(THING *obj, bool silent)
 dump_it:
 			discard(obj);
 			obj = op;
-			lp = NULL;
+			lp = nullptr;
 			goto out;
 		    }
 		    else if (obj->o_group)
@@ -94,7 +94,7 @@ dump_it:
 			    && op->o_group != obj->o_group)
 			{
 			    lp = op;
-			    if (next(op) == NULL)
+			    if (next(op) == nullptr)
 				break;
 			    else
 				op = next(op);
@@ -118,7 +118,7 @@ out:
 	    }
 	}
 
-	if (lp != NULL)
+	if (lp != nullptr)
 	{
 	    if (!pack_room(from_floor, obj))
 		return;
@@ -127,7 +127,7 @@ out:
 		obj->o_packch = pack_char();
 		next(obj) = next(lp);
 		prev(obj) = lp;
-		if (next(lp) != NULL)
+		if (next(lp) != nullptr)
 		    prev(next(lp)) = obj;
 		next(lp) = obj;
 	    }
@@ -140,7 +140,7 @@ out:
      * If this was the object of something's desire, that monster will
      * get mad and run at the hero.
      */
-    for (op = mlist; op != NULL; op = next(op))
+    for (op = mlist; op != nullptr; op = next(op))
 	if (op->t_dest == &obj->o_pos)
 	    op->t_dest = &hero;
 
@@ -210,14 +210,14 @@ leave_pack(THING *obj, bool newobj, bool all)
 	{
 	    nobj = new_item();
 	    *nobj = *obj;
-	    next(nobj) = NULL;
-	    prev(nobj) = NULL;
+	    next(nobj) = nullptr;
+	    prev(nobj) = nullptr;
 	    nobj->o_count = 1;
 	}
     }
     else
     {
-	last_pick = NULL;
+	last_pick = nullptr;
 	pack_used[obj->o_packch - 'a'] = false;
 	detach(pack, obj);
     }
@@ -250,7 +250,7 @@ inventory(THING *list, int type)
     static char inv_temp[MAXSTR];
 
     n_objs = 0;
-    for (; list != NULL; list = next(list))
+    for (; list != nullptr; list = next(list))
     {
 	if (type && type != list->o_type && !(type == CALLABLE &&
 	    list->o_type != FOOD && list->o_type != AMULET) &&
@@ -306,7 +306,7 @@ pick_up(char ch)
 	switch (ch)
 	{
 	    case GOLD:
-		if (obj == NULL)
+		if (obj == nullptr)
 		    return;
 		money(obj->o_goldval);
 		detach(lvl_obj, obj);
@@ -325,7 +325,7 @@ pick_up(char ch)
 	    case AMULET:
 	    case RING:
 	    case STICK:
-		add_pack((THING *) NULL, false);
+		add_pack(nullptr, false);
 		break;
 	}
 }
@@ -354,9 +354,9 @@ picky_inven()
     THING *obj;
     char mch;
 
-    if (pack == NULL)
+    if (pack == nullptr)
 	msg("you aren't carrying anything");
-    else if (next(pack) == NULL)
+    else if (next(pack) == nullptr)
 	msg("a) %s", inv_name(pack, false));
     else
     {
@@ -367,7 +367,7 @@ picky_inven()
 	    msg("");
 	    return;
 	}
-	for (obj = pack; obj != NULL; obj = next(obj))
+	for (obj = pack; obj != nullptr; obj = next(obj))
 	    if (mch == obj->o_packch)
 	    {
 		msg("%c) %s", mch, inv_name(obj, false));
@@ -387,7 +387,7 @@ get_item(char *purpose, int type)
     THING *obj;
     char ch;
 
-    if (pack == NULL)
+    if (pack == nullptr)
 	msg("you aren't carrying anything");
     else if (again)
 	if (last_pick)
@@ -414,7 +414,7 @@ get_item(char *purpose, int type)
 		reset_last();
 		after = false;
 		msg("");
-		return NULL;
+		return nullptr;
 	    }
 	    n_objs = 1;		/* normal case: person types one char */
 	    if (ch == '*')
@@ -423,14 +423,14 @@ get_item(char *purpose, int type)
 		if (inventory(pack, type) == 0)
 		{
 		    after = false;
-		    return NULL;
+		    return nullptr;
 		}
 		continue;
 	    }
-	    for (obj = pack; obj != NULL; obj = next(obj))
+	    for (obj = pack; obj != nullptr; obj = next(obj))
 		if (obj->o_packch == ch)
 		    break;
-	    if (obj == NULL)
+	    if (obj == nullptr)
 	    {
 		msg("'%s' is not a valid item",unctrl(ch));
 		continue;
@@ -439,7 +439,7 @@ get_item(char *purpose, int type)
 		return obj;
 	}
     }
-    return NULL;
+    return nullptr;
 }
 
 /*

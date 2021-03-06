@@ -106,25 +106,25 @@ open_score()
       * open()'s will fail.  Just reuse the earlier filehandle.
       */
 
-    if (scoreboard != NULL) {
+    if (scoreboard != nullptr) {
         rewind(scoreboard);
         return;
     }
 
-    scoreboard = fopen(scorefile, "r+");
+    scoreboard = std::fopen(scorefile, "r+");
 
-    if ((scoreboard == NULL) && (errno == ENOENT))
+    if ((scoreboard == nullptr) && (errno == ENOENT))
     {
-    	scoreboard = fopen(scorefile, "w+");
+    	scoreboard = std::fopen(scorefile, "w+");
         md_chmod(scorefile,0664);
     }
 
-    if (scoreboard == NULL) {
+    if (scoreboard == nullptr) {
          fprintf(stderr, "Could not open %s for writing: %s\n", scorefile, strerror(errno));
          fflush(stderr);
     }
 #else
-    scoreboard = NULL;
+    scoreboard = nullptr;
 #endif
 }
 
@@ -350,7 +350,7 @@ ucount()
     FILE *utmp;
     int count;
 
-    if ((utmp = fopen(UTMP, "r")) == NULL)
+    if ((utmp = std::fopen(UTMP, "r")) == nullptr)
 	return 0;
 
     up = &buf;
@@ -365,7 +365,7 @@ ucount()
 #endif
 
 #if defined(SCOREFILE) && defined(LOCKFILE)
-static FILE* lfd = NULL;
+static FILE* lfd = nullptr;
 #endif
 
 /*
@@ -382,20 +382,20 @@ lock_sc()
     char *lockfile = LOCKFILE;
 
 over:
-    if ((lfd=fopen(lockfile, "w+")) != NULL)
+    if ((lfd=std::fopen(lockfile, "w+")) != nullptr)
 	return true;
     for (cnt = 0; cnt < 5; cnt++)
     {
 	md_sleep(1);
-	if ((lfd=fopen(lockfile, "w+")) != NULL)
+	if ((lfd=std::fopen(lockfile, "w+")) != nullptr)
 	    return true;
     }
     if (stat(lockfile, &sbuf) < 0)
     {
-	lfd=fopen(lockfile, "w+");
+	lfd=std::fopen(lockfile, "w+");
 	return true;
     }
-    if (time(NULL) - sbuf.st_mtime > 10)
+    if (std::time(nullptr) - sbuf.st_mtime > 10)
     {
 	if (md_unlink(lockfile) < 0)
 	    return false;
@@ -410,14 +410,14 @@ over:
 	if (prbuf[0] == 'y')
 	    for (;;)
 	    {
-		if ((lfd=fopen(lockfile, "w+")) != 0)
+		if ((lfd=std::fopen(lockfile, "w+")) != 0)
 		    return true;
 		if (stat(lockfile, &sbuf) < 0)
 		{
-		    lfd=fopen(lockfile, "w+");
+		    lfd=std::fopen(lockfile, "w+");
 		    return true;
 		}
-		if (time(NULL) - sbuf.st_mtime > 10)
+		if (std::time(nullptr) - sbuf.st_mtime > 10)
 		{
 		    if (md_unlink(lockfile) < 0)
 			return false;
@@ -441,9 +441,9 @@ void
 unlock_sc()
 {
 #if defined(SCOREFILE) && defined(LOCKFILE)
-    if (lfd != NULL)
+    if (lfd != nullptr)
         fclose(lfd);
-    lfd = NULL;
+    lfd = nullptr;
     md_unlink(LOCKFILE);
 #endif
 }

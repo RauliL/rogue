@@ -40,7 +40,7 @@ d_slot()
 #ifdef MASTER
     debug("Ran out of fuse slots");
 #endif
-    return NULL;
+    return nullptr;
 }
 
 /*
@@ -55,7 +55,7 @@ find_slot(const delayed_action::callback_type& func)
     for (dev = d_list; dev <= &d_list[MAXDAEMONS-1]; dev++)
 	if (dev->d_type != EMPTY && func == dev->d_func)
 	    return dev;
-    return NULL;
+    return nullptr;
 }
 
 /*
@@ -83,7 +83,7 @@ kill_daemon(const delayed_action::callback_type& func)
 {
     struct delayed_action *dev;
 
-    if ((dev = find_slot(func)) == NULL)
+    if ((dev = find_slot(func)) == nullptr)
 	return;
     /*
      * Take it out of the list
@@ -137,7 +137,7 @@ lengthen(const delayed_action::callback_type& func, int xtime)
 {
     struct delayed_action *wire;
 
-    if ((wire = find_slot(func)) == NULL)
+    if ((wire = find_slot(func)) == nullptr)
 	return;
     wire->d_time += xtime;
 }
@@ -151,7 +151,7 @@ extinguish(const delayed_action::callback_type& func)
 {
     struct delayed_action *wire;
 
-    if ((wire = find_slot(func)) == NULL)
+    if ((wire = find_slot(func)) == nullptr)
 	return;
     wire->d_type = EMPTY;
 }

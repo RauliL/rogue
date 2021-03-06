@@ -51,14 +51,14 @@ main(int argc, char **argv, char **envp)
     strcpy(file_name, home);
     strcat(file_name, "rogue.save");
 
-    if ((env = getenv("ROGUEOPTS")) != NULL)
+    if ((env = std::getenv("ROGUEOPTS")) != nullptr)
 	parse_opts(env);
-    if (env == NULL || whoami[0] == '\0')
+    if (env == nullptr || whoami[0] == '\0')
         strucpy(whoami, md_getusername(), (int) strlen(md_getusername()));
-    lowtime = (int) time(NULL);
+    lowtime = static_cast<int>(std::time(nullptr));
 #ifdef MASTER
-    if (wizard && getenv("SEED") != NULL)
-	dnum = atoi(getenv("SEED"));
+    if (wizard && std::getenv("SEED") != nullptr)
+	dnum = std::atoi(std::getenv("SEED"));
     else
 #endif
 	dnum = lowtime + md_getpid();
@@ -269,7 +269,7 @@ playit()
     /*
      * parse environment declaration of options
      */
-    if ((opts = getenv("ROGUEOPTS")) != NULL)
+    if ((opts = std::getenv("ROGUEOPTS")) != nullptr)
 	parse_opts(opts);
 
 

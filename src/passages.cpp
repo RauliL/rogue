@@ -22,7 +22,7 @@
 void
 do_passages()
 {
-    struct rdes *r1, *r2 = NULL;
+    struct rdes *r1, *r2 = nullptr;
     int i, j;
     int roomcount;
     static struct rdes
@@ -132,7 +132,7 @@ do_passages()
 void
 conn(int r1, int r2)
 {
-    struct room *rpf, *rpt = NULL;
+    struct room *rpf, *rpt = nullptr;
     int rmt;
     int distance = 0, turn_spot, turn_distance = 0;
     int rm;
@@ -337,7 +337,7 @@ add_pass()
 		    ch = PASSAGE;
 		pp->p_flags |= F_SEEN;
 		move(y, x);
-		if (pp->p_monst != NULL)
+		if (pp->p_monst != nullptr)
 		    pp->p_monst->t_oldch = pp->p_ch;
 		else if (pp->p_flags & F_REAL)
 		    addch(ch);

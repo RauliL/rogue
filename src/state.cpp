@@ -521,7 +521,7 @@ rs_write_string(FILE *savef, char *s)
     if (write_error)
         return(WRITESTAT);
 
-    len = (s == NULL) ? 0 : (int) strlen(s) + 1;
+    len = (s == nullptr) ? 0 : (int) strlen(s) + 1;
 
     rs_write_int(savef, len);
     rs_write_chars(savef, s, len);
@@ -559,12 +559,12 @@ rs_read_new_string(FILE *inf, char **s)
     rs_read_int(inf, &len);
 
     if (len == 0)
-        buf = NULL;
+        buf = nullptr;
     else
     {
         buf = static_cast<char*>(std::malloc(len));
 
-        if (buf == NULL)
+        if (buf == nullptr)
             read_error = true;
     }
 
@@ -664,7 +664,7 @@ rs_read_string_index(FILE *inf, char *master[], int maxindex, char **str)
     else if (i >= 0)
         *str = master[i];
     else
-        *str = NULL;
+        *str = nullptr;
 
     return(READSTAT);
 }
@@ -796,7 +796,7 @@ find_list_ptr(THING *l, void *ptr)
 {
     int count;
 
-    for(count = 0; l != NULL; count++, l = l->l_next)
+    for(count = 0; l != nullptr; count++, l = l->l_next)
         if (l == ptr)
             return(count);
 
@@ -808,7 +808,7 @@ list_size(THING *l)
 {
     int count;
 
-    for(count = 0; l != NULL; count++, l = l->l_next)
+    for(count = 0; l != nullptr; count++, l = l->l_next)
         ;
 
     return(count);
@@ -887,7 +887,7 @@ rs_read_stone_index(FILE *inf, STONE master[], int maxindex, char **str)
     else if (i >= 0)
         *str = master[i].st_name;
     else
-        *str = NULL;
+        *str = nullptr;
 
     return(READSTAT);
 }
@@ -1060,7 +1060,7 @@ rs_write_daemons(FILE *savef, struct delayed_action *d_list, int count)
             func = 8;
         else if (d_list[i].d_func == sight)
             func = 9;
-        else if (d_list[i].d_func == NULL)
+        else if (d_list[i].d_func == nullptr)
             func = 0;
         else
             func = -1;
@@ -1118,12 +1118,12 @@ rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
                     break;
             case 9: d_list[i].d_func = sight;
                     break;
-            default:d_list[i].d_func = NULL;
+            default:d_list[i].d_func = nullptr;
                     break;
         }
     }
 
-    if (d_list[i].d_func == NULL)
+    if (d_list[i].d_func == nullptr)
     {
         d_list[i].d_type = 0;
         d_list[i].d_arg = 0;
@@ -1403,7 +1403,7 @@ rs_write_object_list(FILE *savef, THING *l)
     rs_write_marker(savef, RSID_OBJECTLIST);
     rs_write_int(savef, list_size(l));
 
-    for( ;l != NULL; l = l->l_next)
+    for( ;l != nullptr; l = l->l_next)
         rs_write_object(savef, l);
 
     return(WRITESTAT);
@@ -1413,7 +1413,7 @@ static bool
 rs_read_object_list(FILE *inf, THING **list)
 {
     int i, cnt;
-    THING *l = NULL, *previous = NULL, *head = NULL;
+    THING *l = nullptr, *previous = nullptr, *head = nullptr;
 
     if (read_error || format_error)
         return(READSTAT);
@@ -1429,19 +1429,19 @@ rs_read_object_list(FILE *inf, THING **list)
 
         l->l_prev = previous;
 
-        if (previous != NULL)
+        if (previous != nullptr)
             previous->l_next = l;
 
         rs_read_object(inf,l);
 
-        if (previous == NULL)
+        if (previous == nullptr)
             head = l;
 
         previous = l;
     }
 
-    if (l != NULL)
-        l->l_next = NULL;
+    if (l != nullptr)
+        l->l_next = nullptr;
 
     *list = head;
 
@@ -1497,7 +1497,7 @@ find_thing_coord(THING *monlist, coord *c)
     THING *tp;
     int i = 0;
 
-    for(mitem = monlist; mitem != NULL; mitem = mitem->l_next)
+    for(mitem = monlist; mitem != nullptr; mitem = mitem->l_next)
     {
         tp = mitem;
 
@@ -1517,7 +1517,7 @@ find_object_coord(THING *objlist, coord *c)
     THING *obj;
     int i = 0;
 
-    for(oitem = objlist; oitem != NULL; oitem = oitem->l_next)
+    for(oitem = objlist; oitem != nullptr; oitem = oitem->l_next)
     {
         obj = oitem;
 
@@ -1540,7 +1540,7 @@ rs_write_thing(FILE *savef, THING *t)
 
     rs_write_marker(savef, RSID_THING);
 
-    if (t == NULL)
+    if (t == nullptr)
     {
         rs_write_int(savef, 0);
         return(WRITESTAT);
@@ -1555,7 +1555,7 @@ rs_write_thing(FILE *savef, THING *t)
 
     /*
         t_dest can be:
-        0,0: NULL
+        0,0: nullptr
         0,1: location of hero
         1,i: location of a thing (monster)
         2,i: location of an object
@@ -1570,7 +1570,7 @@ rs_write_thing(FILE *savef, THING *t)
         rs_write_int(savef,0);
         rs_write_int(savef,1);
     }
-    else if (t->t_dest != NULL)
+    else if (t->t_dest != nullptr)
     {
         i = find_thing_coord(mlist, t->t_dest);
 
@@ -1643,7 +1643,7 @@ rs_read_thing(FILE *inf, THING *t)
 
     /*
         t_dest can be (listid,index):
-        0,0: NULL
+        0,0: nullptr
         0,1: location of hero
         1,i: location of a thing (monster)
         2,i: location of an object
@@ -1657,16 +1657,16 @@ rs_read_thing(FILE *inf, THING *t)
     rs_read_int(inf, &index);
     t->_t._t_reserved = -1;
 
-    if (listid == 0) /* hero or NULL */
+    if (listid == 0) /* hero or nullptr */
     {
         if (index == 1)
             t->_t._t_dest = &hero;
         else
-            t->_t._t_dest = NULL;
+            t->_t._t_dest = nullptr;
     }
     else if (listid == 1) /* monster/thing */
     {
-        t->_t._t_dest     = NULL;
+        t->_t._t_dest     = nullptr;
         t->_t._t_reserved = index;
     }
     else if (listid == 2) /* object */
@@ -1675,7 +1675,7 @@ rs_read_thing(FILE *inf, THING *t)
 
         item = get_list_item(lvl_obj, index);
 
-        if (item != NULL)
+        if (item != nullptr)
         {
             obj = item;
             t->_t._t_dest = &obj->o_pos;
@@ -1686,7 +1686,7 @@ rs_read_thing(FILE *inf, THING *t)
         t->_t._t_dest = &rooms[index].r_gold;
     }
     else
-        t->_t._t_dest = NULL;
+        t->_t._t_dest = nullptr;
 
     rs_read_short(inf,&t->_t._t_flags);
     rs_read_stats(inf,&t->_t._t_stats);
@@ -1707,7 +1707,7 @@ rs_fix_thing(THING *t)
 
     item = get_list_item(mlist,t->t_reserved);
 
-    if (item != NULL)
+    if (item != nullptr)
     {
         tp = item;
         t->t_dest = &tp->t_pos;
@@ -1731,7 +1731,7 @@ rs_write_thing_list(FILE *savef, THING *l)
     if (cnt < 1)
         return(WRITESTAT);
 
-    while (l != NULL) {
+    while (l != nullptr) {
         rs_write_thing(savef, l);
         l = l->l_next;
     }
@@ -1743,7 +1743,7 @@ int
 rs_read_thing_list(FILE *inf, THING **list)
 {
     int i, cnt;
-    THING *l = NULL, *previous = NULL, *head = NULL;
+    THING *l = nullptr, *previous = nullptr, *head = nullptr;
 
     if (read_error || format_error)
         return(READSTAT);
@@ -1758,19 +1758,19 @@ rs_read_thing_list(FILE *inf, THING **list)
 
         l->l_prev = previous;
 
-        if (previous != NULL)
+        if (previous != nullptr)
             previous->l_next = l;
 
         rs_read_thing(inf,l);
 
-        if (previous == NULL)
+        if (previous == nullptr)
             head = l;
 
         previous = l;
     }
 
-    if (l != NULL)
-        l->l_next = NULL;
+    if (l != nullptr)
+        l->l_next = nullptr;
 
     *list = head;
 
@@ -1782,7 +1782,7 @@ rs_fix_thing_list(THING *list)
 {
     THING *item;
 
-    for(item = list; item != NULL; item = item->l_next)
+    for(item = list; item != nullptr; item = item->l_next)
         rs_fix_thing(item);
 }
 
@@ -1794,7 +1794,7 @@ rs_write_thing_reference(FILE *savef, THING *list, THING *item)
     if (write_error)
         return(WRITESTAT);
 
-    if (item == NULL)
+    if (item == nullptr)
         rs_write_int(savef,-1);
     else
     {
@@ -1817,7 +1817,7 @@ rs_read_thing_reference(FILE *inf, THING *list, THING **item)
     rs_read_int(inf, &i);
 
     if (i == -1)
-        *item = NULL;
+        *item = nullptr;
     else
         *item = get_list_item(list,i);
 

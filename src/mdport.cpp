@@ -118,9 +118,9 @@ md_init()
 #if defined(__INTERIX)
     char *term;
 
-    term = getenv("TERM");
+    term = std::getenv("TERM");
 
-    if (term == NULL)
+    if (term == nullptr)
         setenv("TERM","interix");
 #elif defined(__DJGPP__)
     _fmode = _O_BINARY;
@@ -261,16 +261,16 @@ md_hasclreol()
 {
 #if defined(clr_eol)
 #ifdef NCURSES_VERSION
-    if (cur_term == NULL)
+    if (cur_term == nullptr)
 	return(0);
-    if (cur_term->type.Strings == NULL)
+    if (cur_term->type.Strings == nullptr)
 	return(0);
 #endif
-    return((clr_eol != NULL) && (*clr_eol != 0));
+    return((clr_eol != nullptr) && (*clr_eol != 0));
 #elif defined(__PDCURSES__)
     return(true);
 #else
-    return((CE != NULL) && (*CE != 0));
+    return((CE != nullptr) && (*CE != 0));
 #endif
 }
 
@@ -422,7 +422,7 @@ char *
 md_getusername()
 {
     static char login[80];
-    char *l = NULL;
+    char *l = nullptr;
 #ifdef _WIN32
     LPSTR mybuffer;
     DWORD size = UNLEN + 1;
@@ -439,10 +439,10 @@ md_getusername()
     l = pw->pw_name;
 #endif
 
-    if ((l == NULL) || (*l == '\0'))
-        if ( (l = getenv("USERNAME")) == NULL )
-            if ( (l = getenv("LOGNAME")) == NULL )
-                if ( (l = getenv("USER")) == NULL )
+    if ((l == nullptr) || (*l == '\0'))
+        if ( (l = std::getenv("USERNAME")) == nullptr )
+            if ( (l = std::getenv("LOGNAME")) == nullptr )
+                if ( (l = std::getenv("USER")) == nullptr )
                     l = "nobody";
 
     strncpy(login,l,80);
@@ -455,7 +455,7 @@ char *
 md_gethomedir()
 {
     static char homedir[PATH_MAX];
-    char *h = NULL;
+    char *h = nullptr;
     size_t len;
 #if defined(_WIN32)
     TCHAR szPath[PATH_MAX];
@@ -470,26 +470,26 @@ md_gethomedir()
     h = pw->pw_dir;
 
     if (strcmp(h,"/") == 0)
-        h = NULL;
+        h = nullptr;
 #endif
     homedir[0] = 0;
 #ifdef _WIN32
-    if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, szPath)))
+    if(SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
         h = szPath;
 #endif
 
-    if ( (h == NULL) || (*h == '\0') )
+    if ( (h == nullptr) || (*h == '\0') )
     {
-        if ( (h = getenv("HOME")) == NULL )
+        if ( (h = std::getenv("HOME")) == nullptr )
 	{
-            if ( (h = getenv("HOMEDRIVE")) == NULL)
+            if ( (h = std::getenv("HOMEDRIVE")) == nullptr)
                 h = "";
             else
             {
                 strncpy(homedir,h,PATH_MAX-1);
                 homedir[PATH_MAX-1] = 0;
 
-                if ( (h = getenv("HOMEPATH")) == NULL)
+                if ( (h = std::getenv("HOMEPATH")) == nullptr)
                     h = "";
             }
 	}
@@ -522,7 +522,7 @@ char *
 md_getshell()
 {
     static char shell[PATH_MAX];
-    char *s = NULL;
+    char *s = nullptr;
 #ifdef _WIN32
     char *def = "C:\\WINDOWS\\SYSTEM32\\CMD.EXE";
 #elif defined(__DJGPP__)
@@ -533,10 +533,10 @@ md_getshell()
     pw = getpwuid(getuid());
     s = pw->pw_shell;
 #endif
-    if ((s == NULL) || (*s == '\0'))
-        if ( (s = getenv("COMSPEC")) == NULL)
-            if ( (s = getenv("SHELL")) == NULL)
-                if ( (s = getenv("SystemRoot")) == NULL)
+    if ((s == nullptr) || (*s == '\0'))
+        if ( (s = std::getenv("COMSPEC")) == nullptr)
+            if ( (s = std::getenv("SHELL")) == nullptr)
+                if ( (s = std::getenv("SystemRoot")) == nullptr)
                     s = def;
 
     strncpy(shell,s,PATH_MAX);
@@ -566,7 +566,7 @@ md_shellescape()
          * Set back to original user, just in case
          */
         md_normaluser();
-        execl(sh == NULL ? "/bin/sh" : sh, "shell", "-i", NULL);
+        execl(sh == nullptr ? "/bin/sh" : sh, "shell", "-i", nullptr);
         perror("No shelly");
         _exit(-1);
     }
@@ -586,9 +586,9 @@ md_shellescape()
     }
     return(ret_status);
 #elif defined(HAVE__SPAWNL)
-    return((int)_spawnl(_P_WAIT,md_getshell(),"shell",NULL,0));
+    return((int)_spawnl(_P_WAIT,md_getshell(),"shell",nullptr,0));
 #elif defined(HAVE_SPAWNL)
-    return ( spawnl(P_WAIT,md_getshell(),"shell",NULL,0) );
+    return ( spawnl(P_WAIT,md_getshell(),"shell",nullptr,0) );
 #else
 	return(0);
 #endif
@@ -612,7 +612,7 @@ md_getrealname(int uid)
 #if !defined(_WIN32) && !defined(DJGPP)
     struct passwd *pp;
 
-	if ((pp = getpwuid(uid)) == NULL)
+	if ((pp = getpwuid(uid)) == nullptr)
     {
         sprintf(uidstr,"%d", uid);
         return(uidstr);
@@ -647,7 +647,7 @@ md_getpass(char *prompt)
     if (fputs(prompt, stderr) < 0)
     {
         *p = '\0';
-        return NULL;
+        return nullptr;
     }
 
     for(;;)

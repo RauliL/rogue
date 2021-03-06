@@ -33,7 +33,7 @@ read_scroll()
     static coord mp;
 
     obj = get_item("read", SCROLL);
-    if (obj == NULL)
+    if (obj == nullptr)
 	return;
     if (obj->o_type != SCROLL)
     {
@@ -47,7 +47,7 @@ read_scroll()
      * Calculate the effect it has on the poor guy.
      */
     if (obj == cur_weapon)
-	cur_weapon = NULL;
+	cur_weapon = nullptr;
     /*
      * Get rid of the thing
      */
@@ -64,7 +64,7 @@ read_scroll()
 	    player.t_flags |= CANHUH;
 	    msg("your hands begin to glow %s", pick_color("red"));
 	when S_ARMOR:
-	    if (cur_armor != NULL)
+	    if (cur_armor != nullptr)
 	    {
 		cur_armor->o_arm--;
 		cur_armor->o_flags &= ~ISCURSED;
@@ -81,7 +81,7 @@ read_scroll()
 		if (x >= 0 && x < NUMCOLS)
 		    for (y = hero.y - 2; y <= hero.y + 2; y++)
 			if (y >= 0 && y <= NUMLINES - 1)
-			    if ((obj = moat(y, x)) != NULL && on(*obj, ISRUN))
+			    if ((obj = moat(y, x)) != nullptr && on(*obj, ISRUN))
 			    {
 				obj->t_flags &= ~ISRUN;
 				obj->t_flags |= ISHELD;
@@ -221,9 +221,9 @@ def:
 		    }
 		    if (ch != ' ')
 		    {
-			if ((obj = pp->p_monst) != NULL)
+			if ((obj = pp->p_monst) != nullptr)
 			    obj->t_oldch = ch;
-			if (obj == NULL || !on(player, SEEMONST))
+			if (obj == nullptr || !on(player, SEEMONST))
 			    mvaddch(y, x, ch);
 		    }
 		}
@@ -233,7 +233,7 @@ def:
 	     */
 	    ch = false;
 	    wclear(hw);
-	    for (obj = lvl_obj; obj != NULL; obj = next(obj))
+	    for (obj = lvl_obj; obj != nullptr; obj = next(obj))
 		if (obj->o_type == FOOD)
 		{
 		    ch = true;
@@ -259,7 +259,7 @@ def:
 		    scr_info[S_TELEP].oi_know = true;
 	    }
 	when S_ENCH:
-	    if (cur_weapon == NULL || cur_weapon->o_type != WEAPON)
+	    if (cur_weapon == nullptr || cur_weapon->o_type != WEAPON)
 		msg("you feel a strange sense of loss");
 	    else
 	    {
@@ -292,7 +292,7 @@ def:
 	    aggravate();
 	    msg("you hear a high pitched humming noise");
 	when S_PROTECT:
-	    if (cur_armor != NULL)
+	    if (cur_armor != nullptr)
 	    {
 		cur_armor->o_flags |= ISPROT;
 		msg("your armor is covered by a shimmering %s shield",
@@ -324,6 +324,6 @@ def:
 void
 uncurse(THING *obj)
 {
-    if (obj != NULL)
+    if (obj != nullptr)
 	obj->o_flags &= ~ISCURSED;
 }

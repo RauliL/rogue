@@ -382,10 +382,10 @@ rndmove(THING *who)
 	    goto bad;
 	if (ch == SCROLL)
 	{
-	    for (obj = lvl_obj; obj != NULL; obj = next(obj))
+	    for (obj = lvl_obj; obj != nullptr; obj = next(obj))
 		if (y == obj->o_pos.y && x == obj->o_pos.x)
 		    break;
-	    if (obj != NULL && obj->o_which == S_SCARE)
+	    if (obj != nullptr && obj->o_which == S_SCARE)
 		goto bad;
 	}
     }
@@ -405,7 +405,7 @@ bad:
 void
 rust_armor(THING *arm)
 {
-    if (arm == NULL || arm->o_type != ARMOR || arm->o_which == LEATHER ||
+    if (arm == nullptr || arm->o_type != ARMOR || arm->o_which == LEATHER ||
 	arm->o_arm >= 9)
 	    return;
 

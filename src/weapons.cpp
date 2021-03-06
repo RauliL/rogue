@@ -49,7 +49,7 @@ missile(int ydelta, int xdelta)
     /*
      * Get which thing we are hurling
      */
-    if ((obj = get_item("throw", WEAPON)) == NULL)
+    if ((obj = get_item("throw", WEAPON)) == nullptr)
 	return;
     if (!dropcheck(obj) || is_current(obj))
 	return;
@@ -59,7 +59,7 @@ missile(int ydelta, int xdelta)
      * AHA! Here it has hit something.  If it is a wall or a door,
      * or if it misses (combat) the monster, put it on the floor
      */
-    if (moat(obj->o_pos.y, obj->o_pos.x) == NULL ||
+    if (moat(obj->o_pos.y, obj->o_pos.x) == nullptr ||
 	!hit_monster(unc(obj->o_pos), obj))
 	    fall(obj, true);
 }
@@ -131,7 +131,7 @@ fall(THING *obj, bool pr)
 	obj->o_pos = fpos;
 	if (cansee(fpos.y, fpos.x))
 	{
-	    if (pp->p_monst != NULL)
+	    if (pp->p_monst != nullptr)
 		pp->p_monst->t_oldch = (char) obj->o_type;
 	    else
 		mvaddch(fpos.y, fpos.x, obj->o_type);
@@ -235,7 +235,7 @@ wield()
 	return;
     }
     cur_weapon = oweapon;
-    if ((obj = get_item("wield", WEAPON)) == NULL)
+    if ((obj = get_item("wield", WEAPON)) == nullptr)
     {
 bad:
 	after = false;

@@ -55,7 +55,7 @@
 #define until(expr)	while(!(expr))
 #define next(ptr)	(*ptr).l_next
 #define prev(ptr)	(*ptr).l_prev
-#define winat(y,x)	(moat(y,x) != NULL ? moat(y,x)->t_disguise : chat(y,x))
+#define winat(y,x)	(moat(y,x) != nullptr ? moat(y,x)->t_disguise : chat(y,x))
 #define ce(a,b)		((a).x == (b).x && (a).y == (b).y)
 #define hero		player.t_pos
 #define pstats		player.t_stats
@@ -69,7 +69,7 @@
 #define max(a,b)	((a) > (b) ? (a) : (b))
 #define on(thing,flag)	((bool)(((thing).t_flags & (flag)) != 0))
 #define GOLDCALC	(rnd(50 + 10 * level) + 2)
-#define ISRING(h,r)	(cur_ring[h] != NULL && cur_ring[h]->o_which == r)
+#define ISRING(h,r)	(cur_ring[h] != nullptr && cur_ring[h]->o_which == r)
 #define ISWEARING(r)	(ISRING(LEFT, r) || ISRING(RIGHT, r))
 #define ISMULT(type) 	(type == POTION || type == SCROLL || type == FOOD)
 #define INDEX(y,x)	(&places[((x) << 5) + (y)])

@@ -383,7 +383,9 @@ get_num(void *vp, WINDOW *win)
     static char buf[MAXSTR];
 
     if ((i = get_str(buf, win)) == NORM)
-	*opt = (short) atoi(buf);
+    {
+        *opt = static_cast<short>(std::atoi(buf));
+    }
     return i;
 }
 #endif

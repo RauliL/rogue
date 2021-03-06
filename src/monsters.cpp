@@ -83,7 +83,7 @@ new_monster(THING *tp, char type, coord *cp)
     if (level > 29)
 	tp->t_flags |= ISHASTE;
     tp->t_turn = true;
-    tp->t_pack = NULL;
+    tp->t_pack = nullptr;
     if (ISWEARING(R_AGGR))
 	runto(cp);
     if (type == 'X')
@@ -124,7 +124,7 @@ wanderer()
     tp = new_item();
     do
     {
-	find_floor((struct room *) NULL, &cp, false, true);
+	find_floor(nullptr, &cp, false, true);
     } while (roomin(&cp) == proom);
     new_monster(tp, randmonster(true), &cp);
     if (on(player, SEEMONST))
@@ -156,11 +156,11 @@ wake_monster(int y, int x)
     const char* mname;
 
 #ifdef MASTER
-    if ((tp = moat(y, x)) == NULL)
+    if ((tp = moat(y, x)) == nullptr)
 	msg("can't find monster in wake_monster");
 #else
     tp = moat(y, x);
-    if (tp == NULL)
+    if (tp == nullptr)
 	endwin(), abort();
 #endif
     ch = tp->t_type;
@@ -177,7 +177,7 @@ wake_monster(int y, int x)
 	&& !on(*tp, ISFOUND) && !on(*tp, ISCANC) && on(*tp, ISRUN))
     {
         rp = proom;
-	if ((rp != NULL && !(rp->r_flags & ISDARK))
+	if ((rp != nullptr && !(rp->r_flags & ISDARK))
 	    || dist(y, x, hero.y, hero.x) < LAMPDIST)
 	{
 	    tp->t_flags |= ISFOUND;

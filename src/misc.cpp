@@ -90,7 +90,7 @@ look(bool wakeup)
 			continue;
 	    }
 
-	    if ((tp = pp->p_monst) == NULL)
+	    if ((tp = pp->p_monst) == nullptr)
 		ch = trip_ch(y, x, ch);
 	    else
 		if (on(player, SEEMONST) && on(*tp, ISINVIS))
@@ -119,7 +119,7 @@ look(bool wakeup)
 	    if ((proom->r_flags & ISDARK) && !see_floor && ch == FLOOR)
 		ch = ' ';
 
-	    if (tp != NULL || ch != CCHAR( inch() ))
+	    if (tp != nullptr || ch != CCHAR( inch() ))
 		addch(ch);
 
 	    if (door_stop && !firstmove && running)
@@ -258,7 +258,7 @@ find_obj(int y, int x)
 {
     THING *obj;
 
-    for (obj = lvl_obj; obj != NULL; obj = next(obj))
+    for (obj = lvl_obj; obj != nullptr; obj = next(obj))
     {
 	if (obj->o_pos.y == y && obj->o_pos.x == x)
 		return obj;
@@ -266,10 +266,10 @@ find_obj(int y, int x)
 #ifdef MASTER
     sprintf(prbuf, "Non-object %d,%d", y, x);
     msg(prbuf);
-    return NULL;
+    return nullptr;
 #else
     /* NOTREACHED */
-    return NULL;
+    return nullptr;
 #endif
 }
 
@@ -283,7 +283,7 @@ eat()
 {
     THING *obj;
 
-    if ((obj = get_item("eat", FOOD)) == NULL)
+    if ((obj = get_item("eat", FOOD)) == nullptr)
 	return;
     if (obj->o_type != FOOD)
     {
@@ -299,7 +299,7 @@ eat()
 	food_left = STOMACHSIZE;
     hungry_state = 0;
     if (obj == cur_weapon)
-	cur_weapon = NULL;
+	cur_weapon = nullptr;
     if (obj->o_which == 1)
 	msg("my, that was a yummy %s", fruit);
     else
@@ -409,7 +409,7 @@ aggravate()
 {
     THING *mp;
 
-    for (mp = mlist; mp != NULL; mp = next(mp))
+    for (mp = mlist; mp != nullptr; mp = next(mp))
 	runto(&mp->t_pos);
 }
 
@@ -442,7 +442,7 @@ vowelstr(const char* str)
 bool
 is_current(THING *obj)
 {
-    if (obj == NULL)
+    if (obj == nullptr)
 	return false;
     if (obj == cur_armor || obj == cur_weapon || obj == cur_ring[LEFT]
 	|| obj == cur_ring[RIGHT])
@@ -551,7 +551,7 @@ call_it(struct obj_info *info)
 	if (info->oi_guess)
 	{
 	    free(info->oi_guess);
-	    info->oi_guess = NULL;
+	    info->oi_guess = nullptr;
 	}
     }
     else if (!info->oi_guess)
@@ -559,7 +559,7 @@ call_it(struct obj_info *info)
 	msg(terse ? "call it: " : "what do you want to call it? ");
 	if (get_str(prbuf, stdscr) == NORM)
 	{
-	    if (info->oi_guess != NULL)
+	    if (info->oi_guess != nullptr)
 		free(info->oi_guess);
         info->oi_guess = static_cast<char*>(std::malloc(std::strlen(prbuf) + 1));
 	    strcpy(info->oi_guess, prbuf);

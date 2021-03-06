@@ -37,13 +37,13 @@ new_level()
     {
 	pp->p_ch = ' ';
 	pp->p_flags = F_REAL;
-	pp->p_monst = NULL;
+	pp->p_monst = nullptr;
     }
     clear();
     /*
      * Free up the monsters on the last level
      */
-    for (tp = mlist; tp != NULL; tp = next(tp))
+    for (tp = mlist; tp != nullptr; tp = next(tp))
 	free_list(tp->t_pack);
     free_list(mlist);
     /*
@@ -73,7 +73,7 @@ new_level()
 	     */
 	    do
 	    {
-		find_floor((struct room *) NULL, &stairs, false, false);
+		find_floor(nullptr, &stairs, false, false);
 	    } while (chat(stairs.y, stairs.x) != FLOOR);
 	    sp = &flat(stairs.y, stairs.x);
 	    *sp &= ~F_REAL;
@@ -83,14 +83,14 @@ new_level()
     /*
      * Place the staircase down.
      */
-    find_floor((struct room *) NULL, &stairs, false, false);
+    find_floor(nullptr, &stairs, false, false);
     chat(stairs.y, stairs.x) = STAIRS;
     seenstairs = false;
 
-    for (tp = mlist; tp != NULL; tp = next(tp))
+    for (tp = mlist; tp != nullptr; tp = next(tp))
 	tp->t_room = roomin(&tp->t_pos);
 
-    find_floor((struct room *) NULL, &hero, false, true);
+    find_floor(nullptr, &hero, false, true);
     enter_room(&hero);
     mvaddch(hero.y, hero.x, PLAYER);
     if (on(player, SEEMONST))
@@ -151,7 +151,7 @@ put_things()
 	    /*
 	     * Put it somewhere
 	     */
-	    find_floor((struct room *) NULL, &obj->o_pos, false, false);
+	    find_floor(nullptr, &obj->o_pos, false, false);
 	    chat(obj->o_pos.y, obj->o_pos.x) = (char) obj->o_type;
 	}
     /*
@@ -171,7 +171,7 @@ put_things()
 	/*
 	 * Put it somewhere
 	 */
-	find_floor((struct room *) NULL, &obj->o_pos, false, false);
+	find_floor(nullptr, &obj->o_pos, false, false);
 	chat(obj->o_pos.y, obj->o_pos.x) = AMULET;
     }
 }

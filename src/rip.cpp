@@ -84,7 +84,7 @@ score(int amount, int flags, char monst)
 	 */
 	delwin(stdscr);
 	delwin(curscr);
-	if (hw != NULL)
+	if (hw != nullptr)
 	    delwin(hw);
     }
 
@@ -114,7 +114,7 @@ score(int amount, int flags, char monst)
     /*
      * Insert her in list if need be
      */
-    sc2 = NULL;
+    sc2 = nullptr;
     if (!noscore)
     {
 	uid = md_getuid();
@@ -208,7 +208,7 @@ score(int amount, int flags, char monst)
     /*
      * Update the list file
      */
-    if (sc2 != NULL)
+    if (sc2 != nullptr)
     {
 	if (lock_sc())
 	{
@@ -320,7 +320,7 @@ total_winner()
     clear();
     mvaddstr(0, 0, "   Worth  Item\n");
     oldpurse = purse;
-    for (obj = pack; obj != NULL; obj = next(obj))
+    for (obj = pack; obj != nullptr; obj = next(obj))
     {
 	switch (obj->o_type)
 	{
