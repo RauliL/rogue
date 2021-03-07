@@ -73,7 +73,7 @@ static int endian = 0x01020304;
 #define  big_endian ( *((char *)&endian) == 0x01 )
 
 static bool
-rs_write(FILE* savef, const void* ptr, std::size_t size)
+rs_write(FILE* savef, const void* ptr, const std::size_t size)
 {
     if (write_error)
     {
@@ -89,7 +89,7 @@ rs_write(FILE* savef, const void* ptr, std::size_t size)
 }
 
 static bool
-rs_read(FILE* inf, void* ptr, std::size_t size)
+rs_read(FILE* inf, void* ptr, const std::size_t size)
 {
     if (read_error || format_error)
     {
@@ -128,16 +128,18 @@ rs_write_int(FILE *savef, int c)
 }
 
 static bool
-rs_read_int(FILE *inf, int *i)
+rs_read_int(FILE* inf, int& i)
 {
     unsigned char bytes[4];
     int input = 0;
-    unsigned char *buf = (unsigned char *)&input;
+    auto* buf = reinterpret_cast<unsigned char*>(&input);
 
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
-    rs_read(inf, &input, 4);
+    rs_read(inf, static_cast<void*>(&input), 4);
 
     if (big_endian)
     {
@@ -148,7 +150,7 @@ rs_read_int(FILE *inf, int *i)
         buf = bytes;
     }
 
-    *i = *((int *) buf);
+    i = *reinterpret_cast<int*>(buf);
 
     return(READSTAT);
 }
@@ -176,30 +178,30 @@ rs_read_char(FILE *inf, char *c)
 }
 
 static bool
-rs_write_chars(FILE* savef, const char* c, std::size_t count)
+rs_write_chars(FILE* savef, const char* c, const std::size_t count)
 {
     if (write_error)
     {
         return WRITESTAT;
     }
 
-    rs_write_int(savef, static_cast<int>(count));
+    rs_write_int(savef, static_cast<const int>(count));
     rs_write(savef, static_cast<const void*>(c), count);
 
     return WRITESTAT;
 }
 
 static bool
-rs_read_chars(FILE *inf, char *i, std::size_t count)
+rs_read_chars(FILE* inf, char* i, const std::size_t count)
 {
     int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf, &value);
+    rs_read_int(inf, value);
 
-    if (value != static_cast<int>(count))
+    if (value != static_cast<const int>(count))
         format_error = true;
 
     rs_read(inf, i, count);
@@ -208,7 +210,7 @@ rs_read_chars(FILE *inf, char *i, std::size_t count)
 }
 
 static bool
-rs_write_ints(FILE *savef, int *c, std::size_t count)
+rs_write_ints(FILE *savef, const int* c, const std::size_t count)
 {
     if (write_error)
         return(WRITESTAT);
@@ -223,20 +225,20 @@ rs_write_ints(FILE *savef, int *c, std::size_t count)
 }
 
 static bool
-rs_read_ints(FILE *inf, int *i, std::size_t count)
+rs_read_ints(FILE *inf, int* i, const std::size_t count)
 {
     int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf,&value);
+    rs_read_int(inf, value);
 
-    if (value != static_cast<int>(count))
+    if (value != static_cast<const int>(count))
         format_error = true;
 
     for(std::size_t n = 0; n < count; n++)
-        if (rs_read_int(inf, &i[n]))
+        if (rs_read_int(inf, i[n]))
             break;
 
     return(READSTAT);
@@ -271,12 +273,12 @@ rs_read_boolean(FILE *inf, bool *i)
 }
 
 static bool
-rs_write_booleans(FILE *savef, bool *c, std::size_t count)
+rs_write_booleans(FILE *savef, bool *c, const std::size_t count)
 {
     if (write_error)
         return(WRITESTAT);
 
-    rs_write_int(savef, count);
+    rs_write_int(savef, static_cast<const int>(count));
 
     for(std::size_t n = 0; n < count; n++)
         if (rs_write_boolean(savef, c[n]))
@@ -286,16 +288,16 @@ rs_write_booleans(FILE *savef, bool *c, std::size_t count)
 }
 
 static bool
-rs_read_booleans(FILE *inf, bool *i, std::size_t count)
+rs_read_booleans(FILE* inf, bool* i, const std::size_t count)
 {
     int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf,&value);
+    rs_read_int(inf, value);
 
-    if (value != static_cast<int>(count))
+    if (value != static_cast<const int>(count))
         format_error = true;
 
     for(std::size_t n = 0; n < count; n++)
@@ -418,9 +420,9 @@ rs_read_marker(FILE *inf, int id)
     if (read_error || format_error)
         return(READSTAT);
 
-    if (rs_read_int(inf, &nid) == 0)
+    if (!rs_read_int(inf, nid))
         if (id != nid)
-            format_error = 1;
+            format_error = true;
 
     return(READSTAT);
 }
@@ -456,7 +458,7 @@ rs_read_new_string(FILE* inf, char** s)
         return READSTAT;
     }
 
-    rs_read_int(inf, &len);
+    rs_read_int(inf, len);
 
     if (len != 0)
     {
@@ -485,7 +487,7 @@ rs_read_new_string(FILE* inf, const char** s)
         return READSTAT;
     }
 
-    rs_read_int(inf, &len);
+    rs_read_int(inf, len);
 
     if (len != 0)
     {
@@ -504,7 +506,7 @@ rs_read_new_string(FILE* inf, const char** s)
 }
 
 static bool
-rs_write_strings(FILE* savef, const char* s[], std::size_t count)
+rs_write_strings(FILE* savef, const char** s, const std::size_t count)
 {
     if (write_error)
     {
@@ -525,7 +527,7 @@ rs_write_strings(FILE* savef, const char* s[], std::size_t count)
 }
 
 static bool
-rs_read_new_strings(FILE* inf, const char** s, std::size_t count)
+rs_read_new_strings(FILE* inf, const char** s, const std::size_t count)
 {
     int value = 0;
 
@@ -534,9 +536,9 @@ rs_read_new_strings(FILE* inf, const char** s, std::size_t count)
         return READSTAT;
     }
 
-    rs_read_int(inf, &value);
+    rs_read_int(inf, value);
 
-    if (value != static_cast<int>(count))
+    if (value != static_cast<const int>(count))
     {
         format_error = true;
     }
@@ -555,8 +557,8 @@ rs_read_new_strings(FILE* inf, const char** s, std::size_t count)
 static bool
 rs_write_string_index(
     FILE* savef,
-    const char* master[],
-    int max,
+    const char** master,
+    const std::size_t max,
     const char* str
 )
 {
@@ -565,7 +567,7 @@ rs_write_string_index(
         return WRITESTAT;
     }
 
-    for (int i = 0; i < max; ++i)
+    for (std::size_t i = 0; i < max; ++i)
     {
         if (str == master[i])
         {
@@ -573,14 +575,14 @@ rs_write_string_index(
         }
     }
 
-    return rs_write_int(savef,-1);
+    return rs_write_int(savef, -1);
 }
 
 static bool
 rs_read_string_index(
     FILE* inf,
-    const char* master[],
-    int maxindex,
+    const char** master,
+    const std::size_t maxindex,
     const char** str
 )
 {
@@ -591,9 +593,9 @@ rs_read_string_index(
         return READSTAT;
     }
 
-    rs_read_int(inf, &i);
+    rs_read_int(inf, i);
 
-    if (i > maxindex)
+    if (i > static_cast<const int>(maxindex))
     {
         format_error = true;
     }
@@ -649,8 +651,8 @@ rs_read_coord(FILE *inf, coord *c)
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf,&in.x);
-    rs_read_int(inf,&in.y);
+    rs_read_int(inf, in.x);
+    rs_read_int(inf, in.y);
 
     if (READSTAT == 0)
     {
@@ -697,13 +699,13 @@ rs_read_window(FILE *inf, WINDOW *win)
 
     rs_read_marker(inf, RSID_WINDOW);
 
-    rs_read_int(inf, &maxlines);
-    rs_read_int(inf, &maxcols);
+    rs_read_int(inf, maxlines);
+    rs_read_int(inf, maxcols);
 
     for(row = 0; row < maxlines; row++)
         for(col = 0; col < maxcols; col++)
         {
-            if (rs_read_int(inf, &value))
+            if (rs_read_int(inf, value))
                 return(READSTAT);
 
             if ((row < height) && (col < width))
@@ -755,50 +757,53 @@ list_size(THING *l)
 /******************************************************************************/
 
 static bool
-rs_write_stats(FILE *savef, struct stats *s)
+rs_write_stats(FILE* savef, const stats& s)
 {
     if (write_error)
         return(WRITESTAT);
 
     rs_write_marker(savef, RSID_STATS);
-    rs_write_str_t(savef, s->s_str);
-    rs_write_int(savef, s->s_exp);
-    rs_write_int(savef, s->s_lvl);
-    rs_write_int(savef, s->s_arm);
-    rs_write_int(savef, s->s_hpt);
-    rs_write_chars(savef, s->s_dmg, sizeof(s->s_dmg));
-    rs_write_int(savef,s->s_maxhp);
+    rs_write_str_t(savef, s.s_str);
+    rs_write_int(savef, s.s_exp);
+    rs_write_int(savef, s.s_lvl);
+    rs_write_int(savef, s.s_arm);
+    rs_write_int(savef, s.s_hpt);
+    rs_write_chars(savef, s.s_dmg, sizeof(s.s_dmg));
+    rs_write_int(savef, s.s_maxhp);
 
     return(WRITESTAT);
 }
 
 static bool
-rs_read_stats(FILE *inf, struct stats *s)
+rs_read_stats(FILE* inf, stats& s)
 {
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_marker(inf, RSID_STATS);
-    rs_read_str_t(inf,&s->s_str);
-    rs_read_int(inf,&s->s_exp);
-    rs_read_int(inf,&s->s_lvl);
-    rs_read_int(inf,&s->s_arm);
-    rs_read_int(inf,&s->s_hpt);
-    rs_read_chars(inf,s->s_dmg,sizeof(s->s_dmg));
-    rs_read_int(inf,&s->s_maxhp);
+    rs_read_str_t(inf, &s.s_str);
+    rs_read_int(inf, s.s_exp);
+    rs_read_int(inf, s.s_lvl);
+    rs_read_int(inf, s.s_arm);
+    rs_read_int(inf, s.s_hpt);
+    rs_read_chars(inf, s.s_dmg, sizeof(s.s_dmg));
+    rs_read_int(inf, s.s_maxhp);
 
     return(READSTAT);
 }
 
 static bool
-rs_write_stone_index(FILE *savef, STONE master[], int max, const char *str)
+rs_write_stone_index(
+    FILE* savef,
+    const STONE* master,
+    const std::size_t max,
+    const char* str
+)
 {
-    int i;
-
     if (write_error)
         return(WRITESTAT);
 
-    for(i = 0; i < max; i++)
+    for (std::size_t i = 0; i < max; i++)
         if (str == master[i].st_name)
         {
             rs_write_int(savef,i);
@@ -811,7 +816,12 @@ rs_write_stone_index(FILE *savef, STONE master[], int max, const char *str)
 }
 
 static bool
-rs_read_stone_index(FILE* inf, STONE master[], int maxindex, const char** str)
+rs_read_stone_index(
+    FILE* inf,
+    STONE* master,
+    const std::size_t maxindex,
+    const char** str
+)
 {
     int i = 0;
 
@@ -820,9 +830,9 @@ rs_read_stone_index(FILE* inf, STONE master[], int maxindex, const char** str)
         return READSTAT;
     }
 
-    rs_read_int(inf,&i);
+    rs_read_int(inf, i);
 
-    if (i > maxindex)
+    if (i > static_cast<const int>(maxindex))
     {
         format_error = true;
     }
@@ -955,7 +965,7 @@ rs_read_sticks(FILE *inf)
 
     for(i = 0; i < MAXSTICKS; i++)
     {
-        rs_read_int(inf,&list);
+        rs_read_int(inf, list);
 
         if (list == 0)
         {
@@ -1019,7 +1029,7 @@ rs_write_daemons(FILE *savef, struct delayed_action *d_list, int count)
 }
 
 static bool
-rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
+rs_read_daemons(FILE* inf, delayed_action* d_list, const std::size_t count)
 {
     int i = 0;
     int func = 0;
@@ -1029,18 +1039,18 @@ rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
         return(READSTAT);
 
     rs_read_marker(inf, RSID_DAEMONS);
-    rs_read_int(inf, &value);
+    rs_read_int(inf, value);
 
-    if (value > count)
+    if (value > static_cast<const int>(count))
         format_error = true;
 
     for(i=0; i < count; i++)
     {
         func = 0;
-        rs_read_int(inf, &d_list[i].d_type);
-        rs_read_int(inf, &func);
-        rs_read_int(inf, &d_list[i].d_arg);
-        rs_read_int(inf, &d_list[i].d_time);
+        rs_read_int(inf, d_list[i].d_type);
+        rs_read_int(inf, func);
+        rs_read_int(inf, d_list[i].d_arg);
+        rs_read_int(inf, d_list[i].d_time);
 
         switch(func)
         {
@@ -1101,26 +1111,25 @@ rs_write_obj_info(FILE *savef, struct obj_info *i, int count)
 }
 
 static bool
-rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
+rs_read_obj_info(FILE* inf, obj_info* mi, const std::size_t count)
 {
-    int n;
-    int value;
+    int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_marker(inf, RSID_MAGICITEMS);
 
-    rs_read_int(inf, &value);
+    rs_read_int(inf, value);
 
     if (value > count)
         format_error = true;
 
-    for(n = 0; n < value; n++)
+    for (std::size_t n = 0; n < value; n++)
     {
         /* mi_name is const, defined at compile time in all cases */
-        rs_read_int(inf,&mi[n].oi_prob);
-        rs_read_int(inf,&mi[n].oi_worth);
+        rs_read_int(inf, mi[n].oi_prob);
+        rs_read_int(inf, mi[n].oi_worth);
         rs_read_new_string(inf,&mi[n].oi_guess);
         rs_read_boolean(inf,&mi[n].oi_know);
     }
@@ -1129,7 +1138,7 @@ rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
 }
 
 static bool
-rs_write_room(FILE *savef, struct room *r)
+rs_write_room(FILE* savef, const room* r)
 {
     if (write_error)
         return(WRITESTAT);
@@ -1157,7 +1166,7 @@ rs_write_room(FILE *savef, struct room *r)
 }
 
 static bool
-rs_read_room(FILE *inf, struct room *r)
+rs_read_room(FILE* inf, room* r)
 {
     if (read_error || format_error)
         return(READSTAT);
@@ -1165,9 +1174,9 @@ rs_read_room(FILE *inf, struct room *r)
     rs_read_coord(inf,&r->r_pos);
     rs_read_coord(inf,&r->r_max);
     rs_read_coord(inf,&r->r_gold);
-    rs_read_int(inf,&r->r_goldval);
+    rs_read_int(inf, r->r_goldval);
     rs_read_short(inf,&r->r_flags);
-    rs_read_int(inf,&r->r_nexits);
+    rs_read_int(inf, r->r_nexits);
     rs_read_coord(inf,&r->r_exit[0]);
     rs_read_coord(inf,&r->r_exit[1]);
     rs_read_coord(inf,&r->r_exit[2]);
@@ -1185,36 +1194,36 @@ rs_read_room(FILE *inf, struct room *r)
 }
 
 static bool
-rs_write_rooms(FILE *savef, struct room r[], int count)
+rs_write_rooms(FILE* savef, const room* r, const std::size_t count)
 {
-    int n = 0;
-
     if (write_error)
         return(WRITESTAT);
 
-    rs_write_int(savef, count);
+    rs_write_int(savef, static_cast<const int>(count));
 
-    for(n = 0; n < count; n++)
+    for (std::size_t n = 0; n < count; n++)
         rs_write_room(savef, &r[n]);
 
     return(WRITESTAT);
 }
 
 static bool
-rs_read_rooms(FILE *inf, struct room *r, int count)
+rs_read_rooms(FILE* inf, room* r, const std::size_t count)
 {
-    int value = 0, n = 0;
+    int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf,&value);
+    rs_read_int(inf, value);
 
-    if (value > count)
+    if (value > static_cast<const int>(count))
         format_error = true;
 
-    for(n = 0; n < value; n++)
+    for (std::size_t n = 0; n < value; n++)
+    {
         rs_read_room(inf,&r[n]);
+    }
 
     return(READSTAT);
 }
@@ -1244,7 +1253,7 @@ rs_read_room_reference(FILE *inf, struct room **rp)
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf, &i);
+    rs_read_int(inf, i);
 
     *rp = &rooms[i];
 
@@ -1252,45 +1261,45 @@ rs_read_room_reference(FILE *inf, struct room **rp)
 }
 
 static bool
-rs_write_monsters(FILE *savef, struct monster *m, int count)
+rs_write_monsters(FILE* savef, const monster* m, const std::size_t count)
 {
-    int n;
-
     if (write_error)
         return(WRITESTAT);
 
     rs_write_marker(savef, RSID_MONSTERS);
     rs_write_int(savef, count);
 
-    for(n=0;n<count;n++)
-        rs_write_stats(savef, &m[n].m_stats);
+    for (std::size_t n = 0; n < count; n++)
+        rs_write_stats(savef, m[n].m_stats);
 
     return(WRITESTAT);
 }
 
 static bool
-rs_read_monsters(FILE *inf, struct monster *m, int count)
+rs_read_monsters(FILE* inf, monster* m, const std::size_t count)
 {
-    int value = 0, n = 0;
+    int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_marker(inf, RSID_MONSTERS);
 
-    rs_read_int(inf, &value);
+    rs_read_int(inf, value);
 
-    if (value != count)
+    if (value != static_cast<const int>(count))
         format_error = true;
 
-    for(n = 0; n < count; n++)
-        rs_read_stats(inf, &m[n].m_stats);
+    for (std::size_t n = 0; n < count; n++)
+    {
+        rs_read_stats(inf, m[n].m_stats);
+    }
 
     return(READSTAT);
 }
 
 static bool
-rs_write_object(FILE *savef, THING *o)
+rs_write_object(FILE* savef, const THING* o)
 {
     if (write_error)
         return(WRITESTAT);
@@ -1314,25 +1323,25 @@ rs_write_object(FILE *savef, THING *o)
 }
 
 static bool
-rs_read_object(FILE *inf, THING *o)
+rs_read_object(FILE* inf, THING* o)
 {
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_marker(inf, RSID_OBJECT);
-    rs_read_int(inf, &o->_o._o_type);
+    rs_read_int(inf, o->_o._o_type);
     rs_read_coord(inf, &o->_o._o_pos);
-    rs_read_int(inf, &o->_o._o_launch);
+    rs_read_int(inf, o->_o._o_launch);
     rs_read_char(inf, &o->_o._o_packch);
     rs_read_chars(inf, o->_o._o_damage, sizeof(o->_o._o_damage));
     rs_read_chars(inf, o->_o._o_hurldmg, sizeof(o->_o._o_hurldmg));
-    rs_read_int(inf, &o->_o._o_count);
-    rs_read_int(inf, &o->_o._o_which);
-    rs_read_int(inf, &o->_o._o_hplus);
-    rs_read_int(inf, &o->_o._o_dplus);
-    rs_read_int(inf, &o->_o._o_arm);
-    rs_read_int(inf, &o->_o._o_flags);
-    rs_read_int(inf, &o->_o._o_group);
+    rs_read_int(inf, o->_o._o_count);
+    rs_read_int(inf, o->_o._o_which);
+    rs_read_int(inf, o->_o._o_hplus);
+    rs_read_int(inf, o->_o._o_dplus);
+    rs_read_int(inf, o->_o._o_arm);
+    rs_read_int(inf, o->_o._o_flags);
+    rs_read_int(inf, o->_o._o_group);
     rs_read_new_string(inf, &o->_o._o_label);
 
     return(READSTAT);
@@ -1363,7 +1372,7 @@ rs_read_object_list(FILE *inf, THING **list)
         return(READSTAT);
 
     rs_read_marker(inf, RSID_OBJECTLIST);
-    rs_read_int(inf, &cnt);
+    rs_read_int(inf, cnt);
 
     for (i = 0; i < cnt; i++)
     {
@@ -1415,7 +1424,7 @@ rs_read_object_reference(FILE *inf, THING *list, THING **item)
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf, &i);
+    rs_read_int(inf, i);
 
     *item = get_list_item(list,i);
 
@@ -1556,7 +1565,7 @@ rs_write_thing(FILE *savef, THING *t)
     }
 
     rs_write_short(savef, t->_t._t_flags);
-    rs_write_stats(savef, &t->_t._t_stats);
+    rs_write_stats(savef, t->_t._t_stats);
     rs_write_room_reference(savef, t->_t._t_room);
     rs_write_object_list(savef, t->_t._t_pack);
 
@@ -1574,7 +1583,7 @@ rs_read_thing(FILE *inf, THING *t)
 
     rs_read_marker(inf, RSID_THING);
 
-    rs_read_int(inf, &index);
+    rs_read_int(inf, index);
 
     if (index == 0)
         return(READSTAT);
@@ -1597,8 +1606,8 @@ rs_read_thing(FILE *inf, THING *t)
         the current location of what we are chasing.
     */
 
-    rs_read_int(inf, &listid);
-    rs_read_int(inf, &index);
+    rs_read_int(inf, listid);
+    rs_read_int(inf, index);
     t->_t._t_reserved = -1;
 
     if (listid == 0) /* hero or nullptr */
@@ -1633,7 +1642,7 @@ rs_read_thing(FILE *inf, THING *t)
         t->_t._t_dest = nullptr;
 
     rs_read_short(inf,&t->_t._t_flags);
-    rs_read_stats(inf,&t->_t._t_stats);
+    rs_read_stats(inf, t->_t._t_stats);
     rs_read_room_reference(inf, &t->_t._t_room);
     rs_read_object_list(inf,&t->_t._t_pack);
 
@@ -1694,7 +1703,7 @@ rs_read_thing_list(FILE *inf, THING **list)
 
     rs_read_marker(inf, RSID_MONSTERLIST);
 
-    rs_read_int(inf, &cnt);
+    rs_read_int(inf, cnt);
 
     for (i = 0; i < cnt; i++)
     {
@@ -1758,7 +1767,7 @@ rs_read_thing_reference(FILE *inf, THING *list, THING **item)
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_int(inf, &i);
+    rs_read_int(inf, i);
 
     if (i == -1)
         *item = nullptr;
@@ -1902,7 +1911,7 @@ rs_save_file(FILE *savef)
 
     rs_write_places(savef,places,MAXLINES*MAXCOLS);
 
-    rs_write_stats(savef,&max_stats);
+    rs_write_stats(savef, max_stats);
     rs_write_rooms(savef, rooms, MAXROOMS);
     rs_write_room_reference(savef, oldrp);
     rs_write_rooms(savef, passages, MAXPASS);
@@ -1942,7 +1951,7 @@ rs_restore_file(FILE *inf)
 
     rs_read_boolean(inf, &after);               /* 1  */    /* extern.c */
     rs_read_boolean(inf, &again);               /* 2  */
-    rs_read_int(inf, &noscore);                 /* 3  */
+    rs_read_int(inf, noscore);                 /* 3  */
     rs_read_boolean(inf, &seenstairs);          /* 4  */
     rs_read_boolean(inf, &amulet);              /* 5  */
     rs_read_boolean(inf, &door_stop);           /* 6  */
@@ -1968,9 +1977,9 @@ rs_restore_file(FILE *inf)
     rs_read_boolean(inf, &to_death);            /* 26 */
     rs_read_boolean(inf, &tombstone);           /* 27 */
 #ifdef MASTER
-    rs_read_int(inf, &wizard);                  /* 28 */
+    rs_read_int(inf, wizard);                  /* 28 */
 #else
-    rs_read_int(inf, &dummyint);                /* 28 */
+    rs_read_int(inf, dummyint);                /* 28 */
 #endif
     rs_read_booleans(inf, pack_used, 26);       /* 29 */
     rs_read_char(inf, &dir_ch);
@@ -1985,7 +1994,7 @@ rs_restore_file(FILE *inf)
     rs_read_char(inf, &take);
     rs_read_chars(inf, whoami, MAXSTR);
     rs_read_sticks(inf);
-    rs_read_int(inf,&orig_dsusp);
+    rs_read_int(inf, orig_dsusp);
     rs_read_chars(inf, fruit, MAXSTR);
     rs_read_chars(inf, home, MAXSTR);
     rs_read_new_strings(inf,inv_t_name,3);
@@ -1994,26 +2003,26 @@ rs_restore_file(FILE *inf)
     rs_read_char(inf, &last_comm);
     rs_read_char(inf, &last_dir);
     rs_read_new_strings(inf,tr_name,8);
-    rs_read_int(inf, &n_objs);
-    rs_read_int(inf, &ntraps);
-    rs_read_int(inf, &hungry_state);
-    rs_read_int(inf, &inpack);
-    rs_read_int(inf, &inv_type);
-    rs_read_int(inf, &level);
-    rs_read_int(inf, &max_level);
-    rs_read_int(inf, &mpos);
-    rs_read_int(inf, &no_food);
+    rs_read_int(inf, n_objs);
+    rs_read_int(inf, ntraps);
+    rs_read_int(inf, hungry_state);
+    rs_read_int(inf, inpack);
+    rs_read_int(inf, inv_type);
+    rs_read_int(inf, level);
+    rs_read_int(inf, max_level);
+    rs_read_int(inf, mpos);
+    rs_read_int(inf, no_food);
     rs_read_ints(inf,a_class,MAXARMORS);
-    rs_read_int(inf, &count);
-    rs_read_int(inf, &food_left);
-    rs_read_int(inf, &lastscore);
-    rs_read_int(inf, &no_command);
-    rs_read_int(inf, &no_move);
-    rs_read_int(inf, &purse);
-    rs_read_int(inf, &quiet);
-    rs_read_int(inf, &vf_hit);
-    rs_read_int(inf, &dnum);
-    rs_read_int(inf, &seed);
+    rs_read_int(inf, count);
+    rs_read_int(inf, food_left);
+    rs_read_int(inf, lastscore);
+    rs_read_int(inf, no_command);
+    rs_read_int(inf, no_move);
+    rs_read_int(inf, purse);
+    rs_read_int(inf, quiet);
+    rs_read_int(inf, vf_hit);
+    rs_read_int(inf, dnum);
+    rs_read_int(inf, seed);
     rs_read_ints(inf,e_levels,21);
     rs_read_coord(inf, &delta);
     rs_read_coord(inf, &oldpos);
@@ -2034,7 +2043,7 @@ rs_restore_file(FILE *inf)
 
     rs_read_places(inf,places,MAXLINES*MAXCOLS);
 
-    rs_read_stats(inf, &max_stats);
+    rs_read_stats(inf, max_stats);
     rs_read_rooms(inf, rooms, MAXROOMS);
     rs_read_room_reference(inf, &oldrp);
     rs_read_rooms(inf, passages, MAXPASS);
@@ -2049,10 +2058,10 @@ rs_restore_file(FILE *inf)
     rs_read_obj_info(inf, ws_info, MAXSTICKS);
 
     rs_read_daemons(inf, d_list, 20);                   /* 5.4-daemon.c     */
-    rs_read_int(inf,&dummyint);  /* total */            /* 5.4-list.c    */
-    rs_read_int(inf,&between);                          /* 5.4-daemons.c    */
+    rs_read_int(inf, dummyint);  /* total */            /* 5.4-list.c    */
+    rs_read_int(inf, between);                          /* 5.4-daemons.c    */
     rs_read_coord(inf, &nh);                            /* 5.4-move.c       */
-    rs_read_int(inf,&group);                            /* 5.4-weapons.c    */
+    rs_read_int(inf, group);                            /* 5.4-weapons.c    */
 
     rs_read_window(inf,stdscr);
 
