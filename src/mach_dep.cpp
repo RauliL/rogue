@@ -212,17 +212,18 @@ start_score()
  *      See if the file has a symbolic link
   */
 bool
-is_symlink(char *sp)
+is_symlink(const char* sp)
 {
-#ifdef S_IFLNK
+#if defined(S_IFLNK)
     struct stat sbuf2;
 
     if (lstat(sp, &sbuf2) < 0)
+    {
         return false;
-    else
-        return ((sbuf2.st_mode & S_IFMT) != S_IFREG);
+    }
+
+    return (sbuf2.st_mode & S_IFMT) != S_IFREG;
 #else
-	NOOP(sp);
     return false;
 #endif
 }

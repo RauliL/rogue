@@ -135,7 +135,7 @@ void	md_sleep(int s);
 int	md_suspchar();
 int	md_hasclreol();
 int	md_unlink(char *file);
-int	md_unlink_open_file(char *file, FILE *inf);
+int md_unlink_open_file(const char* file, FILE* inf);
 void md_tstpsignal();
 void md_tstphold();
 void md_tstpresume();

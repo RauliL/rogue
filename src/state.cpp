@@ -199,7 +199,7 @@ rs_read_chars(FILE *inf, char *i, std::size_t count)
 
     rs_read_int(inf, &value);
 
-    if (value != count)
+    if (value != static_cast<int>(count))
         format_error = true;
 
     rs_read(inf, i, count);
@@ -210,14 +210,12 @@ rs_read_chars(FILE *inf, char *i, std::size_t count)
 static bool
 rs_write_ints(FILE *savef, int *c, std::size_t count)
 {
-    int n = 0;
-
     if (write_error)
         return(WRITESTAT);
 
     rs_write_int(savef, count);
 
-    for(n = 0; n < count; n++)
+    for(std::size_t n = 0; n < count; n++)
         if( rs_write_int(savef,c[n]))
             break;
 
@@ -227,17 +225,17 @@ rs_write_ints(FILE *savef, int *c, std::size_t count)
 static bool
 rs_read_ints(FILE *inf, int *i, std::size_t count)
 {
-    int n, value;
+    int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_int(inf,&value);
 
-    if (value != count)
+    if (value != static_cast<int>(count))
         format_error = true;
 
-    for(n = 0; n < count; n++)
+    for(std::size_t n = 0; n < count; n++)
         if (rs_read_int(inf, &i[n]))
             break;
 
@@ -275,14 +273,12 @@ rs_read_boolean(FILE *inf, bool *i)
 static bool
 rs_write_booleans(FILE *savef, bool *c, std::size_t count)
 {
-    int n = 0;
-
     if (write_error)
         return(WRITESTAT);
 
     rs_write_int(savef, count);
 
-    for(n = 0; n < count; n++)
+    for(std::size_t n = 0; n < count; n++)
         if (rs_write_boolean(savef, c[n]))
             break;
 
@@ -292,17 +288,17 @@ rs_write_booleans(FILE *savef, bool *c, std::size_t count)
 static bool
 rs_read_booleans(FILE *inf, bool *i, std::size_t count)
 {
-    int n = 0, value = 0;
+    int value = 0;
 
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_int(inf,&value);
 
-    if (value != count)
+    if (value != static_cast<int>(count))
         format_error = true;
 
-    for(n = 0; n < count; n++)
+    for(std::size_t n = 0; n < count; n++)
         if (rs_read_boolean(inf, &i[n]))
             break;
 
@@ -517,7 +513,7 @@ rs_write_strings(FILE* savef, const char* s[], std::size_t count)
 
     rs_write_int(savef, count);
 
-    for (int i = 0; i < count; ++i)
+    for (std::size_t i = 0; i < count; ++i)
     {
         if (rs_write_string(savef, s[i]))
         {

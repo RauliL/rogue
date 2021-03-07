@@ -242,11 +242,11 @@ static bool used[MAX3(NCOLORS, NSTONES, NWOOD)];
 void
 init_colors()
 {
-    int i, j;
+    int j;
 
-    for (i = 0; i < NCOLORS; i++)
+    for (std::size_t i = 0; i < NCOLORS; i++)
 	used[i] = false;
-    for (i = 0; i < MAXPOTIONS; i++)
+    for (std::size_t i = 0; i < MAXPOTIONS; i++)
     {
 	do
 	    j = rnd(NCOLORS);
@@ -300,11 +300,11 @@ init_names()
 void
 init_stones()
 {
-    int i, j;
+    int j;
 
-    for (i = 0; i < NSTONES; i++)
+    for (std::size_t i = 0; i < NSTONES; i++)
 	used[i] = false;
-    for (i = 0; i < MAXRINGS; i++)
+    for (std::size_t i = 0; i < MAXRINGS; i++)
     {
 	do
 	    j = rnd(NSTONES);
@@ -322,15 +322,15 @@ init_stones()
 void
 init_materials()
 {
-    int i, j;
+    int j;
     const char* str;
     static bool metused[NMETAL];
 
-    for (i = 0; i < NWOOD; i++)
+    for (std::size_t i = 0; i < NWOOD; i++)
 	used[i] = false;
-    for (i = 0; i < NMETAL; i++)
+    for (std::size_t i = 0; i < NMETAL; i++)
 	metused[i] = false;
-    for (i = 0; i < MAXSTICKS; i++)
+    for (std::size_t i = 0; i < MAXSTICKS; i++)
     {
 	for (;;)
 	    if (rnd(2) == 0)

@@ -161,56 +161,75 @@ save_file(FILE *savef)
  *	integrity from cheaters
  */
 bool
-restore(char *file, char **envp)
+restore(const char* file, char** envp)
 {
-    FILE *inf;
-    int syml;
-    extern char **environ;
+    extern char** environ;
+    FILE* inf;
     char buf[MAXSTR];
+    int syml;
     STAT sbuf2;
-    int lines, cols;
+    int lines;
+    int cols;
 
-    if (!strcmp(file, "-r"))
+    if (!std::strcmp(file, "-r"))
     {
         file = file_name;
     }
 
-	md_tstphold();
+    md_tstphold();
 
-	if ((inf = std::fopen(file,"r")) == nullptr)
+    if (!(inf = std::fopen(file, "rb")))
     {
-	perror(file);
-	return false;
+        std::perror(file);
+
+        return false;
     }
+
     stat(file, &sbuf2);
     syml = is_symlink(file);
 
-    fflush(stdout);
-    encread(buf, (unsigned) strlen(version) + 1, inf);
-    if (strcmp(buf, version) != 0)
+    std::fflush(stdout);
+    encread(buf, std::strlen(version) + 1, inf);
+    if (std::strcmp(buf, version))
     {
-	printf("Sorry, saved game is out of date.\n");
-	return false;
-    }
-    encread(buf,80,inf);
-    sscanf(buf,"%d x %d\n", &lines, &cols);
+        std::printf("Sorry, saved game is out of date.\n");
 
-    initscr();                          /* Start up cursor package */
+        return false;
+    }
+    encread(buf, 80, inf);
+    std::sscanf(buf, "%d x %d\n", &lines, &cols);
+
+    // Start up cursor package
+    initscr();
     keypad(stdscr, 1);
 
     if (lines > LINES)
     {
         endwin();
-        printf("Sorry, original game was played on a screen with %d lines.\n",lines);
-        printf("Current screen only has %d lines. Unable to restore game\n",LINES);
-        return(false);
+        std::printf(
+            "Sorry, original game was played on a screen with %d lines.\n",
+            lines
+        );
+        std::printf(
+            "Current screen only has %d lines. Unable to restore game\n",
+            LINES
+        );
+
+        return false;
     }
     if (cols > COLS)
     {
         endwin();
-        printf("Sorry, original game was played on a screen with %d columns.\n",cols);
-        printf("Current screen only has %d columns. Unable to restore game\n",COLS);
-        return(false);
+        std::printf(
+            "Sorry, original game was played on a screen with %d columns.\n",
+            cols
+        );
+        std::printf(
+            "Current screen only has %d columns. Unable to restore game\n",
+            COLS
+        );
+
+        return false;
     }
 
     hw = newwin(LINES, COLS, 0, 0);
@@ -223,50 +242,50 @@ restore(char *file, char **envp)
      */
 
     if (
-#ifdef MASTER
-	!wizard &&
+#if defined(MASTER)
+    !wizard &&
 #endif
         md_unlink_open_file(file, inf) < 0)
     {
-	printf("Cannot unlink file\n");
-	return false;
+        std::printf("Cannot unlink file\n");
+
+        return false;
     }
     mpos = 0;
-/*    printw(0, 0, "%s: %s", file, ctime(&sbuf2.st_mtime)); */
-/*
-    printw("%s: %s", file, ctime(&sbuf2.st_mtime));
-*/
+
     clearok(stdscr,true);
     /*
      * defeat multiple restarting from the same place
      */
-#ifdef MASTER
+#if defined(MASTER)
     if (!wizard)
 #endif
-	if (sbuf2.st_nlink != 1 || syml)
-	{
-	    endwin();
-	    printf("\nCannot restore from a linked file\n");
-	    return false;
-	}
+    if (sbuf2.st_nlink != 1 || syml)
+    {
+        endwin();
+        std::printf("\nCannot restore from a linked file\n");
+
+        return false;
+    }
 
     if (pstats.s_hpt <= 0)
     {
-	endwin();
-	printf("\n\"He's dead, Jim\"\n");
-	return false;
+        endwin();
+        std::printf("\n\"He's dead, Jim\"\n");
+
+        return false;
     }
 
-	md_tstpresume();
+    md_tstpresume();
 
     environ = envp;
-    strcpy(file_name, file);
+    std::strcpy(file_name, file);
     clearok(curscr, true);
-    srand(md_getpid());
+    std::srand(md_getpid());
     msg("file name: %s", file);
     playit();
-    /*NOTREACHED*/
-    return(0);
+
+    return true;
 }
 
 /*
@@ -320,7 +339,7 @@ encread(char* start, std::size_t size, FILE* inf)
     const char* e2 = statlist;
     const auto read_size = std::fread(start, 1, size, inf);
 
-    if (read_size == 0 || read_size == -1)
+    if (read_size < size)
     {
         return read_size;
     }
