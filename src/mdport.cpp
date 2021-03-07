@@ -322,14 +322,15 @@ md_raw_standend()
 }
 
 int
-md_unlink_open_file(char *file, FILE *inf)
+md_unlink_open_file(const char* file, FILE* inf)
 {
-#ifdef _WIN32
-    fclose(inf);
+#if defined(_WIN32)
+    std::fclose(inf);
     _chmod(file, 0600);
-    return( _unlink(file) );
+
+    return _unlink(file);
 #else
-    return(unlink(file));
+    return unlink(file);
 #endif
 }
 

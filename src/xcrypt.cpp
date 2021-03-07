@@ -606,8 +606,8 @@ xcrypt(const char *key, const char *setting)
 	 * Copy the key, shifting each character up by one bit
 	 * and padding with zeros.
 	 */
-	q = (unsigned char *) keybuf;
-	while ((q - (unsigned char *) keybuf) < sizeof(keybuf)) {
+	q = reinterpret_cast<unsigned char*>(keybuf);
+	while ((q - reinterpret_cast<unsigned char*>(keybuf)) < static_cast<long>(sizeof(keybuf))) {
 		if ((*q++ = *key << 1))
 			key++;
 	}
@@ -635,8 +635,8 @@ xcrypt(const char *key, const char *setting)
 			/*
 			 * And XOR with the next 8 characters of the key.
 			 */
-			q = (unsigned char *) keybuf;
-			while (((q - (unsigned char *) keybuf) < sizeof(keybuf)) &&
+			q = reinterpret_cast<unsigned char*>(keybuf);
+			while (((q - reinterpret_cast<unsigned char*>(keybuf)) < static_cast<long>(sizeof(keybuf))) &&
 					*key)
 				*q++ ^= *key++ << 1;
 
