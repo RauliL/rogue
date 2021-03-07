@@ -648,35 +648,39 @@ rs_read_str_t(FILE *inf, str_t *st)
 }
 
 static bool
-rs_write_coord(FILE *savef, coord c)
+rs_write_coord(FILE* savef, const coord& c)
 {
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
     rs_write_int(savef, c.x);
     rs_write_int(savef, c.y);
 
-    return(WRITESTAT);
+    return WRITESTAT;
 }
 
 static bool
-rs_read_coord(FILE *inf, coord *c)
+rs_read_coord(FILE* inf, coord& c)
 {
     coord in;
 
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
     rs_read_int(inf, in.x);
     rs_read_int(inf, in.y);
 
-    if (READSTAT == 0)
+    if (!READSTAT)
     {
-        c->x = in.x;
-        c->y = in.y;
+        c.x = in.x;
+        c.y = in.y;
     }
 
-    return(READSTAT);
+    return READSTAT;
 }
 
 static bool
@@ -1157,7 +1161,9 @@ static bool
 rs_write_room(FILE* savef, const room* r)
 {
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
     rs_write_coord(savef, r->r_pos);
     rs_write_coord(savef, r->r_max);
@@ -1165,48 +1171,34 @@ rs_write_room(FILE* savef, const room* r)
     rs_write_int(savef,   r->r_goldval);
     rs_write_short(savef, r->r_flags);
     rs_write_int(savef, r->r_nexits);
-    rs_write_coord(savef, r->r_exit[0]);
-    rs_write_coord(savef, r->r_exit[1]);
-    rs_write_coord(savef, r->r_exit[2]);
-    rs_write_coord(savef, r->r_exit[3]);
-    rs_write_coord(savef, r->r_exit[4]);
-    rs_write_coord(savef, r->r_exit[5]);
-    rs_write_coord(savef, r->r_exit[6]);
-    rs_write_coord(savef, r->r_exit[7]);
-    rs_write_coord(savef, r->r_exit[8]);
-    rs_write_coord(savef, r->r_exit[9]);
-    rs_write_coord(savef, r->r_exit[10]);
-    rs_write_coord(savef, r->r_exit[11]);
+    for (std::size_t i = 0; i < 12; ++i)
+    {
+        rs_write_coord(savef, r->r_exit[i]);
+    }
 
-    return(WRITESTAT);
+    return WRITESTAT;
 }
 
 static bool
 rs_read_room(FILE* inf, room* r)
 {
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
-    rs_read_coord(inf,&r->r_pos);
-    rs_read_coord(inf,&r->r_max);
-    rs_read_coord(inf,&r->r_gold);
+    rs_read_coord(inf, r->r_pos);
+    rs_read_coord(inf, r->r_max);
+    rs_read_coord(inf, r->r_gold);
     rs_read_int(inf, r->r_goldval);
-    rs_read_short(inf,&r->r_flags);
+    rs_read_short(inf, &r->r_flags);
     rs_read_int(inf, r->r_nexits);
-    rs_read_coord(inf,&r->r_exit[0]);
-    rs_read_coord(inf,&r->r_exit[1]);
-    rs_read_coord(inf,&r->r_exit[2]);
-    rs_read_coord(inf,&r->r_exit[3]);
-    rs_read_coord(inf,&r->r_exit[4]);
-    rs_read_coord(inf,&r->r_exit[5]);
-    rs_read_coord(inf,&r->r_exit[6]);
-    rs_read_coord(inf,&r->r_exit[7]);
-    rs_read_coord(inf,&r->r_exit[8]);
-    rs_read_coord(inf,&r->r_exit[9]);
-    rs_read_coord(inf,&r->r_exit[10]);
-    rs_read_coord(inf,&r->r_exit[11]);
+    for (std::size_t i = 0; i < 12; ++i)
+    {
+        rs_read_coord(inf, r->r_exit[i]);
+    }
 
-    return(READSTAT);
+    return READSTAT;
 }
 
 static bool
@@ -1346,7 +1338,7 @@ rs_read_object(FILE* inf, THING* o)
 
     rs_read_marker(inf, RSID_OBJECT);
     rs_read_int(inf, o->_o._o_type);
-    rs_read_coord(inf, &o->_o._o_pos);
+    rs_read_coord(inf, o->_o._o_pos);
     rs_read_int(inf, o->_o._o_launch);
     rs_read_char(inf, &o->_o._o_packch);
     rs_read_chars(inf, o->_o._o_damage, sizeof(o->_o._o_damage));
@@ -1604,7 +1596,7 @@ rs_read_thing(FILE *inf, THING *t)
     if (index == 0)
         return(READSTAT);
 
-    rs_read_coord(inf,&t->_t._t_pos);
+    rs_read_coord(inf, t->_t._t_pos);
     rs_read_boolean(inf, t->_t._t_turn);
     rs_read_char(inf,&t->_t._t_type);
     rs_read_char(inf,&t->_t._t_disguise);
@@ -2040,9 +2032,9 @@ rs_restore_file(FILE *inf)
     rs_read_int(inf, dnum);
     rs_read_int(inf, seed);
     rs_read_ints(inf,e_levels,21);
-    rs_read_coord(inf, &delta);
-    rs_read_coord(inf, &oldpos);
-    rs_read_coord(inf, &stairs);
+    rs_read_coord(inf, delta);
+    rs_read_coord(inf, oldpos);
+    rs_read_coord(inf, stairs);
 
     rs_read_thing(inf, &player);
     rs_read_object_reference(inf, player.t_pack, &cur_armor);
@@ -2076,7 +2068,7 @@ rs_restore_file(FILE *inf)
     rs_read_daemons(inf, d_list, 20);                   /* 5.4-daemon.c     */
     rs_read_int(inf, dummyint);  /* total */            /* 5.4-list.c    */
     rs_read_int(inf, between);                          /* 5.4-daemons.c    */
-    rs_read_coord(inf, &nh);                            /* 5.4-move.c       */
+    rs_read_coord(inf, nh);                             /* 5.4-move.c       */
     rs_read_int(inf, group);                            /* 5.4-weapons.c    */
 
     rs_read_window(inf,stdscr);
