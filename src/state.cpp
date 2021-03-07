@@ -245,46 +245,54 @@ rs_read_ints(FILE *inf, int* i, const std::size_t count)
 }
 
 static bool
-rs_write_boolean(FILE *savef, int c)
+rs_write_boolean(FILE* savef, bool c)
 {
-    unsigned char buf = (c == 0) ? 0 : 1;
+    const unsigned char buf = c ? 1  : 0;
 
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
-    rs_write(savef, &buf, 1);
-
-    return(WRITESTAT);
+    return rs_write(savef, static_cast<const void*>(&buf), 1);
 }
 
 static bool
-rs_read_boolean(FILE *inf, bool *i)
+rs_read_boolean(FILE* inf, bool& i)
 {
     unsigned char buf = 0;
 
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
-    rs_read(inf, &buf, 1);
+    rs_read(inf, static_cast<void*>(&buf), 1);
 
-    *i = (buf != 0);
+    i = buf != 0;
 
-    return(READSTAT);
+    return READSTAT;
 }
 
 static bool
-rs_write_booleans(FILE *savef, bool *c, const std::size_t count)
+rs_write_booleans(FILE* savef, const bool* c, const std::size_t count)
 {
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
     rs_write_int(savef, static_cast<const int>(count));
 
-    for(std::size_t n = 0; n < count; n++)
-        if (rs_write_boolean(savef, c[n]))
+    for (std::size_t i = 0; i < count; ++i)
+    {
+        if (rs_write_boolean(savef, c[i]))
+        {
             break;
+        }
+    }
 
-    return(WRITESTAT);
+    return WRITESTAT;
 }
 
 static bool
@@ -293,18 +301,26 @@ rs_read_booleans(FILE* inf, bool* i, const std::size_t count)
     int value = 0;
 
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
     rs_read_int(inf, value);
 
     if (value != static_cast<const int>(count))
+    {
         format_error = true;
+    }
 
-    for(std::size_t n = 0; n < count; n++)
-        if (rs_read_boolean(inf, &i[n]))
+    for (std::size_t n = 0; n < count; ++n)
+    {
+        if (rs_read_boolean(inf, i[n]))
+        {
             break;
+        }
+    }
 
-    return(READSTAT);
+    return READSTAT;
 }
 
 static bool
@@ -1131,7 +1147,7 @@ rs_read_obj_info(FILE* inf, obj_info* mi, const std::size_t count)
         rs_read_int(inf, mi[n].oi_prob);
         rs_read_int(inf, mi[n].oi_worth);
         rs_read_new_string(inf,&mi[n].oi_guess);
-        rs_read_boolean(inf,&mi[n].oi_know);
+        rs_read_boolean(inf, mi[n].oi_know);
     }
 
     return(READSTAT);
@@ -1589,7 +1605,7 @@ rs_read_thing(FILE *inf, THING *t)
         return(READSTAT);
 
     rs_read_coord(inf,&t->_t._t_pos);
-    rs_read_boolean(inf,&t->_t._t_turn);
+    rs_read_boolean(inf, t->_t._t_turn);
     rs_read_char(inf,&t->_t._t_type);
     rs_read_char(inf,&t->_t._t_disguise);
     rs_read_char(inf,&t->_t._t_oldch);
@@ -1949,37 +1965,37 @@ rs_restore_file(FILE *inf)
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_boolean(inf, &after);               /* 1  */    /* extern.c */
-    rs_read_boolean(inf, &again);               /* 2  */
-    rs_read_int(inf, noscore);                 /* 3  */
-    rs_read_boolean(inf, &seenstairs);          /* 4  */
-    rs_read_boolean(inf, &amulet);              /* 5  */
-    rs_read_boolean(inf, &door_stop);           /* 6  */
-    rs_read_boolean(inf, &fight_flush);         /* 7  */
-    rs_read_boolean(inf, &firstmove);           /* 8  */
-    rs_read_boolean(inf, &got_ltc);             /* 9  */
-    rs_read_boolean(inf, &has_hit);             /* 10 */
-    rs_read_boolean(inf, &in_shell);            /* 11 */
-    rs_read_boolean(inf, &inv_describe);        /* 12 */
-    rs_read_boolean(inf, &jump);                /* 13 */
-    rs_read_boolean(inf, &kamikaze);            /* 14 */
-    rs_read_boolean(inf, &lower_msg);           /* 15 */
-    rs_read_boolean(inf, &move_on);             /* 16 */
-    rs_read_boolean(inf, &msg_esc);             /* 17 */
-    rs_read_boolean(inf, &passgo);              /* 18 */
-    rs_read_boolean(inf, &playing);             /* 19 */
-    rs_read_boolean(inf, &q_comm);              /* 20 */
-    rs_read_boolean(inf, &running);             /* 21 */
-    rs_read_boolean(inf, &save_msg);            /* 22 */
-    rs_read_boolean(inf, &see_floor);           /* 23 */
-    rs_read_boolean(inf, &stat_msg);            /* 24 */
-    rs_read_boolean(inf, &terse);               /* 25 */
-    rs_read_boolean(inf, &to_death);            /* 26 */
-    rs_read_boolean(inf, &tombstone);           /* 27 */
+    rs_read_boolean(inf, after);                /* 1  */    /* extern.c */
+    rs_read_boolean(inf, again);                /* 2  */
+    rs_read_int(inf, noscore);                  /* 3  */
+    rs_read_boolean(inf, seenstairs);           /* 4  */
+    rs_read_boolean(inf, amulet);               /* 5  */
+    rs_read_boolean(inf, door_stop);            /* 6  */
+    rs_read_boolean(inf, fight_flush);          /* 7  */
+    rs_read_boolean(inf, firstmove);            /* 8  */
+    rs_read_boolean(inf, got_ltc);              /* 9  */
+    rs_read_boolean(inf, has_hit);              /* 10 */
+    rs_read_boolean(inf, in_shell);             /* 11 */
+    rs_read_boolean(inf, inv_describe);         /* 12 */
+    rs_read_boolean(inf, jump);                 /* 13 */
+    rs_read_boolean(inf, kamikaze);             /* 14 */
+    rs_read_boolean(inf, lower_msg);            /* 15 */
+    rs_read_boolean(inf, move_on);              /* 16 */
+    rs_read_boolean(inf, msg_esc);              /* 17 */
+    rs_read_boolean(inf, passgo);               /* 18 */
+    rs_read_boolean(inf, playing);              /* 19 */
+    rs_read_boolean(inf, q_comm);               /* 20 */
+    rs_read_boolean(inf, running);              /* 21 */
+    rs_read_boolean(inf, save_msg);             /* 22 */
+    rs_read_boolean(inf, see_floor);            /* 23 */
+    rs_read_boolean(inf, stat_msg);             /* 24 */
+    rs_read_boolean(inf, terse);                /* 25 */
+    rs_read_boolean(inf, to_death);             /* 26 */
+    rs_read_boolean(inf, tombstone);            /* 27 */
 #ifdef MASTER
-    rs_read_int(inf, wizard);                  /* 28 */
+    rs_read_int(inf, wizard);                   /* 28 */
 #else
-    rs_read_int(inf, dummyint);                /* 28 */
+    rs_read_int(inf, dummyint);                 /* 28 */
 #endif
     rs_read_booleans(inf, pack_used, 26);       /* 29 */
     rs_read_char(inf, &dir_ch);
