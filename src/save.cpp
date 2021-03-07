@@ -105,7 +105,7 @@ gotfile:
 	    md_unlink(file_name);
 	}
 	strcpy(file_name, buf);
-	if ((savef = std::fopen(file_name, "w")) == nullptr)
+	if ((savef = std::fopen(file_name, "wb")) == nullptr)
 	    msg(strerror(errno));
     } while (savef == nullptr);
 
@@ -126,8 +126,8 @@ auto_save(int sig)
     NOOP(sig);
 
     md_ignoreallsignals();
-    if (file_name[0] != '\0' && ((savef = std::fopen(file_name, "w")) != nullptr ||
-	(md_unlink_open_file(file_name, savef) >= 0 && (savef = std::fopen(file_name, "w")) != nullptr)))
+    if (file_name[0] != '\0' && ((savef = std::fopen(file_name, "wb")) != nullptr ||
+	(md_unlink_open_file(file_name, savef) >= 0 && (savef = std::fopen(file_name, "wb")) != nullptr)))
 	    save_file(savef);
     exit(0);
 }
