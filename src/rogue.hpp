@@ -11,6 +11,7 @@
  */
 #pragma once
 
+#include <array>
 #include "extern.hpp"
 
 #undef lines
@@ -477,9 +478,12 @@ struct delayed_action
 
 extern bool	after, again, allscore, amulet, door_stop, fight_flush,
 		firstmove, has_hit, inv_describe, jump, kamikaze,
-		lower_msg, move_on, msg_esc, pack_used[],
+		lower_msg, move_on, msg_esc,
 		passgo, playing, q_comm, running, save_msg, see_floor,
 		seenstairs, stat_msg, terse, to_death, tombstone;
+
+/** Is the character used in the pack? */
+extern std::array<bool, 26> pack_used;
 
 extern char	dir_ch, file_name[], home[], huh[],
 		l_last_comm, l_last_dir, last_comm, last_dir, *Numname,
@@ -714,7 +718,6 @@ int	passwd();
 
 char	be_trapped(coord *tc);
 char	floor_ch();
-char	pack_char();
 char	readchar();
 char	rnd_thing();
 

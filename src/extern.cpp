@@ -43,12 +43,12 @@ bool tombstone = true;			/* Print out tombstone at end */
 #ifdef MASTER
 int wizard = false;			/* True if allows wizard commands */
 #endif
-bool pack_used[26] = {			/* Is the character used in the pack? */
+std::array<bool, 26> pack_used =
+{{
     false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false
-};
-
+}};
 char dir_ch;				/* Direction from last get_dir() call */
 char file_name[MAXSTR];			/* Save file name */
 char huh[MAXSTR];			/* The last message printed */

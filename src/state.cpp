@@ -274,19 +274,20 @@ rs_read_boolean(FILE* inf, bool& i)
     return READSTAT;
 }
 
+template<std::size_t N>
 static bool
-rs_write_booleans(FILE* savef, const bool* c, const std::size_t count)
+rs_write_booleans(FILE* savef, const std::array<bool, N>& container)
 {
     if (write_error)
     {
         return WRITESTAT;
     }
 
-    rs_write_int(savef, static_cast<const int>(count));
+    rs_write_int(savef, static_cast<const int>(N));
 
-    for (std::size_t i = 0; i < count; ++i)
+    for (std::size_t i = 0; i < N; ++i)
     {
-        if (rs_write_boolean(savef, c[i]))
+        if (rs_write_boolean(savef, container[i]))
         {
             break;
         }
@@ -295,8 +296,9 @@ rs_write_booleans(FILE* savef, const bool* c, const std::size_t count)
     return WRITESTAT;
 }
 
+template<std::size_t N>
 static bool
-rs_read_booleans(FILE* inf, bool* i, const std::size_t count)
+rs_read_booleans(FILE* inf, std::array<bool, N>& container)
 {
     int value = 0;
 
@@ -307,14 +309,14 @@ rs_read_booleans(FILE* inf, bool* i, const std::size_t count)
 
     rs_read_int(inf, value);
 
-    if (value != static_cast<const int>(count))
+    if (value != static_cast<const int>(N))
     {
         format_error = true;
     }
 
-    for (std::size_t n = 0; n < count; ++n)
+    for (std::size_t i = 0; i < N; ++i)
     {
-        if (rs_read_boolean(inf, i[n]))
+        if (rs_read_boolean(inf, container[i]))
         {
             break;
         }
@@ -1859,7 +1861,7 @@ rs_save_file(FILE *savef)
 #else
     rs_write_int(savef, 0);                         /* 28 */
 #endif
-    rs_write_booleans(savef, pack_used, 26);        /* 29 */
+    rs_write_booleans(savef, pack_used);            /* 29 */
     rs_write_char(savef, dir_ch);
     rs_write_chars(savef, file_name, MAXSTR);
     rs_write_chars(savef, huh, MAXSTR);
@@ -1989,7 +1991,7 @@ rs_restore_file(FILE *inf)
 #else
     rs_read_int(inf, dummyint);                 /* 28 */
 #endif
-    rs_read_booleans(inf, pack_used, 26);       /* 29 */
+    rs_read_booleans(inf, pack_used);           /* 29 */
     rs_read_char(inf, &dir_ch);
     rs_read_chars(inf, file_name, MAXSTR);
     rs_read_chars(inf, huh, MAXSTR);

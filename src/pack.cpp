@@ -15,6 +15,8 @@
 #include <ncurses.h>
 #include "rogue.hpp"
 
+static inline char pack_char();
+
 /*
  * add_pack:
  *	Pick up an object and add it to the pack.  If the argument is
@@ -120,13 +122,13 @@ out:
 
 	if (lp != nullptr)
 	{
-	    if (!pack_room(from_floor, obj))
-		return;
-	    else
-	    {
-		obj->o_packch = pack_char();
-		next(obj) = next(lp);
-		prev(obj) = lp;
+        if (!pack_room(from_floor, obj))
+        return;
+        else
+        {
+        obj->o_packch = pack_char();
+        next(obj) = next(lp);
+        prev(obj) = lp;
 		if (next(lp) != nullptr)
 		    prev(next(lp)) = obj;
 		next(lp) = obj;
@@ -228,15 +230,15 @@ leave_pack(THING *obj, bool newobj, bool all)
  * pack_char:
  *	Return the next unused pack character.
  */
-char
+static inline char
 pack_char()
 {
-    bool *bp;
+    std::size_t i;
 
-    for (bp = pack_used; *bp; bp++)
-	continue;
-    *bp = true;
-    return (char)((int)(bp - pack_used) + 'a');
+    for (i = 0; pack_used[i]; ++i);
+    pack_used[i] = true;
+
+    return static_cast<char>(static_cast<int>(i) + 'a');
 }
 
 /*
