@@ -408,7 +408,6 @@ parse_opts(char *str)
     char *sp;
     OPTION *op;
     int len;
-    const char** i;
     char *start;
 
     while (*str)
@@ -451,17 +450,21 @@ parse_opts(char *str)
 		    /*
 		     * check for type of inventory
 		     */
-		    if (op->o_putfunc == put_inv_t)
-		    {
-			if (islower(*str))
-			    *str = (char) toupper(*str);
-			for (i = inv_t_name; i <= &inv_t_name[INV_CLEAR]; i++)
-			    if (strncmp(str, *i, sp - str) == 0)
-			    {
-				inv_type = (int)(i - inv_t_name);
-				break;
-			    }
-		    }
+            if (op->o_putfunc == put_inv_t)
+            {
+                if (std::islower(*str))
+                {
+                    *str = std::toupper(*str);
+                }
+                for (std::size_t i = 0; i < 3; ++i)
+                {
+                    if (!std::strncmp(str, inv_t_name[i], sp - str))
+                    {
+                        inv_type = static_cast<int>(i);
+                        break;
+                    }
+                }
+            }
 		    else
 			strucpy(start, str, (int)(sp - str));
 		}

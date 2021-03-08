@@ -490,9 +490,9 @@ extern char	dir_ch, file_name[], home[], huh[],
 		outbuf[], *release, runch,
 		take;
 
-extern const char* inv_t_name[];
+extern std::array<const char*, 3> inv_t_name;
 /** Names of the traps. */
-extern const char* tr_name[];
+extern std::array<const char*, NTRAPS> tr_name;
 /** Colors of the potions. */
 extern const char* p_colors[];
 /** Stone settings of the rings. */

@@ -495,7 +495,7 @@ rs_read_new_string(FILE* inf, char** s)
 }
 
 static bool
-rs_read_new_string(FILE* inf, const char** s)
+rs_read_new_string(FILE* inf, const char*& s)
 {
     int len = 0;
     char* buf = nullptr;
@@ -518,24 +518,25 @@ rs_read_new_string(FILE* inf, const char** s)
 
     rs_read_chars(inf, buf, len);
 
-    *s = buf;
+    s = buf;
 
     return READSTAT;
 }
 
+template<std::size_t N>
 static bool
-rs_write_strings(FILE* savef, const char** s, const std::size_t count)
+rs_write_strings(FILE* savef, const std::array<const char*, N>& container)
 {
     if (write_error)
     {
         return WRITESTAT;
     }
 
-    rs_write_int(savef, count);
+    rs_write_int(savef, static_cast<const int>(N));
 
-    for (std::size_t i = 0; i < count; ++i)
+    for (std::size_t i = 0; i < N; ++i)
     {
-        if (rs_write_string(savef, s[i]))
+        if (rs_write_string(savef, container[i]))
         {
             break;
         }
@@ -544,8 +545,9 @@ rs_write_strings(FILE* savef, const char** s, const std::size_t count)
     return WRITESTAT;
 }
 
+template<std::size_t N>
 static bool
-rs_read_new_strings(FILE* inf, const char** s, const std::size_t count)
+rs_read_new_strings(FILE* inf, std::array<const char*, N>& container)
 {
     int value = 0;
 
@@ -556,14 +558,14 @@ rs_read_new_strings(FILE* inf, const char** s, const std::size_t count)
 
     rs_read_int(inf, value);
 
-    if (value != static_cast<const int>(count))
+    if (value != static_cast<const int>(N))
     {
         format_error = true;
     }
 
-    for (std::size_t i = 0; i < count; ++i)
+    for (std::size_t i = 0; i < N; ++i)
     {
-        if (rs_read_new_string(inf, &s[i]))
+        if (rs_read_new_string(inf, container[i]))
         {
             break;
         }
@@ -1877,12 +1879,12 @@ rs_save_file(FILE *savef)
     rs_write_int(savef,orig_dsusp);
     rs_write_chars(savef, fruit, MAXSTR);
     rs_write_chars(savef, home, MAXSTR);
-    rs_write_strings(savef,inv_t_name,3);
+    rs_write_strings(savef, inv_t_name);
     rs_write_char(savef,l_last_comm);
     rs_write_char(savef,l_last_dir);
     rs_write_char(savef,last_comm);
     rs_write_char(savef,last_dir);
-    rs_write_strings(savef,tr_name,8);
+    rs_write_strings(savef, tr_name);
     rs_write_int(savef,n_objs);
     rs_write_int(savef, ntraps);
     rs_write_int(savef, hungry_state);
@@ -2007,12 +2009,12 @@ rs_restore_file(FILE *inf)
     rs_read_int(inf, orig_dsusp);
     rs_read_chars(inf, fruit, MAXSTR);
     rs_read_chars(inf, home, MAXSTR);
-    rs_read_new_strings(inf,inv_t_name,3);
+    rs_read_new_strings(inf, inv_t_name);
     rs_read_char(inf, &l_last_comm);
     rs_read_char(inf, &l_last_dir);
     rs_read_char(inf, &last_comm);
     rs_read_char(inf, &last_dir);
-    rs_read_new_strings(inf,tr_name,8);
+    rs_read_new_strings(inf, tr_name);
     rs_read_int(inf, n_objs);
     rs_read_int(inf, ntraps);
     rs_read_int(inf, hungry_state);

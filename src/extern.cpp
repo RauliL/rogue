@@ -65,18 +65,18 @@ int  orig_dsusp;			/* Original dsusp char */
 char fruit[MAXSTR] =			/* Favorite fruit */
 		{ 's', 'l', 'i', 'm', 'e', '-', 'm', 'o', 'l', 'd', '\0' };
 char home[MAXSTR] = { '\0' };		/* User's home directory */
-const char* inv_t_name[] =
-{
+std::array<const char*, 3> inv_t_name =
+{{
     "Overwrite",
     "Slow",
-    "Clear"
-};
+    "Clear",
+}};
 char l_last_comm = '\0';		/* Last last_comm */
 char l_last_dir = '\0';			/* Last last_dir */
 char last_comm = '\0';			/* Last command typed */
 char last_dir = '\0';			/* Last direction given */
-const char* tr_name[] =
-{
+std::array<const char*, NTRAPS> tr_name =
+{{
     "a trapdoor",
     "an arrow trap",
     "a sleeping gas trap",
@@ -84,8 +84,8 @@ const char* tr_name[] =
     "a teleport trap",
     "a poison dart trap",
     "a rust trap",
-    "a mysterious trap"
-};
+    "a mysterious trap",
+}};
 
 
 int n_objs;				/* # items listed in inventory() call */
