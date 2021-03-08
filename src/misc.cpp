@@ -46,7 +46,7 @@ look(bool wakeup)
     rp = proom;
     if (!ce(oldpos, hero))
     {
-	erase_lamp(&oldpos, oldrp);
+	erase_lamp(oldpos, *oldrp);
 	oldpos = hero;
 	oldrp = rp;
     }
@@ -212,28 +212,41 @@ trip_ch(int y, int x, int ch)
  * erase_lamp:
  *	Erase the area shown by a lamp in a dark room.
  */
-
 void
-erase_lamp(coord *pos, struct room *rp)
+erase_lamp(const coord& pos, const room& rp)
 {
-    int y, x, ey, sy, ex;
+    int ey;
+    int ex;
+    int sy;
 
-    if (!(see_floor && (rp->r_flags & (ISGONE|ISDARK)) == ISDARK
-	&& !on(player,ISBLIND)))
-	    return;
+    if (!(
+        see_floor &&
+        (rp.r_flags & (ISGONE|ISDARK)) == ISDARK &&
+        !on(player,ISBLIND)
+    ))
+    {
+        return;
+    }
 
-    ey = pos->y + 1;
-    ex = pos->x + 1;
-    sy = pos->y - 1;
-    for (x = pos->x - 1; x <= ex; x++)
-	for (y = sy; y <= ey; y++)
-	{
-	    if (y == hero.y && x == hero.x)
-		continue;
-	    move(y, x);
-	    if (inch() == FLOOR)
-		addch(' ');
-	}
+    ey = pos.y + 1;
+    ex = pos.x + 1;
+    sy = pos.y - 1;
+
+    for (int x = pos.x - 1; x <= ex; ++x)
+    {
+        for (int y = sy; y <= ey; ++y)
+        {
+            if (y == hero.y && x == hero.x)
+            {
+                continue;
+            }
+            move(y, x);
+            if (inch() == FLOOR)
+            {
+                addch(' ');
+            }
+        }
+    }
 }
 
 /*

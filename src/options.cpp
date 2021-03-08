@@ -234,7 +234,7 @@ get_sf(void *vp, WINDOW *win)
     {
 	if (!see_floor) {
 	    see_floor = true;
-	    erase_lamp(&hero, proom);
+	    erase_lamp(hero, *proom);
 	    see_floor = false;
 	}
 	else

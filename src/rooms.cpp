@@ -14,13 +14,22 @@
 #include <ncurses.h>
 #include "rogue.hpp"
 
-typedef struct spot {		/* position matrix for maze positions */
-	int	nexits;
-	coord	exits[4];
-	int	used;
-} SPOT;
+/**
+ * Position matrix for maze positions.
+ */
+struct spot
+{
+    int nexits;
+    coord exits[4];
+    int used;
+};
 
 #define GOLDGRP 1
+
+static void draw_room(const room&);
+static void horiz(const room&, const int);
+static void vert(const room&, const int);
+static void do_maze(const room&);
 
 /*
  * do_rooms:
@@ -112,7 +121,7 @@ do_rooms()
 		rp->r_pos.x = top.x + rnd(bsze.x - rp->r_max.x);
 		rp->r_pos.y = top.y + rnd(bsze.y - rp->r_max.y);
 	    } until (rp->r_pos.y != 0);
-	draw_room(rp);
+	draw_room(*rp);
 	/*
 	 * Put the gold in
 	 */
@@ -148,27 +157,33 @@ do_rooms()
  *	Draw a box around a room and lay down the floor for normal
  *	rooms; for maze rooms, draw maze.
  */
-
-void
-draw_room(struct room *rp)
+static void
+draw_room(const room& rp)
 {
-    int y, x;
-
-    if (rp->r_flags & ISMAZE)
-	do_maze(rp);
-    else
+    if ((rp.r_flags & ISMAZE))
     {
-	vert(rp, rp->r_pos.x);				/* Draw left side */
-	vert(rp, rp->r_pos.x + rp->r_max.x - 1);	/* Draw right side */
-	horiz(rp, rp->r_pos.y);				/* Draw top */
-	horiz(rp, rp->r_pos.y + rp->r_max.y - 1);	/* Draw bottom */
+        do_maze(rp);
+    } else {
+        const auto max_x = rp.r_pos.x + rp.r_max.x - 1;
+        const auto max_y = rp.r_pos.y + rp.r_max.y - 1;
 
-	/*
-	 * Put the floor down
-	 */
-	for (y = rp->r_pos.y + 1; y < rp->r_pos.y + rp->r_max.y - 1; y++)
-	    for (x = rp->r_pos.x + 1; x < rp->r_pos.x + rp->r_max.x - 1; x++)
-		chat(y, x) = FLOOR;
+        // Draw left side
+        vert(rp, rp.r_pos.x);
+        // Draw right side
+        vert(rp, max_x);
+        // Draw top
+        horiz(rp, rp.r_pos.y);
+        // Draw bottom
+        horiz(rp, max_y);
+
+        // Put the floor down
+        for (int y = rp.r_pos.y + 1; y < max_y; ++y)
+        {
+            for (int x = rp.r_pos.x + 1; x < max_x; ++x)
+            {
+                chat(y, x) = FLOOR;
+            }
+        }
     }
 }
 
@@ -176,59 +191,61 @@ draw_room(struct room *rp)
  * vert:
  *	Draw a vertical line
  */
-
-void
-vert(struct room *rp, int startx)
+static void
+vert(const room& rp, const int startx)
 {
-    int y;
+    const auto max_y = rp.r_max.y + rp.r_pos.y - 1;
 
-    for (y = rp->r_pos.y + 1; y <= rp->r_max.y + rp->r_pos.y - 1; y++)
-	chat(y, startx) = '|';
+    for (int y = rp.r_pos.y + 1; y <= max_y; ++y)
+    {
+        chat(y, startx) = '|';
+    }
 }
 
 /*
  * horiz:
- *	Draw a horizontal line
+ *  Draw a horizontal line
  */
-
-void
-horiz(struct room *rp, int starty)
+static void
+horiz(const room& rp, const int starty)
 {
-    int x;
+    const auto max_x = rp.r_pos.x + rp.r_max.x - 1;
 
-    for (x = rp->r_pos.x; x <= rp->r_pos.x + rp->r_max.x - 1; x++)
-	chat(starty, x) = '-';
+    for (int x = rp.r_pos.x; x <= max_x; ++x)
+    {
+        chat(starty, x) = '-';
+    }
 }
+
+static int Maxy;
+static int Maxx;
+static int Starty;
+static int Startx;
+static spot maze[NUMLINES / 3 + 1][NUMCOLS / 3 + 1];
 
 /*
  * do_maze:
  *	Dig a maze
  */
-
-static int	Maxy, Maxx, Starty, Startx;
-
-static SPOT	maze[NUMLINES/3+1][NUMCOLS/3+1];
-
-
-void
-do_maze(struct room *rp)
+static void
+do_maze(const room& rp)
 {
-    SPOT *sp;
-    int starty, startx;
     static coord pos;
+    int starty;
+    int startx;
 
-    for (sp = &maze[0][0]; sp <= &maze[NUMLINES / 3][NUMCOLS / 3]; sp++)
+    for (auto* sp = &maze[0][0]; sp <= &maze[NUMLINES / 3][NUMCOLS / 3]; ++sp)
     {
-	sp->used = false;
-	sp->nexits = 0;
+        sp->used = false;
+        sp->nexits = 0;
     }
 
-    Maxy = rp->r_max.y;
-    Maxx = rp->r_max.x;
-    Starty = rp->r_pos.y;
-    Startx = rp->r_pos.x;
-    starty = (rnd(rp->r_max.y) / 2) * 2;
-    startx = (rnd(rp->r_max.x) / 2) * 2;
+    Maxy = rp.r_max.y;
+    Maxx = rp.r_max.x;
+    Starty = rp.r_pos.y;
+    Startx = rp.r_pos.x;
+    starty = (rnd(rp.r_max.y) / 2) * 2;
+    startx = (rnd(rp.r_max.x) / 2) * 2;
     pos.y = starty + Starty;
     pos.x = startx + Startx;
     putpass(&pos);
@@ -303,7 +320,7 @@ dig(int y, int x)
 void
 accnt_maze(int y, int x, int ny, int nx)
 {
-    SPOT *sp;
+    spot* sp;
     coord *cp;
 
     sp = &maze[y][x];
@@ -318,12 +335,11 @@ accnt_maze(int y, int x, int ny, int nx)
  * rnd_pos:
  *	Pick a random spot in a room
  */
-
-void
-rnd_pos(struct room *rp, coord *cp)
+static void
+rnd_pos(const room& rp, coord& cp)
 {
-    cp->x = rp->r_pos.x + rnd(rp->r_max.x - 2) + 1;
-    cp->y = rp->r_pos.y + rnd(rp->r_max.y - 2) + 1;
+    cp.x = rp.r_pos.x + rnd(rp.r_max.x - 2) + 1;
+    cp.y = rp.r_pos.y + rnd(rp.r_max.y - 2) + 1;
 }
 
 /*
@@ -353,7 +369,7 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
 	    rp = &rooms[rnd_room()];
 	    compchar = ((rp->r_flags & ISMAZE) ? PASSAGE : FLOOR);
 	}
-	rnd_pos(rp, cp);
+	rnd_pos(*rp, *cp);
 	pp = INDEX(cp->y, cp->x);
 	if (monst)
 	{
