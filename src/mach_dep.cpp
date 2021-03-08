@@ -212,12 +212,12 @@ start_score()
  *      See if the file has a symbolic link
   */
 bool
-is_symlink(const char* sp)
+is_symlink(const std::string& filename)
 {
 #if defined(S_IFLNK)
     struct stat sbuf2;
 
-    if (lstat(sp, &sbuf2) < 0)
+    if (lstat(filename.c_str(), &sbuf2) < 0)
     {
         return false;
     }

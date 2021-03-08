@@ -91,13 +91,7 @@
 #cmakedefine HAVE_UNISTD_H 1
 
 /* Define to 1 if `fork' works. */
-#undef HAVE_WORKING_FORK
-
-/* Define to 1 if `vfork' works. */
-#undef HAVE_WORKING_VFORK
-
-/* Define to 1 if the system has the type `_Bool'. */
-#undef HAVE__BOOL
+#cmakedefine HAVE_WORKING_FORK 1
 
 /* Define to 1 if you have the `_spawnl' function. */
 #cmakedefine HAVE__SPAWNL 1

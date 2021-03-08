@@ -493,17 +493,20 @@ parse_opts(char *str)
  * strucpy:
  *	Copy string using unctrl for things
  */
-
 void
-strucpy(char *s1, char *s2, int len)
+strucpy(char* s1, const char* s2, std::size_t len)
 {
     if (len > MAXINP)
-	len = MAXINP;
+    {
+        len = MAXINP;
+    }
     while (len--)
     {
-	if (isprint(*s2) || *s2 == ' ')
-	    *s1++ = *s2;
-	s2++;
+        if (std::isprint(*s2) || *s2 == ' ')
+        {
+            *s1++ = *s2;
+        }
+        ++s2;
     }
     *s1 = '\0';
 }

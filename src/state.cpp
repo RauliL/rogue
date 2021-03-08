@@ -466,6 +466,35 @@ rs_write_string(FILE *savef, const char* s)
 }
 
 static bool
+rs_read_new_string(FILE* inf, std::string& container)
+{
+    int len = 0;
+    char* buffer = nullptr;
+
+    if (read_error || format_error)
+    {
+        return READSTAT;
+    }
+
+    rs_read_int(inf, len);
+
+    if (len > 0)
+    {
+        buffer = new char[len];
+    }
+
+    rs_read_chars(inf, buffer, len);
+    container.assign(buffer, len > 0 ? len - 1 : 0);
+
+    if (buffer)
+    {
+        delete[] buffer;
+    }
+
+    return READSTAT;
+}
+
+static bool
 rs_read_new_string(FILE* inf, char** s)
 {
     int len = 0;
@@ -1870,7 +1899,7 @@ rs_save_file(FILE *savef)
     rs_write_potions(savef);
     rs_write_chars(savef,prbuf,2*MAXSTR);
     rs_write_rings(savef);
-    rs_write_string(savef,release);
+    rs_write_string(savef, release.c_str());
     rs_write_char(savef, runch);
     rs_write_scrolls(savef);
     rs_write_char(savef, take);
@@ -2000,7 +2029,7 @@ rs_restore_file(FILE *inf)
     rs_read_potions(inf);
     rs_read_chars(inf, prbuf, 2*MAXSTR);
     rs_read_rings(inf);
-    rs_read_new_string(inf,&release);
+    rs_read_new_string(inf, release);
     rs_read_char(inf, &runch);
     rs_read_scrolls(inf);
     rs_read_char(inf, &take);

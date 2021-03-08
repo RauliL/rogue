@@ -322,36 +322,34 @@ md_raw_standend()
 }
 
 int
-md_unlink_open_file(const char* file, FILE* inf)
+md_unlink_open_file(const std::string& filename, FILE* inf)
 {
 #if defined(_WIN32)
     std::fclose(inf);
-    _chmod(file, 0600);
+#endif
 
-    return _unlink(file);
+    return md_unlink(filename);
+}
+
+int
+md_unlink(const std::string& filename)
+{
+#if defined(_WIN32)
+    _chmod(filename.c_str(), 0600);
+
+    return _unlink(filename.c_str());
 #else
-    return unlink(file);
+    return unlink(filename.c_str());
 #endif
 }
 
 int
-md_unlink(char *file)
+md_chmod(const std::string& filename, int mode)
 {
-#ifdef _WIN32
-    _chmod(file, 0600);
-    return( _unlink(file) );
+#if defined(_WIN32)
+    return _chmod(filename.c_str(), mode);
 #else
-    return(unlink(file));
-#endif
-}
-
-int
-md_chmod(char *filename, int mode)
-{
-#ifdef _WIN32
-    return( _chmod(filename, mode) );
-#else
-    return( chmod(filename, mode) );
+    return chmod(filename.c_str(), mode);
 #endif
 }
 
@@ -410,94 +408,110 @@ md_getpid()
 #endif
 }
 
-char *
+std::string
 md_getusername()
 {
-    static char login[80];
     const char* l = nullptr;
-#ifdef _WIN32
-    LPSTR mybuffer;
-    DWORD size = UNLEN + 1;
+#if defined(_WIN32)
     TCHAR buffer[UNLEN + 1];
+    LPSTR mybuffer = buffer;
+    DWORD size = UNLEN + 1;
 
-    mybuffer = buffer;
-    GetUserName(mybuffer,&size);
-    l = mybuffer;
+    GetUserName(mybuffer, &size);
 #elif defined(HAVE_GETPWUID)
-    struct passwd *pw;
+    auto* pw = getpwuid(getuid());
 
-    pw = getpwuid(getuid());
-
-    l = pw->pw_name;
+    if (const auto* pw = getpwuid(getuid()))
+    {
+        l = pw->pw_name;
+    }
 #endif
 
-    if ((l == nullptr) || (*l == '\0'))
-        if ( (l = std::getenv("USERNAME")) == nullptr )
-            if ( (l = std::getenv("LOGNAME")) == nullptr )
-                if ( (l = std::getenv("USER")) == nullptr )
+    if (!l || !*l)
+    {
+        if (!(l = std::getenv("USERNAME")))
+        {
+            if (!(l = std::getenv("LOGNAME")))
+            {
+                if (!(l = std::getenv("USER")))
+                {
                     l = "nobody";
+                }
+            }
+        }
+    }
 
-    strncpy(login,l,80);
-    login[79] = 0;
-
-    return(login);
+    return l;
 }
 
-char *
+std::string
 md_gethomedir()
 {
     static char homedir[PATH_MAX];
+#if defined(_WIN32)
+    static const char slash = '\\';
+#else
+    static const char slash = '/';
+#endif
     const char* h = nullptr;
     std::size_t len;
 #if defined(_WIN32)
     TCHAR szPath[PATH_MAX];
 #endif
-#if defined(_WIN32)
-        char slash = '\\';
-#else
-    char slash = '/';
-    struct passwd *pw;
-    pw = getpwuid(getuid());
 
-    h = pw->pw_dir;
-
-    if (strcmp(h,"/") == 0)
-        h = nullptr;
-#endif
-    homedir[0] = 0;
-#ifdef _WIN32
-    if(SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
-        h = szPath;
-#endif
-
-    if ( (h == nullptr) || (*h == '\0') )
+#if !defined(_WIN32)
+    if (const auto* pw = getpwuid(getuid()))
     {
-        if ( (h = std::getenv("HOME")) == nullptr )
-	{
-            if ( (h = std::getenv("HOMEDRIVE")) == nullptr)
-                h = "";
-            else
+        h = pw->pw_dir;
+    }
+    if (!std::strcmp(h, "/"))
+    {
+        h = nullptr;
+    }
+#endif
+
+#if defined(_WIN32)
+    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
+    {
+        h = szPath;
+    }
+#endif
+
+    homedir[0] = 0;
+
+    if (!h || !*h)
+    {
+        if (!(h = std::getenv("HOME")))
+        {
+            if (!(h = std::getenv("HOMEDRIVE")))
             {
-                strncpy(homedir,h,PATH_MAX-1);
-                homedir[PATH_MAX-1] = 0;
-
-                if ( (h = std::getenv("HOMEPATH")) == nullptr)
+                h = "";
+            } else {
+                std::strncpy(homedir, h, PATH_MAX - 1);
+                homedir[PATH_MAX - 1] = 0;
+                if (!(h = std::getenv("HOMEPATH")))
+                {
                     h = "";
+                }
             }
-	}
+        }
     }
 
+    len = std::strlen(homedir);
+    std::strncat(homedir, h, PATH_MAX - len - 1);
+    len = std::strlen(homedir);
 
-    len = strlen(homedir);
-    strncat(homedir,h,PATH_MAX-len-1);
-    len = strlen(homedir);
-
-    if ((len > 0) && (homedir[len-1] != slash)) {
+    if (len > 0 && homedir[len - 1] != slash)
+    {
+        if (len == PATH_MAX)
+        {
+            --len;
+        }
         homedir[len] = slash;
-        homedir[len+1] = 0;
+        homedir[len + 1] = 0;
     }
 
-    return(homedir);
+    return homedir;
 }
 
 void
@@ -510,30 +524,40 @@ md_sleep(int s)
 #endif
 }
 
-char *
+#if defined(HAVE_WORKING_FORK) || defined(HAVE__SPAWNL)
+static std::string
 md_getshell()
 {
-    static char shell[PATH_MAX];
-    const char* s = nullptr;
-#ifdef _WIN32
-    const char* def = "C:\\WINDOWS\\SYSTEM32\\CMD.EXE";
+#if defined(_WIN32)
+    static const std::string def = "C:\\WINDOWS\\SYSTEM32\\CMD.EXE";
 #else
-    const char* def = "/bin/sh";
-    auto pw = getpwuid(getuid());
-
-    s = pw->pw_shell;
+    static const std::string def = "/bin/sh";
 #endif
-    if ((s == nullptr) || (*s == '\0'))
-        if ( (s = std::getenv("COMSPEC")) == nullptr)
-            if ( (s = std::getenv("SHELL")) == nullptr)
-                if ( (s = std::getenv("SystemRoot")) == nullptr)
-                    s = def;
+    const char* s = nullptr;
 
-    strncpy(shell,s,PATH_MAX);
-    shell[PATH_MAX-1] = 0;
+#if !defined(_WIN32)
+    if (const auto* pw = getpwuid(getuid()))
+    {
+        s = pw->pw_shell;
+    }
+#endif
+    if (!s || !*s)
+    {
+        if (!(s = std::getenv("COMSPEC")))
+        {
+            if (!(s = std::getenv("SHELL")))
+            {
+                if (!(s = std::getenv("SystemRoot")))
+                {
+                    return def;
+                }
+            }
+        }
+    }
 
-    return(shell);
+    return s;
 }
+#endif
 
 int
 md_shellescape()
@@ -543,143 +567,144 @@ md_shellescape()
     int pid;
     void (*myquit)(int);
     void (*myend)(int);
-    char *sh;
+    const auto sh = md_getshell();
 
-    sh = md_getshell();
-
-    while((pid = fork()) < 0)
-        sleep(1);
-
-    if (pid == 0) /* Shell Process */
+    while ((pid = fork()) < 0)
     {
-        /*
-         * Set back to original user, just in case
-         */
+        sleep(1);
+    }
+
+    if (pid == 0) // Shell process
+    {
+        // Set back to original user, just in case
         md_normaluser();
-        execl(sh == nullptr ? "/bin/sh" : sh, "shell", "-i", nullptr);
+        execl(sh.empty() ? "/bin/sh" : sh.c_str(), "shell", "-i", nullptr);
         perror("No shelly");
         _exit(-1);
-    }
-    else /* Application */
-    {
-    	myend = signal(SIGINT, SIG_IGN);
-#ifdef SIGQUIT
-        myquit = signal(SIGQUIT, SIG_IGN);
+    } else { // Application
+        myend = std::signal(SIGINT, SIG_IGN);
+#if defined(SIGQUIT)
+        myquit = std::signal(SIGQUIT, SIG_IGN);
 #endif
         while (wait(&ret_status) != pid)
+        {
             continue;
+        }
 
-        signal(SIGINT, myquit);
+        std::signal(SIGINT, myquit);
 #ifdef SIGQUIT
-        signal(SIGQUIT, myend);
+        std::signal(SIGQUIT, myend);
 #endif
     }
-    return(ret_status);
+
+    return ret_status;
 #elif defined(HAVE__SPAWNL)
-    return((int)_spawnl(_P_WAIT,md_getshell(),"shell",nullptr,0));
-#elif defined(HAVE_SPAWNL)
-    return ( spawnl(P_WAIT,md_getshell(),"shell",nullptr,0) );
+    return static_cast<int>(_spawnl(
+        _P_WAIT,
+        md_getshell().c_str(),
+        "shell",
+        nullptr,
+        0
+    ));
 #else
-	return(0);
+    return 0;
 #endif
 }
 
-int
-directory_exists(char *dirname)
-{
-    struct stat sb;
-
-    if (stat(dirname, &sb) == 0) /* path exists */
-        return (sb.st_mode & S_IFDIR);
-
-    return(0);
-}
-
-char *
+std::string
 md_getrealname(int uid)
 {
     static char uidstr[20];
-#if !defined(_WIN32)
-    struct passwd *pp;
 
-	if ((pp = getpwuid(uid)) == nullptr)
+#if !defined(_WIN32)
+    if (const auto* pp = getpwuid(uid))
     {
-        sprintf(uidstr,"%d", uid);
-        return(uidstr);
+        return pp->pw_name;
     }
-	else
-	    return(pp->pw_name);
-#else
-   sprintf(uidstr,"%d", uid);
-   return(uidstr);
 #endif
+    std::snprintf(uidstr, 20, "%d", uid);
+
+    return uidstr;
 }
 
 extern const char* xcrypt(const char* key, const char* salt);
 
 const char*
-md_crypt(const char* key, const char* salt)
+md_crypt(const std::string& key, const std::string& salt)
 {
-    return xcrypt(key, salt);
+    return xcrypt(key.c_str(), salt.c_str());
 }
 
-char *
-md_getpass(char *prompt)
+char*
+md_getpass(const std::string& prompt)
 {
-#ifndef HAVE_GETPASS
+#if !defined(HAVE_GETPASS)
+    static const int max_length = 9;
     static char password_buffer[9];
-    char *p = password_buffer;
-    int c, count = 0;
-    int max_length = 9;
+    char* p = password_buffer;
+    int count = 0;
 
-    fflush(stdout);
-    /* If we can't prompt, abort */
-    if (fputs(prompt, stderr) < 0)
+    std::fflush(stdout);
+    // If we can't prompt, abort
+    if (std::fputs(prompt.c_str(), stderr) < 0)
     {
         *p = '\0';
+
         return nullptr;
     }
 
-    for(;;)
+    for (;;)
     {
-        /* Get a character with no echo */
-        c = _getch();
+        // Get a character with no echo
+        const int c = _getch();
 
-        /* Exit on interrupt (^c or ^break) */
+        // Exit on interrupt (^c or ^break)
         if (c == '\003' || c == 0x100)
-            exit(1);
+        {
+            std::exit(EXIT_FAILURE);
+        }
 
-        /* Terminate on end of line or file (^j, ^m, ^d, ^z) */
+        // Terminate on end of line or file (^j, ^m, ^d, ^z)
         if (c == '\r' || c == '\n' || c == '\004' || c == '\032')
+        {
             break;
+        }
 
-        /* Back up on backspace */
+        // Back up on backspace
         if (c == '\b')
         {
             if (count)
-                count--;
+            {
+                --count;
+            }
             else if (p > password_buffer)
-                p--;
+            {
+                --p;
+            }
             continue;
         }
 
-        /* Ignore DOS extended characters */
+        // Ignore DOS extended characters
         if ((c & 0xff) != c)
+        {
             continue;
+        }
 
-        /* Add to password if it isn't full */
+        // Add to password if it isn't full
         if (p < password_buffer + max_length - 1)
-            *p++ = (char) c;
-        else
-            count++;
+        {
+            *p++ = static_cast<char>(c);
+        } else {
+            ++count;
+        }
     }
-   *p = '\0';
+    *p = '\0';
 
-   fputc('\n', stderr);
+    std::fputc('\n', stderr);
 
-   return password_buffer;
+    return password_buffer;
 #else
-   return( (char *) getpass(prompt) );
+    return getpass(prompt.c_str());
 #endif
 }
 

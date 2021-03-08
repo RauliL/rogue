@@ -273,12 +273,12 @@ wait_for(int ch)
  *	Function used to display a window and wait before returning
  */
 void
-show_win(const char* message)
+show_win(const std::string& message)
 {
     auto win = hw;
 
     wmove(win, 0, 0);
-    waddstr(win, message);
+    waddstr(win, message.c_str());
     touchwin(win);
     wmove(win, hero.y, hero.x);
     wrefresh(win);

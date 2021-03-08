@@ -11,6 +11,8 @@
  */
 #pragma once
 
+#include <string>
+
 #ifdef HAVE_CONFIG_H
 #ifdef PDCURSES
 #undef HAVE_UNISTD_H
@@ -84,7 +86,7 @@ void come_down(int);
 void doctor(int);
 void	end_line();
 void    endit(int sig);
-void fatal(const char*);
+void fatal(const std::string& message);
 void	getltchars();
 void land(int);
 void    leave(int);
@@ -113,16 +115,16 @@ char	*killname(char monst, bool doart);
 int	checkout();
 #endif
 
-int	md_chmod(char *filename, int mode);
-const char* md_crypt(const char* key, const char* salt);
+int md_chmod(const std::string& filename, int mode);
+const char* md_crypt(const std::string& key, const std::string& salt);
 int	md_dsuspchar();
 int	md_erasechar();
-char	*md_gethomedir();
-char	*md_getusername();
+std::string md_gethomedir();
+std::string md_getusername();
 int	md_getuid();
-char	*md_getpass(char *prompt);
+char* md_getpass(const std::string& prompt);
 int	md_getpid();
-char	*md_getrealname(int uid);
+std::string md_getrealname(int uid);
 void	md_init();
 int	md_killchar();
 void	md_normaluser();
@@ -134,8 +136,8 @@ int	md_shellescape();
 void	md_sleep(int s);
 int	md_suspchar();
 int	md_hasclreol();
-int	md_unlink(char *file);
-int md_unlink_open_file(const char* file, FILE* inf);
+int	md_unlink(const std::string& filename);
+int md_unlink_open_file(const std::string& filename, FILE* inf);
 void md_tstpsignal();
 void md_tstphold();
 void md_tstpresume();
@@ -143,5 +145,3 @@ void md_ignoreallsignals();
 void md_onsignal_autosave();
 void md_onsignal_exit();
 void md_onsignal_default();
-int md_issymlink(char *sp);
-

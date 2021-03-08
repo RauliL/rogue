@@ -14,18 +14,19 @@
 #include <cctype>
 #include <cstdio>
 #include <cstring>
+#include <functional>
 #include <ncurses.h>
 #include "rogue.hpp"
 
 static void set_order(int*, int);
 static const char* nothing(char);
-static const char* nullstr(const THING*);
+static std::string nullstr(const THING&);
 static void nameit(
-    THING*,
-    const char*,
-    const char*,
-    obj_info*,
-    const char*(*)(const THING*)
+    const THING&,
+    const std::string&,
+    const std::string&,
+    const obj_info&,
+    const std::function<std::string(const THING&)>&
 );
 
 /*
@@ -46,11 +47,34 @@ inv_name(THING *obj, bool drop)
     switch (obj->o_type)
     {
         case POTION:
-	    nameit(obj, "potion", p_colors[which], &pot_info[which], nullstr);
-	when RING:
-	    nameit(obj, "ring", r_stones[which], &ring_info[which], ring_num);
-	when STICK:
-	    nameit(obj, ws_type[which], ws_made[which], &ws_info[which], charge_str);
+            nameit(*obj,
+                "potion",
+                p_colors[which],
+                pot_info[which],
+                nullstr
+            );
+            break;
+
+        case RING:
+            nameit(
+                *obj,
+                "ring",
+                r_stones[which],
+                ring_info[which],
+                ring_num
+            );
+            break;
+
+        case STICK:
+            nameit(
+                *obj,
+                ws_type[which],
+                ws_made[which],
+                ws_info[which],
+                charge_str
+            );
+            break;
+
 	when SCROLL:
 	    if (obj->o_count == 1)
 	    {
@@ -632,41 +656,81 @@ nothing(char type)
  */
 static void
 nameit(
-    THING* obj,
-    const char* type,
-    const char* which,
-    obj_info *op,
-    const char* (*prfunc)(const THING*)
+    const THING& obj,
+    const std::string& type,
+    const std::string& which,
+    const obj_info& op,
+    const std::function<std::string(const THING&)>& prfunc
 )
 {
-    char *pb;
-
-    if (op->oi_know || op->oi_guess)
+    if (op.oi_know || op.oi_guess)
     {
-	if (obj->o_count == 1)
-	    sprintf(prbuf, "A %s ", type);
-	else
-	    sprintf(prbuf, "%d %ss ", obj->o_count, type);
-	pb = &prbuf[strlen(prbuf)];
-	if (op->oi_know)
-	    sprintf(pb, "of %s%s(%s)", op->oi_name, (*prfunc)(obj), which);
-	else if (op->oi_guess)
-	    sprintf(pb, "called %s%s(%s)", op->oi_guess, (*prfunc)(obj), which);
+        char* pb;
+
+        if (obj.o_count == 1)
+        {
+            std::snprintf(prbuf, 2 * MAXSTR, "A %s ", type.c_str());
+        } else {
+            std::snprintf(
+                prbuf,
+                2 * MAXSTR,
+                "%d %ss ",
+                obj.o_count,
+                type.c_str()
+            );
+        }
+        pb = &prbuf[strlen(prbuf)];
+        if (op.oi_know)
+        {
+            std::sprintf(
+                pb,
+                "of %s%s(%s)",
+                op.oi_name,
+                prfunc(obj).c_str(),
+                which.c_str()
+            );
+        }
+        else if (op.oi_guess)
+        {
+            std::sprintf(
+                pb,
+                "called %s%s(%s)",
+                op.oi_guess,
+                prfunc(obj).c_str(),
+                which.c_str()
+            );
+        }
     }
-    else if (obj->o_count == 1)
-	sprintf(prbuf, "A%s %s %s", vowelstr(which), which, type);
-    else
-	sprintf(prbuf, "%d %s %ss", obj->o_count, which, type);
+    else if (obj.o_count == 1)
+    {
+        std::snprintf(
+            prbuf,
+            2 * MAXSTR,
+            "A%s %s %s",
+            vowelstr(which.c_str()),
+            which.c_str(),
+            type.c_str()
+        );
+    } else {
+        std::snprintf(
+            prbuf,
+            2 * MAXSTR,
+            "%d %s %ss",
+            obj.o_count,
+            which.c_str(),
+            type.c_str()
+        );
+    }
 }
 
 /*
  * nullstr:
  *	Return a pointer to a null-length string
  */
-static const char*
-nullstr(const THING*)
+static std::string
+nullstr(const THING&)
 {
-    return "";
+    return std::string();
 }
 
 # ifdef	MASTER

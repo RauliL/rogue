@@ -184,27 +184,33 @@ ring_eat(int hand)
  * ring_num:
  *	Print ring bonuses
  */
-const char*
-ring_num(const THING* obj)
+std::string
+ring_num(const THING& obj)
 {
-    static char buf[10];
+    static char buffer[10];
+    int length;
 
-    if (!(obj->o_flags & ISKNOW))
+    if (!(obj.o_flags & ISKNOW))
     {
-        return "";
+        return std::string();
     }
-    switch (obj->o_which)
+    switch (obj.o_which)
     {
         case R_PROTECT:
         case R_ADDSTR:
         case R_ADDDAM:
         case R_ADDHIT:
-            std::snprintf(buf, 10, " [%s]", num(obj->o_arm, 0, RING));
+            length = std::snprintf(
+                buffer,
+                10,
+                " [%s]",
+                num(obj.o_arm, 0, RING)
+            );
             break;
 
         default:
             return "";
     }
 
-    return buf;
+    return std::string(buffer, length);
 }

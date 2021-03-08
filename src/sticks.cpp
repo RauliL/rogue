@@ -415,16 +415,23 @@ def:
  * charge_str:
  *	Return an appropriate string for a wand charge
  */
-const char*
-charge_str(const THING* obj)
+std::string
+charge_str(const THING& obj)
 {
-    static char buf[20];
+    static char buffer[20];
+    int length;
 
-    if (!(obj->o_flags & ISKNOW))
-	buf[0] = '\0';
+    if (!(obj.o_flags & ISKNOW))
+    {
+        buffer[0] = 0;
+        length = 0;
+    }
     else if (terse)
-	sprintf(buf, " [%d]", obj->o_charges);
-    else
-	sprintf(buf, " [%d charges]", obj->o_charges);
-    return buf;
+    {
+        length = std::snprintf(buffer, 20, " [%d]", obj.o_charges);
+    } else {
+        length = std::snprintf(buffer, 20, " [%d charges]", obj.o_charges);
+    }
+
+    return std::string(buffer, length);
 }

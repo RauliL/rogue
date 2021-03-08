@@ -42,19 +42,22 @@ main(int argc, char **argv, char** envp)
 
 #endif
 
-    /*
-     * get home and options from environment
-     */
-
-    strncpy(home, md_gethomedir(), MAXSTR);
+    // get home and options from environment
+    std::strncpy(home, md_gethomedir().c_str(), MAXSTR);
 
     strcpy(file_name, home);
     strcat(file_name, "rogue.save");
 
-    if ((env = std::getenv("ROGUEOPTS")) != nullptr)
-	parse_opts(env);
-    if (env == nullptr || whoami[0] == '\0')
-        strucpy(whoami, md_getusername(), (int) strlen(md_getusername()));
+    if ((env = std::getenv("ROGUEOPTS")))
+    {
+        parse_opts(env);
+    }
+    if (!env || !*whoami)
+    {
+        const auto username = md_getusername();
+
+        strucpy(whoami, username.c_str(), username.length());
+    }
     lowtime = static_cast<int>(std::time(nullptr));
 #ifdef MASTER
     if (wizard && std::getenv("SEED") != nullptr)
@@ -169,9 +172,9 @@ endit(int sig)
  *	Exit the program, printing a message.
  */
 void
-fatal(const char* s)
+fatal(const std::string& message)
 {
-    mvaddstr(LINES - 2, 0, s);
+    mvaddstr(LINES - 2, 0, message.c_str());
     refresh();
     endwin();
     my_exit(0);

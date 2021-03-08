@@ -177,7 +177,7 @@ score(int amount, int flags, char monst)
 #ifdef MASTER
 	    if (prflags == 1)
 	    {
-	    printf(" (%s)", md_getrealname(scp->sc_uid));
+	    printf(" (%s)", md_getrealname(scp->sc_uid).c_str());
 	    }
 	    else if (prflags == 2)
 	    {

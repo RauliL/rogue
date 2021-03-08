@@ -487,9 +487,9 @@ extern std::array<bool, 26> pack_used;
 
 extern char	dir_ch, file_name[], home[], huh[],
 		l_last_comm, l_last_dir, last_comm, last_dir, *Numname,
-		outbuf[], *release, runch,
-		take;
+		outbuf[], runch, take;
 
+extern std::string release;
 extern std::array<const char*, 3> inv_t_name;
 /** Names of the traps. */
 extern std::array<const char*, NTRAPS> tr_name;
@@ -670,14 +670,14 @@ void	setup();
 void	shell();
 bool	show_floor();
 void	show_map();
-void show_win(const char* message);
+void show_win(const std::string& message);
 int	sign(int nm);
 int	spread(int nm);
 void start_daemon(const delayed_action::callback_type& func, int arg, int type);
 void	start_score();
 void	status();
 int	step_ok(int ch);
-void	strucpy(char *s1, char *s2, int len);
+void strucpy(char* s1, const char* s2, std::size_t len);
 int	swing(int at_lvl, int op_arm, int wplus);
 void	take_off();
 void	teleport();
@@ -701,7 +701,7 @@ bool	dropcheck(THING *obj);
 bool	fallpos(coord *pos, coord *newpos);
 bool	find_floor(struct room *rp, coord *cp, int limit, bool monst);
 bool	is_magic(THING *obj);
-bool is_symlink(const char* sp);
+bool is_symlink(const std::string& filename);
 bool	levit_check();
 bool	pack_room(bool from_floor, THING *obj);
 bool	roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl);
@@ -717,7 +717,7 @@ char	floor_ch();
 char	readchar();
 char	rnd_thing();
 
-const char* charge_str(const THING* obj);
+std::string charge_str(const THING& obj);
 
 /*
  * choose_str:
@@ -746,7 +746,7 @@ pick_color(const char* col)
 
 char	*inv_name(THING *obj, bool drop);
 char	*num(int n1, int n2, char type);
-const char* ring_num(const THING* obj);
+std::string ring_num(const THING& obj);
 const char* set_mname(THING* tp);
 const char* vowelstr(const char* str);
 

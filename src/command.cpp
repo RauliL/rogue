@@ -292,7 +292,7 @@ over:
 		    wrefresh(curscr);
 		when 'v':
 		    after = false;
-		    msg("version %s. (mctesq was here)", release);
+		    msg("version %s. (mctesq was here)", release.c_str());
 		when 'S':
 		    after = false;
 		    save_game();
