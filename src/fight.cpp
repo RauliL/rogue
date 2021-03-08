@@ -119,7 +119,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	if (thrown)
 	    thunk(weap, mname, terse);
 	else
-	    hit((char *) nullptr, mname, terse);
+	    hit(nullptr, mname, terse);
 	if (on(player, CANHUH))
 	{
 	    did_hit = true;
@@ -139,7 +139,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	if (thrown)
 	    bounce(weap, mname, terse);
 	else
-	    miss((char *) nullptr, mname, terse);
+	    miss(nullptr, mname, terse);
     return did_hit;
 }
 
@@ -173,7 +173,7 @@ attack(THING *mp)
     }
     mname = set_mname(mp);
     oldhp = pstats.s_hpt;
-    if (roll_em(mp, &player, (THING *) nullptr, false))
+    if (roll_em(mp, &player, nullptr, false))
     {
 	if (mp->t_type != 'I')
 	{

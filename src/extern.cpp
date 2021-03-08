@@ -223,13 +223,13 @@ struct monster monsters[26] =
 #undef XX
 
 struct obj_info things[NUMTHINGS] = {
-    { 0,			26 },	/* potion */
-    { 0,			36 },	/* scroll */
-    { 0,			16 },	/* food */
-    { 0,			 7 },	/* weapon */
-    { 0,			 7 },	/* armor */
-    { 0,			 4 },	/* ring */
-    { 0,			 4 },	/* stick */
+    { nullptr,			26 },	/* potion */
+    { nullptr,			36 },	/* scroll */
+    { nullptr,			16 },	/* food */
+    { nullptr,			 7 },	/* weapon */
+    { nullptr,			 7 },	/* armor */
+    { nullptr,			 4 },	/* ring */
+    { nullptr,			 4 },	/* stick */
 };
 
 struct obj_info arm_info[MAXARMORS] = {
