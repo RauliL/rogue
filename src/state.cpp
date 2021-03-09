@@ -498,7 +498,7 @@ rs_read_new_string(FILE* inf, std::string& container)
     }
 
     rs_read_chars(inf, buffer, len);
-    container.assign(buffer, len > 0 ? len - 1 : 0);
+    container.assign(buffer, len);
 
     if (buffer)
     {
