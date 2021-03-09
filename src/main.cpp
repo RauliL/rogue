@@ -210,12 +210,10 @@ roll(int number, int sides)
  */
 
 void
-tstp(int ignored)
+tstp(int)
 {
     int y, x;
     int oy, ox;
-
-	NOOP(ignored);
 
     /*
      * leave nicely
@@ -224,13 +222,13 @@ tstp(int ignored)
     mvcur(0, COLS - 1, LINES - 1, 0);
     endwin();
     resetltchars();
-    fflush(stdout);
-	md_tstpsignal();
+    std::fflush(stdout);
+    md_tstpsignal();
 
     /*
      * start back up again
      */
-	md_tstpresume();
+    md_tstpresume();
     raw();
     noecho();
     keypad(stdscr,1);
@@ -239,9 +237,8 @@ tstp(int ignored)
     wrefresh(curscr);
     getyx(curscr, y, x);
     mvcur(y, x, oy, ox);
-    fflush(stdout);
-    curscr->_cury = oy;
-    curscr->_curx = ox;
+    std::fflush(stdout);
+    setsyx(oy, ox);
 }
 
 /*
