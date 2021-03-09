@@ -91,22 +91,37 @@ static constexpr std::size_t MAXPASS = 13;
 
 enum object_type : int
 {
+    // TODO: \u00A1
     POTION = '!',
+    // TODO: \u266A
     SCROLL = '?',
+    // TODO: \u2663
     FOOD = ':',
+    // TODO: \u2191
     WEAPON = ')',
+    // TODO: \u25D8
     ARMOR = ']',
+    // TODO: \u25CB
     RING = '=',
+    // TODO: \u03C4
     STICK = '/',
+    // TODO: \u263C
     GOLD = '*',
+    // TODO: \u2640
     AMULET = ',',
 };
 
+// TODO: \u2592
 #define PASSAGE		'#'
+// TODO: \u256c
 #define DOOR		'+'
+// TODO: \u00b7
 #define FLOOR		'.'
+// TODO: \u263a
 #define PLAYER		'@'
+// TODO: \u2666
 #define TRAP		'^'
+// TODO: \u2261
 #define STAIRS		'%'
 #define MAGIC		'$'
 #define CALLABLE	-1
