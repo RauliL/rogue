@@ -52,15 +52,15 @@ std::array<bool, 26> pack_used =
 char dir_ch;				/* Direction from last get_dir() call */
 char file_name[MAXSTR];			/* Save file name */
 char huh[MAXSTR];			/* The last message printed */
-const char* p_colors[MAXPOTIONS];
+std::array<const char*, MAXPOTIONS> p_colors;
 char prbuf[2*MAXSTR];			/* buffer for sprintfs */
-const char* r_stones[MAXRINGS];
+std::array<const char*, MAXRINGS> r_stones;
 char runch;				/* Direction player is running */
-char* s_names[MAXSCROLLS];
+std::array<char*, MAXSCROLLS> s_names;
 char take;				/* Thing she is taking */
 char whoami[MAXSTR];			/* Name of player */
-const char* ws_made[MAXSTICKS];
-const char* ws_type[MAXSTICKS];
+std::array<const char*, MAXSTICKS> ws_made;
+std::array<const char*, MAXSTICKS> ws_type;
 int  orig_dsusp;			/* Original dsusp char */
 char fruit[MAXSTR] =			/* Favorite fruit */
 		{ 's', 'l', 'i', 'm', 'e', '-', 'm', 'o', 'l', 'd', '\0' };

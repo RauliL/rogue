@@ -527,15 +527,15 @@ extern std::array<const char*, 3> inv_t_name;
 /** Names of the traps. */
 extern std::array<const char*, NTRAPS> tr_name;
 /** Colors of the potions. */
-extern const char* p_colors[];
+extern std::array<const char*, MAXPOTIONS> p_colors;
 /** Stone settings of the rings. */
-extern const char* r_stones[];
+extern std::array<const char*, MAXRINGS> r_stones;
 /** Names of the scrolls. */
-extern char* s_names[];
+extern std::array<char*, MAXSCROLLS> s_names;
 /** What sticks are made of. */
-extern const char* ws_made[];
+extern std::array<const char*, MAXSTICKS> ws_made;
 /** Is it a wand or a staff? */
-extern const char* ws_type[];
+extern std::array<const char*, MAXSTICKS> ws_type;
 
 extern int	a_class[], count, food_left, hungry_state, inpack,
 		inv_type, lastscore, level, max_hit, max_level, mpos,
@@ -764,7 +764,7 @@ choose_str(const char* ts, const char* ns)
 }
 
 static constexpr std::size_t NCOLORS = 27;
-extern const char* rainbow[];
+extern const std::array<const char*, NCOLORS> rainbow;
 
 /*
  * pick_color:
@@ -816,8 +816,8 @@ extern int      between;
 extern int      group;
 extern coord    nh;
 static constexpr std::size_t NSTONES = 26;
-extern STONE    stones[];
+extern const std::array<STONE, NSTONES> stones;
 static constexpr std::size_t NWOOD = 33;
-extern const char* wood[];
+extern const std::array<const char*, NWOOD> wood;
 static constexpr std::size_t NMETAL = 22;
-extern const char* metal[];
+extern const std::array<const char*, NMETAL> metal;

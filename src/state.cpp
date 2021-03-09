@@ -578,7 +578,7 @@ template<std::size_t N>
 static bool
 rs_write_string_index(
     FILE* savef,
-    const char** master,
+    const std::array<const char*, N>& master,
     const char* str
 )
 {
@@ -602,7 +602,7 @@ template<std::size_t N>
 static bool
 rs_read_string_index(
     FILE* inf,
-    const char** master,
+    const std::array<const char*, N>& master,
     const char** str
 )
 {
@@ -820,7 +820,7 @@ template<std::size_t N>
 static bool
 rs_write_stone_index(
     FILE* savef,
-    const STONE* master,
+    const std::array<STONE, N>& master,
     const char* str
 )
 {
@@ -844,7 +844,7 @@ template<std::size_t N>
 static bool
 rs_read_stone_index(
     FILE* inf,
-    STONE* master,
+    const std::array<STONE, N>& master,
     const char** str
 )
 {
@@ -872,31 +872,35 @@ rs_read_stone_index(
 }
 
 static bool
-rs_write_scrolls(FILE *savef)
+rs_write_scrolls(FILE* savef)
 {
-    int i;
-
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
-    for(i = 0; i < MAXSCROLLS; i++)
+    for (std::size_t i = 0; i < MAXSCROLLS; ++i)
+    {
         rs_write_string(savef, s_names[i]);
+    }
 
-    return(READSTAT);
+    return WRITESTAT;
 }
 
 static bool
-rs_read_scrolls(FILE *inf)
+rs_read_scrolls(FILE* inf)
 {
-    int i;
-
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
-    for(i = 0; i < MAXSCROLLS; i++)
+    for (std::size_t i = 0; i < MAXSCROLLS; ++i)
+    {
         rs_read_new_string(inf, &s_names[i]);
+    }
 
-    return(READSTAT);
+    return READSTAT;
 }
 
 static bool
