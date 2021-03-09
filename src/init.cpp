@@ -77,8 +77,8 @@ init_player()
  * Contains defintions and functions for dealing with things like
  * potions and scrolls
  */
-const char* rainbow[] =
-{
+const std::array<const char*, NCOLORS> rainbow =
+{{
     "amber",
     "aquamarine",
     "black",
@@ -106,10 +106,7 @@ const char* rainbow[] =
     "violet",
     "white",
     "yellow",
-};
-
-#define NCOLORS (sizeof rainbow / sizeof (char *))
-const int cNCOLORS = NCOLORS;
+}};
 
 static const char *sylls[] =
 {
@@ -131,7 +128,8 @@ static const char *sylls[] =
     "zok", "zon", "zum",
 };
 
-STONE stones[] = {
+const std::array<STONE, NSTONES> stones =
+{{
     { "agate",		 25},
     { "alexandrite",	 40},
     { "amethyst",	 50},
@@ -158,13 +156,10 @@ STONE stones[] = {
     { "turquoise",	 70},
     { "taaffeite",	300},
     { "zircon",	 	 80},
-};
+}};
 
-#define NSTONES (sizeof stones / sizeof (STONE))
-int cNSTONES = NSTONES;
-
-const char* wood[] =
-{
+const std::array<const char*, NWOOD> wood =
+{{
     "avocado wood",
     "balsa",
     "bamboo",
@@ -198,13 +193,10 @@ const char* wood[] =
     "teak",
     "walnut",
     "zebrawood",
-};
+}};
 
-#define NWOOD (sizeof wood / sizeof (char *))
-const int cNWOOD = NWOOD;
-
-const char* metal[] =
-{
+const std::array<const char*, NMETAL> metal =
+{{
     "aluminum",
     "beryllium",
     "bone",
@@ -227,10 +219,8 @@ const char* metal[] =
     "titanium",
     "tungsten",
     "zinc",
-};
+}};
 
-#define NMETAL (sizeof metal / sizeof (char *))
-const int cNMETAL = NMETAL;
 #define MAX3(a,b,c)	(a > b ? (a > c ? a : c) : (b > c ? b : c))
 
 static bool used[MAX3(NCOLORS, NSTONES, NWOOD)];
@@ -256,40 +246,43 @@ init_colors()
     }
 }
 
+/** Max number of characters in a name. */
+static constexpr std::size_t MAXNAME = 40;
+
 /*
  * init_names:
  *	Generate the names of the various scrolls
  */
-#define MAXNAME	40	/* Max number of characters in a name */
-
 void
 init_names()
 {
-    int nsyl;
-    char* cp;
-    const char* sp;
-    int i, nwords;
-
-    for (i = 0; i < MAXSCROLLS; i++)
+    for (std::size_t i = 0; i < MAXSCROLLS; ++i)
     {
-	cp = prbuf;
-	nwords = rnd(3) + 2;
-	while (nwords--)
-	{
-	    nsyl = rnd(3) + 1;
-	    while (nsyl--)
-	    {
-		sp = sylls[rnd((sizeof sylls) / (sizeof (char *)))];
-		if (&cp[strlen(sp)] > &prbuf[MAXNAME])
-			break;
-		while (*sp)
-		    *cp++ = *sp++;
-	    }
-	    *cp++ = ' ';
-	}
-	*--cp = '\0';
-	s_names[i] = (char *) malloc((unsigned) strlen(prbuf)+1);
-	strcpy(s_names[i], prbuf);
+        auto* cp = prbuf;
+        int nwords = rnd(3) + 2;
+
+        while (nwords--)
+        {
+            int nsyl = rnd(3) + 1;
+
+            while (nsyl--)
+            {
+                const auto* sp = sylls[rnd((sizeof sylls) / (sizeof (char*)))];
+
+                if (&cp[std::strlen(sp)] > &prbuf[MAXNAME])
+                {
+                    break;
+                }
+                while (*sp)
+                {
+                    *cp++ = *sp++;
+                }
+            }
+            *cp++ = ' ';
+        }
+        *--cp = 0;
+        s_names[i] = static_cast<char*>(std::malloc(std::strlen(prbuf) + 1));
+        std::strcpy(s_names[i], prbuf);
     }
 }
 
