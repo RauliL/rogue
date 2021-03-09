@@ -1,3 +1,5 @@
+SET(CURSES_NEED_NCURSES TRUE)
+
 INCLUDE(CheckIncludeFiles)
 INCLUDE(CheckSymbolExists)
 INCLUDE(FindCurses)
@@ -36,8 +38,6 @@ CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
   "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp"
 )
-
-ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
 ADD_EXECUTABLE(
   rogue++

@@ -11,49 +11,15 @@
  */
 #pragma once
 
+#include <cstdlib>
 #include <string>
 
-#ifdef HAVE_CONFIG_H
-#ifdef PDCURSES
-#undef HAVE_UNISTD_H
-#undef HAVE_LIMITS_H
-#endif
 #include "config.hpp"
-#elif defined(_WIN32)
-#define HAVE_CURSES_H
-#define HAVE_TERM_H
-#define HAVE__SPAWNL
-#define HAVE_PROCESS_H
-#define HAVE_ERASECHAR 1
-#define HAVE_KILLCHAR 1
-#else /* POSIX */
-#define HAVE_PWD_H 1
-#define HAVE_SYS_UTSNAME_H 1
-#define HAVE_ARPA_INET_H 1
-#define HAVE_UNISTD_H 1
-#define HAVE_TERMIOS_H 1
-#define HAVE_TERM_H 1
-#define HAVE_SETGID 1
-#define HAVE_GETGID 1
-#define HAVE_SETUID 1
-#define HAVE_GETUID 1
-#define HAVE_SETREUID 1
-#define HAVE_SETREGID 1
-#define HAVE_GETPASS 1
-#define HAVE_GETPWUID 1
-#define HAVE_WORKING_FORK 1
-#define HAVE_ERASECHAR 1
-#define HAVE_KILLCHAR 1
-#define HAVE_GETLOADAVG 1
-#define HAVE_ALARM 1
-#endif
 
 /*
  * Don't change the constants, since they are used for sizes in many
  * places in the program.
  */
-
-#include <cstdlib>
 
 #undef SIGTSTP
 
