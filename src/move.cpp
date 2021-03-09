@@ -286,17 +286,49 @@ be_trapped(coord *tc)
         when T_MYST:
             switch(rnd(11))
             {
-                case 0: msg("you are suddenly in a parallel dimension");
-                when 1: msg("the light in here suddenly seems %s", rainbow[rnd(NCOLORS)].c_str());
-                when 2: msg("you feel a sting in the side of your neck");
-                when 3: msg("multi-colored lines swirl around you, then fade");
-                when 4: msg("a %s light flashes in your eyes", rainbow[rnd(NCOLORS)].c_str());
-                when 5: msg("a spike shoots past your ear!");
-                when 6: msg("%s sparks dance across your armor", rainbow[rnd(NCOLORS)].c_str());
-                when 7: msg("you suddenly feel very thirsty");
-                when 8: msg("you feel time speed up suddenly");
-                when 9: msg("time now seems to be going slower");
-                when 10: msg("you pack turns %s!", rainbow[rnd(NCOLORS)].c_str());
+                case 0:
+                    msg("you are suddenly in a parallel dimension");
+                    break;
+
+                case 1:
+                    msg("the light in here suddenly seems %s", random_color().c_str());
+                    break;
+
+                case 2:
+                    msg("you feel a sting in the side of your neck");
+                    break;
+
+                case 3:
+                    msg("multi-colored lines swirl around you, then fade");
+                    break;
+
+                case 4:
+                    msg("a %s light flashes in your eyes", random_color().c_str());
+                    break;
+
+                case 5:
+                    msg("a spike shoots past your ear!");
+                    break;
+
+                case 6:
+                    msg("%s sparks dance across your armor", random_color().c_str());
+                    break;
+
+                case 7:
+                    msg("you suddenly feel very thirsty");
+                    break;
+
+                case 8:
+                    msg("you feel time speed up suddenly");
+                    break;
+
+                case 9:
+                    msg("time now seems to be going slower");
+                    break;
+
+                case 10:
+                    msg("you pack turns %s!", random_color().c_str());
+                    break;
             }
 	when T_SLEEP:
 	    no_command += SLEEPTIME;

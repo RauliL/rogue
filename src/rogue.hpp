@@ -772,6 +772,12 @@ choose_str(const char* ts, const char* ns)
 static constexpr std::size_t NCOLORS = 27;
 extern const std::array<std::string, NCOLORS> rainbow;
 
+inline const std::string&
+random_color()
+{
+    return rainbow[rnd(NCOLORS)];
+}
+
 /*
  * pick_color:
  *	If he is halucinating, pick a random color name and return it,
@@ -780,7 +786,7 @@ extern const std::array<std::string, NCOLORS> rainbow;
 inline const std::string&
 pick_color(const std::string& col)
 {
-    return on(player, ISHALU) ? rainbow[rnd(NCOLORS)] : col;
+    return on(player, ISHALU) ? random_color() : col;
 }
 
 char	*inv_name(THING *obj, bool drop);
