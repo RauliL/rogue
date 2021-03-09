@@ -62,13 +62,13 @@ read_scroll()
 	     * Scroll of monster confusion.  Give him that power.
 	     */
 	    player.t_flags |= CANHUH;
-	    msg("your hands begin to glow %s", pick_color("red"));
+	    msg("your hands begin to glow %s", pick_color("red").c_str());
 	when S_ARMOR:
 	    if (cur_armor != nullptr)
 	    {
 		cur_armor->o_arm--;
 		cur_armor->o_flags &= ~ISCURSED;
-		msg("your armor glows %s for a moment", pick_color("silver"));
+		msg("your armor glows %s for a moment", pick_color("silver").c_str());
 	    }
 	when S_HOLD:
 	    /*
@@ -269,7 +269,7 @@ def:
 		else
 		    cur_weapon->o_dplus++;
 		msg("your %s glows %s for a moment",
-		    weap_info[cur_weapon->o_which].oi_name, pick_color("blue"));
+		    weap_info[cur_weapon->o_which].oi_name, pick_color("blue").c_str());
 	    }
 	when S_SCARE:
 	    /*
@@ -296,7 +296,7 @@ def:
 	    {
 		cur_armor->o_flags |= ISPROT;
 		msg("your armor is covered by a shimmering %s shield",
-		    pick_color("gold"));
+		    pick_color("gold").c_str());
 	    }
 	    else
 		msg("you feel a strange sense of loss");

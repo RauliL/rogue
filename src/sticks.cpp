@@ -20,22 +20,22 @@
  * fix_stick:
  *	Set up a new stick
  */
-
 void
-fix_stick(THING *cur)
+fix_stick(THING& cur)
 {
-    if (strcmp(ws_type[cur->o_which], "staff") == 0)
-	strncpy(cur->o_damage,"2x3",sizeof(cur->o_damage));
-    else
-	strncpy(cur->o_damage,"1x1",sizeof(cur->o_damage));
-    strncpy(cur->o_hurldmg,"1x1",sizeof(cur->o_hurldmg));
-
-    switch (cur->o_which)
+    if (ws_type[cur.o_which] && !ws_type[cur.o_which]->compare("staff"))
     {
-	case WS_LIGHT:
-	    cur->o_charges = rnd(10) + 10;
-	otherwise:
-	    cur->o_charges = rnd(5) + 3;
+        std::strncpy(cur.o_damage, "2x3", sizeof(cur.o_damage));
+    } else {
+        std::strncpy(cur.o_damage, "1x1", sizeof(cur.o_damage));
+    }
+    std::strncpy(cur.o_hurldmg, "1x1", sizeof(cur.o_hurldmg));
+
+    if (cur.o_which == WS_LIGHT)
+    {
+        cur.o_charges = rnd(10) + 10;
+    } else {
+        cur.o_charges = rnd(5) + 3;
     }
 }
 
@@ -84,7 +84,7 @@ do_zap()
 		enter_room(&hero);
 		addmsg("the room is lit");
 		if (!terse)
-		    addmsg(" by a shimmering %s light", pick_color("blue"));
+		    addmsg(" by a shimmering %s light", pick_color("blue").c_str());
 		endmsg();
 	    }
 	when WS_DRAIN:

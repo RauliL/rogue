@@ -432,20 +432,22 @@ aggravate()
  *	"an".
  */
 const char*
-vowelstr(const char* str)
+vowelstr(const std::string& str)
 {
-    switch (*str)
+    if (!str.empty())
     {
-        case 'a': case 'A':
-        case 'e': case 'E':
-        case 'i': case 'I':
-        case 'o': case 'O':
-        case 'u': case 'U':
-            return "n";
-
-        default:
-            return "";
+        switch (str[0])
+        {
+            case 'a': case 'A':
+            case 'e': case 'E':
+            case 'i': case 'I':
+            case 'o': case 'O':
+            case 'u': case 'U':
+                return "n";
+        }
     }
+
+    return "";
 }
 
 /*

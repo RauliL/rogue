@@ -23,8 +23,8 @@ static const char* nothing(char);
 static std::string nullstr(const THING&);
 static void nameit(
     const THING&,
-    const std::string&,
-    const std::string&,
+    const std::optional<std::string>&,
+    const std::optional<std::string>&,
     const obj_info&,
     const std::function<std::string(const THING&)>&
 );
@@ -78,32 +78,32 @@ inv_name(THING *obj, bool drop)
 	when SCROLL:
 	    if (obj->o_count == 1)
 	    {
-		strcpy(pb, "A scroll ");
+            std::strcpy(pb, "A scroll ");
 		pb = &prbuf[9];
 	    }
 	    else
 	    {
-		sprintf(pb, "%d scrolls ", obj->o_count);
+            std::sprintf(pb, "%d scrolls ", obj->o_count);
 		pb = &prbuf[strlen(prbuf)];
 	    }
 	    op = &scr_info[which];
 	    if (op->oi_know)
-		sprintf(pb, "of %s", op->oi_name);
+		std::sprintf(pb, "of %s", op->oi_name);
 	    else if (op->oi_guess)
-		sprintf(pb, "called %s", op->oi_guess);
+		std::sprintf(pb, "called %s", op->oi_guess);
 	    else
-		sprintf(pb, "titled '%s'", s_names[which]);
+		std::sprintf(pb, "titled '%s'", s_names[which].c_str());
 	when FOOD:
 	    if (which == 1)
 		if (obj->o_count == 1)
-		    sprintf(pb, "A%s %s", vowelstr(fruit), fruit);
+		    std::sprintf(pb, "A%s %s", vowelstr(fruit), fruit);
 		else
-		    sprintf(pb, "%d %ss", obj->o_count, fruit);
+		    std::sprintf(pb, "%d %ss", obj->o_count, fruit);
 	    else
 		if (obj->o_count == 1)
-		    strcpy(pb, "Some food");
+		    std::strcpy(pb, "Some food");
 		else
-		    sprintf(pb, "%d rations of food", obj->o_count);
+		    std::sprintf(pb, "%d rations of food", obj->o_count);
 	when WEAPON:
 	    sp = weap_info[which].oi_name;
 	    if (obj->o_count > 1)
@@ -324,7 +324,7 @@ new_thing()
 	when 6:
 	    cur->o_type = STICK;
 	    cur->o_which = pick_one(ws_info, MAXSTICKS);
-	    fix_stick(cur);
+	    fix_stick(*cur);
 #ifdef MASTER
 	otherwise:
 	    debug("Picked a bad kind of object");
@@ -657,8 +657,8 @@ nothing(char type)
 static void
 nameit(
     const THING& obj,
-    const std::string& type,
-    const std::string& which,
+    const std::optional<std::string>& type,
+    const std::optional<std::string>& which,
     const obj_info& op,
     const std::function<std::string(const THING&)>& prfunc
 )
@@ -669,17 +669,22 @@ nameit(
 
         if (obj.o_count == 1)
         {
-            std::snprintf(prbuf, 2 * MAXSTR, "A %s ", type.c_str());
+            std::snprintf(
+                prbuf,
+                2 * MAXSTR,
+                "A %s ",
+                type ? type->c_str() : ""
+            );
         } else {
             std::snprintf(
                 prbuf,
                 2 * MAXSTR,
                 "%d %ss ",
                 obj.o_count,
-                type.c_str()
+                type ? type->c_str() : ""
             );
         }
-        pb = &prbuf[strlen(prbuf)];
+        pb = &prbuf[std::strlen(prbuf)];
         if (op.oi_know)
         {
             std::sprintf(
@@ -687,7 +692,7 @@ nameit(
                 "of %s%s(%s)",
                 op.oi_name,
                 prfunc(obj).c_str(),
-                which.c_str()
+                which ? which->c_str() : ""
             );
         }
         else if (op.oi_guess)
@@ -697,7 +702,7 @@ nameit(
                 "called %s%s(%s)",
                 op.oi_guess,
                 prfunc(obj).c_str(),
-                which.c_str()
+                which ? which->c_str() : ""
             );
         }
     }
@@ -707,9 +712,9 @@ nameit(
             prbuf,
             2 * MAXSTR,
             "A%s %s %s",
-            vowelstr(which.c_str()),
-            which.c_str(),
-            type.c_str()
+            which ? vowelstr(*which) : "",
+            which ? which->c_str() : "",
+            type ? type->c_str() : ""
         );
     } else {
         std::snprintf(
@@ -717,8 +722,8 @@ nameit(
             2 * MAXSTR,
             "%d %s %ss",
             obj.o_count,
-            which.c_str(),
-            type.c_str()
+            which ? which->c_str() : "",
+            type ? type->c_str() : ""
         );
     }
 }

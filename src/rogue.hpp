@@ -12,6 +12,7 @@
 #pragma once
 
 #include <array>
+#include <optional>
 #include "extern.hpp"
 
 #undef lines
@@ -87,22 +88,27 @@ static constexpr std::size_t MAXPASS = 13;
 /*
  * things that appear on the screens
  */
+
+enum object_type : int
+{
+    POTION = '!',
+    SCROLL = '?',
+    FOOD = ':',
+    WEAPON = ')',
+    ARMOR = ']',
+    RING = '=',
+    STICK = '/',
+    GOLD = '*',
+    AMULET = ',',
+};
+
 #define PASSAGE		'#'
 #define DOOR		'+'
 #define FLOOR		'.'
 #define PLAYER		'@'
 #define TRAP		'^'
 #define STAIRS		'%'
-#define GOLD		'*'
-#define POTION		'!'
-#define SCROLL		'?'
 #define MAGIC		'$'
-#define FOOD		':'
-#define WEAPON		')'
-#define ARMOR		']'
-#define AMULET		','
-#define RING		'='
-#define STICK		'/'
 #define CALLABLE	-1
 #define R_OR_S		-2
 
@@ -527,15 +533,15 @@ extern std::array<const char*, 3> inv_t_name;
 /** Names of the traps. */
 extern std::array<const char*, NTRAPS> tr_name;
 /** Colors of the potions. */
-extern std::array<const char*, MAXPOTIONS> p_colors;
+extern std::array<std::optional<std::string>, MAXPOTIONS> p_colors;
 /** Stone settings of the rings. */
-extern std::array<const char*, MAXRINGS> r_stones;
+extern std::array<std::optional<std::string>, MAXRINGS> r_stones;
 /** Names of the scrolls. */
-extern std::array<char*, MAXSCROLLS> s_names;
+extern std::array<std::string, MAXSCROLLS> s_names;
 /** What sticks are made of. */
-extern std::array<const char*, MAXSTICKS> ws_made;
+extern std::array<std::optional<std::string>, MAXSTICKS> ws_made;
 /** Is it a wand or a staff? */
-extern std::array<const char*, MAXSTICKS> ws_type;
+extern std::array<std::optional<std::string>, MAXSTICKS> ws_type;
 
 extern int	a_class[], count, food_left, hungry_state, inpack,
 		inv_type, lastscore, level, max_hit, max_level, mpos,
@@ -626,7 +632,7 @@ void fire_bolt(const coord* start, coord* dir, const char* name);
 char	floor_at();
 void	flush_type();
 int	fight(coord *mp, THING *weap, bool thrown);
-void	fix_stick(THING *cur);
+void fix_stick(THING& cur);
 void fuse(const delayed_action::callback_type& func, int arg, int time, int type);
 bool	get_dir();
 int	gethand();
@@ -764,15 +770,15 @@ choose_str(const char* ts, const char* ns)
 }
 
 static constexpr std::size_t NCOLORS = 27;
-extern const std::array<const char*, NCOLORS> rainbow;
+extern const std::array<std::string, NCOLORS> rainbow;
 
 /*
  * pick_color:
  *	If he is halucinating, pick a random color name and return it,
  *	otherwise return the given color.
  */
-inline const char*
-pick_color(const char* col)
+inline const std::string&
+pick_color(const std::string& col)
 {
     return on(player, ISHALU) ? rainbow[rnd(NCOLORS)] : col;
 }
@@ -781,7 +787,7 @@ char	*inv_name(THING *obj, bool drop);
 char	*num(int n1, int n2, char type);
 std::string ring_num(const THING& obj);
 const char* set_mname(THING* tp);
-const char* vowelstr(const char* str);
+const char* vowelstr(const std::string& str);
 
 int	get_bool(void *vp, WINDOW *win);
 int	get_inv_t(void *vp, WINDOW *win);
@@ -807,7 +813,7 @@ extern delayed_action d_list[MAXDAEMONS];
 
 struct STONE
 {
-    const char* st_name;
+    std::string st_name;
     int st_value;
 };
 
@@ -818,6 +824,6 @@ extern coord    nh;
 static constexpr std::size_t NSTONES = 26;
 extern const std::array<STONE, NSTONES> stones;
 static constexpr std::size_t NWOOD = 33;
-extern const std::array<const char*, NWOOD> wood;
+extern const std::array<std::string, NWOOD> wood;
 static constexpr std::size_t NMETAL = 22;
-extern const std::array<const char*, NMETAL> metal;
+extern const std::array<std::string, NMETAL> metal;

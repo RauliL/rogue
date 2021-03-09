@@ -77,7 +77,7 @@ init_player()
  * Contains defintions and functions for dealing with things like
  * potions and scrolls
  */
-const std::array<const char*, NCOLORS> rainbow =
+const std::array<std::string, NCOLORS> rainbow =
 {{
     "amber",
     "aquamarine",
@@ -158,7 +158,7 @@ const std::array<STONE, NSTONES> stones =
     { "zircon",	 	 80},
 }};
 
-const std::array<const char*, NWOOD> wood =
+const std::array<std::string, NWOOD> wood =
 {{
     "avocado wood",
     "balsa",
@@ -195,7 +195,7 @@ const std::array<const char*, NWOOD> wood =
     "zebrawood",
 }};
 
-const std::array<const char*, NMETAL> metal =
+const std::array<std::string, NMETAL> metal =
 {{
     "aluminum",
     "beryllium",
@@ -281,8 +281,7 @@ init_names()
             *cp++ = ' ';
         }
         *--cp = 0;
-        s_names[i] = static_cast<char*>(std::malloc(std::strlen(prbuf) + 1));
-        std::strcpy(s_names[i], prbuf);
+        s_names[i] = prbuf;
     }
 }
 
@@ -315,40 +314,46 @@ init_stones()
 void
 init_materials()
 {
-    int j;
-    const char* str;
-    static bool metused[NMETAL];
+    static std::array<bool, NMETAL> metused;
 
-    for (std::size_t i = 0; i < NWOOD; i++)
-	used[i] = false;
-    for (std::size_t i = 0; i < NMETAL; i++)
-	metused[i] = false;
-    for (std::size_t i = 0; i < MAXSTICKS; i++)
+    for (std::size_t i = 0; i < NWOOD; ++i)
     {
-	for (;;)
-	    if (rnd(2) == 0)
-	    {
-		j = rnd(NMETAL);
-		if (!metused[j])
-		{
-		    ws_type[i] = "wand";
-		    str = metal[j];
-		    metused[j] = true;
-		    break;
-		}
-	    }
-	    else
-	    {
-		j = rnd(NWOOD);
-		if (!used[j])
-		{
-		    ws_type[i] = "staff";
-		    str = wood[j];
-		    used[j] = true;
-		    break;
-		}
-	    }
-	ws_made[i] = str;
+        used[i] = false;
+    }
+    for (std::size_t i = 0; i < NMETAL; ++i)
+    {
+        metused[i] = false;
+    }
+    for (std::size_t i = 0; i < MAXSTICKS; ++i)
+    {
+        std::string str;
+
+        for (;;)
+        {
+            if (rnd(2) == 0)
+            {
+                const int j = rnd(NMETAL);
+
+                if (!metused[j])
+                {
+                    ws_type[i] = "wand";
+                    str = metal[j];
+                    metused[j] = true;
+                    break;
+                }
+            } else {
+                const int j = rnd(NWOOD);
+
+                if (!used[j])
+                {
+                    ws_type[i] = "staff";
+                    str = wood[j];
+                    used[j] = true;
+                    break;
+                }
+            }
+        }
+        ws_made[i] = str;
     }
 }
 

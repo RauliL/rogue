@@ -717,74 +717,86 @@ levit_check()
 void
 call()
 {
-    THING *obj;
+    auto* obj = get_item("call", CALLABLE);
     struct obj_info *op = nullptr;
     char** guess;
-    const char* elsewise = nullptr;
+    std::optional<std::string> elsewise;
     bool *know;
 
-    obj = get_item("call", CALLABLE);
-    /*
-     * Make certain that it is somethings that we want to wear
-     */
-    if (obj == nullptr)
-	return;
+    // Make certain that it is somethings that we want to wear
+    if (!obj)
+    {
+        return;
+    }
     switch (obj->o_type)
     {
-	case RING:
-	    op = &ring_info[obj->o_which];
-	    elsewise = r_stones[obj->o_which];
-	    goto norm;
-	when POTION:
-	    op = &pot_info[obj->o_which];
-	    elsewise = p_colors[obj->o_which];
-	    goto norm;
-	when SCROLL:
-	    op = &scr_info[obj->o_which];
-	    elsewise = s_names[obj->o_which];
-	    goto norm;
-	when STICK:
-	    op = &ws_info[obj->o_which];
-	    elsewise = ws_made[obj->o_which];
+        case RING:
+            op = &ring_info[obj->o_which];
+            elsewise = r_stones[obj->o_which];
+            goto norm;
+
+        case POTION:
+            op = &pot_info[obj->o_which];
+            elsewise = p_colors[obj->o_which];
+            goto norm;
+
+        case SCROLL:
+            op = &scr_info[obj->o_which];
+            elsewise = s_names[obj->o_which];
+            goto norm;
+
+        case STICK:
+            op = &ws_info[obj->o_which];
+            elsewise = ws_made[obj->o_which];
 norm:
-	    know = &op->oi_know;
-	    guess = &op->oi_guess;
-	    if (*guess != nullptr)
-		elsewise = *guess;
-	when FOOD:
-	    msg("you can't call that anything");
-	    return;
-	otherwise:
-	    guess = &obj->o_label;
-	    know = nullptr;
-	    elsewise = obj->o_label;
+            know = &op->oi_know;
+            guess = &op->oi_guess;
+            if (*guess)
+            {
+                elsewise = *guess;
+            }
+            break;
+
+        case FOOD:
+            msg("you can't call that anything");
+            return;
+
+        default:
+            guess = &obj->o_label;
+            know = nullptr;
+            elsewise = obj->o_label;
+            break;
     }
-    if (know != nullptr && *know)
+    if (know && *know)
     {
-	msg("that has already been identified");
-	return;
+        msg("that has already been identified");
+        return;
     }
-    if (elsewise != nullptr && elsewise == *guess)
+    if (elsewise && !elsewise->compare(*guess))
     {
-	if (!terse)
-	    addmsg("Was ");
-	msg("called \"%s\"", elsewise);
+        if (!terse)
+        {
+            addmsg("Was ");
+        }
+        msg("called \"%s\"", elsewise->c_str());
     }
     if (terse)
-	msg("call it: ");
-    else
-	msg("what do you want to call it? ");
+    {
+        msg("call it: ");
+    } else {
+        msg("what do you want to call it? ");
+    }
 
-    if (elsewise == nullptr)
-	strcpy(prbuf, "");
-    else
-	strcpy(prbuf, elsewise);
+    std::strcpy(prbuf, elsewise ? elsewise->c_str() : "");
+
     if (get_str(prbuf, stdscr) == NORM)
     {
-	if (*guess != nullptr)
-	    free(*guess);
-    *guess = static_cast<char*>(std::malloc(std::strlen(prbuf) + 1));
-	strcpy(*guess, prbuf);
+        if (*guess)
+        {
+            std::free(*guess);
+        }
+        *guess = static_cast<char*>(std::malloc(std::strlen(prbuf) + 1));
+        std::strcpy(*guess, prbuf);
     }
 }
 

@@ -450,6 +450,20 @@ rs_read_marker(FILE *inf, int id)
 /******************************************************************************/
 
 static bool
+rs_write_string(FILE* savef, const std::string& s)
+{
+    if (write_error)
+    {
+        return WRITESTAT;
+    }
+
+    rs_write_int(savef, s.length());
+    rs_write_chars(savef, s.c_str(), s.length());
+
+    return WRITESTAT;
+}
+
+static bool
 rs_write_string(FILE *savef, const char* s)
 {
     const auto len = s ? std::strlen(s) + 1 : 0;
@@ -607,8 +621,8 @@ template<std::size_t N>
 static bool
 rs_write_string_index(
     FILE* savef,
-    const std::array<const char*, N>& master,
-    const char* str
+    const std::array<std::string, N>& master,
+    const std::optional<std::string>& str
 )
 {
     if (write_error)
@@ -618,7 +632,7 @@ rs_write_string_index(
 
     for (std::size_t i = 0; i < N; ++i)
     {
-        if (!std::strcmp(str, master[i]))
+        if (str && !str->compare(master[i]))
         {
             return rs_write_int(savef, i);
         }
@@ -631,8 +645,8 @@ template<std::size_t N>
 static bool
 rs_read_string_index(
     FILE* inf,
-    const std::array<const char*, N>& master,
-    const char** str
+    const std::array<std::string, N>& master,
+    std::optional<std::string>& str
 )
 {
     int i = 0;
@@ -650,9 +664,9 @@ rs_read_string_index(
     }
     else if (i >= 0)
     {
-        *str = master[i];
+        str = master[i];
     } else {
-        *str = nullptr;
+        str = std::nullopt;
     }
 
     return READSTAT;
@@ -850,7 +864,7 @@ static bool
 rs_write_stone_index(
     FILE* savef,
     const std::array<STONE, N>& master,
-    const char* str
+    const std::optional<std::string>& str
 )
 {
     if (write_error)
@@ -860,7 +874,7 @@ rs_write_stone_index(
 
     for (std::size_t i = 0; i < N; ++i)
     {
-        if (!std::strcmp(str, master[i].st_name))
+        if (str && !str->compare(master[i].st_name))
         {
             return rs_write_int(savef, i);
         }
@@ -874,7 +888,7 @@ static bool
 rs_read_stone_index(
     FILE* inf,
     const std::array<STONE, N>& master,
-    const char** str
+    std::optional<std::string>& str
 )
 {
     int i = 0;
@@ -892,9 +906,9 @@ rs_read_stone_index(
     }
     else if (i >= 0)
     {
-        *str = master[i].st_name;
+        str = master[i].st_name;
     } else {
-        *str = nullptr;
+        str = std::nullopt;
     }
 
     return READSTAT;
@@ -926,7 +940,7 @@ rs_read_scrolls(FILE* inf)
 
     for (std::size_t i = 0; i < MAXSCROLLS; ++i)
     {
-        rs_read_new_string(inf, &s_names[i]);
+        rs_read_new_string(inf, s_names[i]);
     }
 
     return READSTAT;
@@ -958,7 +972,7 @@ rs_read_potions(FILE* inf)
 
     for (std::size_t i = 0; i < MAXPOTIONS; ++i)
     {
-        rs_read_string_index<NCOLORS>(inf, rainbow, &p_colors[i]);
+        rs_read_string_index<NCOLORS>(inf, rainbow, p_colors[i]);
     }
 
     return READSTAT;
@@ -990,7 +1004,7 @@ rs_read_rings(FILE* inf)
 
     for (std::size_t i = 0; i < MAXRINGS; ++i)
     {
-        rs_read_stone_index<NSTONES>(inf, stones, &r_stones[i]);
+        rs_read_stone_index<NSTONES>(inf, stones, r_stones[i]);
     }
 
     return READSTAT;
@@ -1006,7 +1020,7 @@ rs_write_sticks(FILE* savef)
 
     for (std::size_t i = 0; i < MAXSTICKS; ++i)
     {
-        if (!std::strcmp(ws_type[i], "staff"))
+        if (ws_type[i] && !ws_type[i]->compare("staff"))
         {
             rs_write_int(savef, 0);
             rs_write_string_index<NWOOD>(savef, wood, ws_made[i]);
@@ -1035,10 +1049,10 @@ rs_read_sticks(FILE* inf)
 
         if (list == 0)
         {
-            rs_read_string_index<NWOOD>(inf, wood, &ws_made[i]);
+            rs_read_string_index<NWOOD>(inf, wood, ws_made[i]);
             ws_type[i] = "staff";
         } else {
-            rs_read_string_index<NMETAL>(inf, metal, &ws_made[i]);
+            rs_read_string_index<NMETAL>(inf, metal, ws_made[i]);
             ws_type[i] = "wand";
         }
     }
@@ -1910,7 +1924,7 @@ rs_save_file(FILE *savef)
     rs_write_potions(savef);
     rs_write_chars(savef,prbuf,2*MAXSTR);
     rs_write_rings(savef);
-    rs_write_string(savef, release.c_str());
+    rs_write_string(savef, release);
     rs_write_char(savef, runch);
     rs_write_scrolls(savef);
     rs_write_char(savef, take);

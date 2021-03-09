@@ -127,7 +127,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	    player.t_flags &= ~CANHUH;
 	    endmsg();
 	    has_hit = false;
-	    msg("your hands stop glowing %s", pick_color("red"));
+	    msg("your hands stop glowing %s", pick_color("red").c_str());
 	}
 	if (tp->t_stats.s_hpt <= 0)
 	    killed(tp, true);
