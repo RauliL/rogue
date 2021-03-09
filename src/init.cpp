@@ -77,7 +77,7 @@ init_player()
  * Contains defintions and functions for dealing with things like
  * potions and scrolls
  */
-const char* rainbow[] =
+const char* rainbow[NCOLORS] =
 {
     "amber",
     "aquamarine",
@@ -108,9 +108,6 @@ const char* rainbow[] =
     "yellow",
 };
 
-#define NCOLORS (sizeof rainbow / sizeof (char *))
-const int cNCOLORS = NCOLORS;
-
 static const char *sylls[] =
 {
     "a", "ab", "ag", "aks", "ala", "an", "app", "arg", "arze", "ash",
@@ -131,7 +128,8 @@ static const char *sylls[] =
     "zok", "zon", "zum",
 };
 
-STONE stones[] = {
+STONE stones[NSTONES] =
+{
     { "agate",		 25},
     { "alexandrite",	 40},
     { "amethyst",	 50},
@@ -160,10 +158,7 @@ STONE stones[] = {
     { "zircon",	 	 80},
 };
 
-#define NSTONES (sizeof stones / sizeof (STONE))
-int cNSTONES = NSTONES;
-
-const char* wood[] =
+const char* wood[NWOOD] =
 {
     "avocado wood",
     "balsa",
@@ -200,10 +195,7 @@ const char* wood[] =
     "zebrawood",
 };
 
-#define NWOOD (sizeof wood / sizeof (char *))
-const int cNWOOD = NWOOD;
-
-const char* metal[] =
+const char* metal[NMETAL] =
 {
     "aluminum",
     "beryllium",
@@ -230,7 +222,6 @@ const char* metal[] =
 };
 
 #define NMETAL (sizeof metal / sizeof (char *))
-const int cNMETAL = NMETAL;
 #define MAX3(a,b,c)	(a > b ? (a > c ? a : c) : (b > c ? b : c))
 
 static bool used[MAX3(NCOLORS, NSTONES, NWOOD)];

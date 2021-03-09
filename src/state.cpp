@@ -574,11 +574,11 @@ rs_read_new_strings(FILE* inf, std::array<const char*, N>& container)
     return READSTAT;
 }
 
+template<std::size_t N>
 static bool
 rs_write_string_index(
     FILE* savef,
     const char** master,
-    const std::size_t max,
     const char* str
 )
 {
@@ -587,9 +587,9 @@ rs_write_string_index(
         return WRITESTAT;
     }
 
-    for (std::size_t i = 0; i < max; ++i)
+    for (std::size_t i = 0; i < N; ++i)
     {
-        if (str == master[i])
+        if (!std::strcmp(str, master[i]))
         {
             return rs_write_int(savef, i);
         }
@@ -598,11 +598,11 @@ rs_write_string_index(
     return rs_write_int(savef, -1);
 }
 
+template<std::size_t N>
 static bool
 rs_read_string_index(
     FILE* inf,
     const char** master,
-    const std::size_t maxindex,
     const char** str
 )
 {
@@ -615,7 +615,7 @@ rs_read_string_index(
 
     rs_read_int(inf, i);
 
-    if (i > static_cast<const int>(maxindex))
+    if (i > static_cast<const int>(N))
     {
         format_error = true;
     }
@@ -816,34 +816,35 @@ rs_read_stats(FILE* inf, stats& s)
     return(READSTAT);
 }
 
+template<std::size_t N>
 static bool
 rs_write_stone_index(
     FILE* savef,
     const STONE* master,
-    const std::size_t max,
     const char* str
 )
 {
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
-    for (std::size_t i = 0; i < max; i++)
-        if (str == master[i].st_name)
+    for (std::size_t i = 0; i < N; ++i)
+    {
+        if (!std::strcmp(str, master[i].st_name))
         {
-            rs_write_int(savef,i);
-            return(WRITESTAT);
+            return rs_write_int(savef, i);
         }
+    }
 
-    rs_write_int(savef,-1);
-
-    return(WRITESTAT);
+    return rs_write_int(savef, -1);
 }
 
+template<std::size_t N>
 static bool
 rs_read_stone_index(
     FILE* inf,
     STONE* master,
-    const std::size_t maxindex,
     const char** str
 )
 {
@@ -856,7 +857,7 @@ rs_read_stone_index(
 
     rs_read_int(inf, i);
 
-    if (i > static_cast<const int>(maxindex))
+    if (i > static_cast<const int>(N))
     {
         format_error = true;
     }
@@ -899,111 +900,117 @@ rs_read_scrolls(FILE *inf)
 }
 
 static bool
-rs_write_potions(FILE *savef)
+rs_write_potions(FILE* savef)
 {
-    int i;
-
     if (write_error)
-        return(WRITESTAT);
-
-    for(i = 0; i < MAXPOTIONS; i++)
-        rs_write_string_index(savef, rainbow, cNCOLORS, p_colors[i]);
-
-    return(WRITESTAT);
-}
-
-static bool
-rs_read_potions(FILE *inf)
-{
-    int i;
-
-    if (read_error || format_error)
-        return(READSTAT);
-
-    for(i = 0; i < MAXPOTIONS; i++)
-        rs_read_string_index(inf, rainbow, cNCOLORS, &p_colors[i]);
-
-    return(READSTAT);
-}
-
-static bool
-rs_write_rings(FILE *savef)
-{
-    int i;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    for(i = 0; i < MAXRINGS; i++)
-        rs_write_stone_index(savef, stones, cNSTONES, r_stones[i]);
-
-    return(WRITESTAT);
-}
-
-static bool
-rs_read_rings(FILE *inf)
-{
-    int i;
-
-    if (read_error || format_error)
-        return(READSTAT);
-
-    for(i = 0; i < MAXRINGS; i++)
-        rs_read_stone_index(inf, stones, cNSTONES, &r_stones[i]);
-
-    return(READSTAT);
-}
-
-static bool
-rs_write_sticks(FILE *savef)
-{
-    int i;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    for (i = 0; i < MAXSTICKS; i++)
     {
-        if (strcmp(ws_type[i],"staff") == 0)
+        return WRITESTAT;
+    }
+
+    for (std::size_t i = 0; i < MAXPOTIONS; ++i)
+    {
+        rs_write_string_index<NCOLORS>(savef, rainbow, p_colors[i]);
+    }
+
+    return WRITESTAT;
+}
+
+static bool
+rs_read_potions(FILE* inf)
+{
+    if (read_error || format_error)
+    {
+        return READSTAT;
+    }
+
+    for (std::size_t i = 0; i < MAXPOTIONS; ++i)
+    {
+        rs_read_string_index<NCOLORS>(inf, rainbow, &p_colors[i]);
+    }
+
+    return READSTAT;
+}
+
+static bool
+rs_write_rings(FILE* savef)
+{
+    if (write_error)
+    {
+        return WRITESTAT;
+    }
+
+    for (std::size_t i = 0; i < MAXRINGS; ++i)
+    {
+        rs_write_stone_index<NSTONES>(savef, stones, r_stones[i]);
+    }
+
+    return WRITESTAT;
+}
+
+static bool
+rs_read_rings(FILE* inf)
+{
+    if (read_error || format_error)
+    {
+        return READSTAT;
+    }
+
+    for (std::size_t i = 0; i < MAXRINGS; ++i)
+    {
+        rs_read_stone_index<NSTONES>(inf, stones, &r_stones[i]);
+    }
+
+    return READSTAT;
+}
+
+static bool
+rs_write_sticks(FILE* savef)
+{
+    if (write_error)
+    {
+        return WRITESTAT;
+    }
+
+    for (std::size_t i = 0; i < MAXSTICKS; ++i)
+    {
+        if (!std::strcmp(ws_type[i], "staff"))
         {
-            rs_write_int(savef,0);
-            rs_write_string_index(savef, wood, cNWOOD, ws_made[i]);
-        }
-        else
-        {
-            rs_write_int(savef,1);
-            rs_write_string_index(savef, metal, cNMETAL, ws_made[i]);
+            rs_write_int(savef, 0);
+            rs_write_string_index<NWOOD>(savef, wood, ws_made[i]);
+        } else {
+            rs_write_int(savef, 1);
+            rs_write_string_index<NMETAL>(savef, metal, ws_made[i]);
         }
     }
 
-    return(WRITESTAT);
+    return WRITESTAT;
 }
 
 static bool
-rs_read_sticks(FILE *inf)
+rs_read_sticks(FILE* inf)
 {
-    int i = 0, list = 0;
-
     if (read_error || format_error)
-        return(READSTAT);
-
-    for(i = 0; i < MAXSTICKS; i++)
     {
+        return READSTAT;
+    }
+
+    for (std::size_t i = 0; i < MAXSTICKS; ++i)
+    {
+        int list = 0;
+
         rs_read_int(inf, list);
 
         if (list == 0)
         {
-            rs_read_string_index(inf, wood, cNWOOD, &ws_made[i]);
+            rs_read_string_index<NWOOD>(inf, wood, &ws_made[i]);
             ws_type[i] = "staff";
-        }
-        else
-        {
-            rs_read_string_index(inf, metal, cNMETAL, &ws_made[i]);
+        } else {
+            rs_read_string_index<NMETAL>(inf, metal, &ws_made[i]);
             ws_type[i] = "wand";
         }
     }
 
-    return(READSTAT);
+    return READSTAT;
 }
 
 static bool

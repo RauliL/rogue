@@ -18,17 +18,19 @@
 
 #define NOOP(x) (x += 0)
 #define CCHAR(x) ( (char) (x & A_CHARTEXT) )
+
 /*
  * Maximum number of different things
  */
-#define MAXROOMS	9
-#define MAXTHINGS	9
-#define MAXOBJ		9
-#define MAXPACK		23
-#define MAXTRAPS	10
+static constexpr std::size_t MAXROOMS = 9;
+static constexpr std::size_t MAXTHINGS = 9;
+static constexpr std::size_t MAXOBJ = 9;
+static constexpr std::size_t MAXPACK = 23;
+static constexpr std::size_t MAXTRAPS = 10;
 #define AMULETLEVEL	26
 #define	NUMTHINGS	7	/* number of types of things */
-#define MAXPASS		13	/* upper limit on number of passages */
+/** Upper limit on number of passages. */
+static constexpr std::size_t MAXPASS = 13;
 #define	NUMLINES	24
 #define	NUMCOLS		80
 #define STATLINE		(NUMLINES - 1)
@@ -188,126 +190,156 @@
 #define F_PNUM		0x0f		/* passage number mask */
 #define F_TMASK		0x07		/* trap number mask */
 
-/*
- * Trap types
+/**
+ * Trap types.
  */
-#define T_DOOR	00
-#define T_ARROW	01
-#define T_SLEEP	02
-#define T_BEAR	03
-#define T_TELEP	04
-#define T_DART	05
-#define T_RUST	06
-#define T_MYST  07
-#define NTRAPS	8
+enum trap_type : int
+{
+    T_DOOR = 0,
+    T_ARROW = 1,
+    T_SLEEP = 2,
+    T_BEAR = 3,
+    T_TELEP = 4,
+    T_DART = 5,
+    T_RUST = 6,
+    T_MYST = 7,
+};
+
+static constexpr std::size_t NTRAPS = 8;
+
+/**
+ * Potion types.
+ */
+enum potion_type : int
+{
+    P_CONFUSE = 0,
+    P_LSD = 1,
+    P_POISON = 2,
+    P_STRENGTH = 3,
+    P_SEEINVIS = 4,
+    P_HEALING = 5,
+    P_MFIND = 6,
+    P_TFIND = 7,
+    P_RAISE = 8,
+    P_XHEAL = 9,
+    P_HASTE = 10,
+    P_RESTORE = 11,
+    P_BLIND = 12,
+    P_LEVIT = 13,
+};
+
+static constexpr std::size_t MAXPOTIONS = 14;
+
+/**
+ * Scroll types.
+ */
+enum scroll_type : int
+{
+    S_CONFUSE = 0,
+    S_MAP = 1,
+    S_HOLD = 2,
+    S_SLEEP = 3,
+    S_ARMOR = 4,
+    S_ID_POTION = 5,
+    S_ID_SCROLL = 6,
+    S_ID_WEAPON = 7,
+    S_ID_ARMOR = 8,
+    S_ID_R_OR_S = 9,
+    S_SCARE = 10,
+    S_FDET = 11,
+    S_TELEP = 12,
+    S_ENCH = 13,
+    S_CREATE = 14,
+    S_REMOVE = 15,
+    S_AGGR = 16,
+    S_PROTECT = 17,
+};
+
+static constexpr std::size_t MAXSCROLLS = 18;
+
+/**
+ * Weapon types.
+ */
+enum weapon_type : int
+{
+    MACE = 0,
+    SWORD = 1,
+    BOW = 2,
+    ARROW = 3,
+    DAGGER = 4,
+    TWOSWORD = 5,
+    DART = 6,
+    SHIRAKEN = 7,
+    SPEAR = 8,
+    /** Fake entry for dragon breath (ick). */
+    FLAME = 9,
+};
+
+// This should equal FLAME.
+static constexpr std::size_t MAXWEAPONS = 9;
+
+/**
+ * Armor types.
+ */
+enum armor_type : int
+{
+    LEATHER = 0,
+    RING_MAIL = 1,
+    STUDDED_LEATHER = 2,
+    SCALE_MAIL = 3,
+    CHAIN_MAIL = 4,
+    SPLINT_MAIL = 5,
+    BANDED_MAIL = 6,
+    PLATE_MAIL = 7,
+};
+
+static constexpr std::size_t MAXARMORS = 8;
+
+/**
+ * Ring types.
+ */
+enum ring_type : int
+{
+    R_PROTECT = 0,
+    R_ADDSTR = 1,
+    R_SUSTSTR = 2,
+    R_SEARCH = 3,
+    R_SEEINVIS = 4,
+    R_NOP = 5,
+    R_AGGR = 6,
+    R_ADDHIT = 7,
+    R_ADDDAM = 8,
+    R_REGEN = 9,
+    R_DIGEST = 10,
+    R_TELEPORT = 11,
+    R_STEALTH = 12,
+    R_SUSTARM = 13,
+};
+
+static constexpr std::size_t MAXRINGS = 14;
 
 /*
- * Potion types
+ * Rod/Wand/Staff types.
  */
-#define P_CONFUSE	0
-#define P_LSD		1
-#define P_POISON	2
-#define P_STRENGTH	3
-#define P_SEEINVIS	4
-#define P_HEALING	5
-#define P_MFIND		6
-#define	P_TFIND 	7
-#define	P_RAISE		8
-#define P_XHEAL		9
-#define P_HASTE		10
-#define P_RESTORE	11
-#define P_BLIND		12
-#define P_LEVIT		13
-#define MAXPOTIONS	14
+enum stick_type : int
+{
+    WS_LIGHT = 0,
+    WS_INVIS = 1,
+    WS_ELECT = 2,
+    WS_FIRE = 3,
+    WS_COLD = 4,
+    WS_POLYMORPH = 5,
+    WS_MISSILE = 6,
+    WS_HASTE_M = 7,
+    WS_SLOW_M = 8,
+    WS_DRAIN = 9,
+    WS_NOP = 10,
+    WS_TELAWAY = 11,
+    WS_TELTO = 12,
+    WS_CANCEL = 13,
+};
 
-/*
- * Scroll types
- */
-#define S_CONFUSE	0
-#define S_MAP		1
-#define S_HOLD		2
-#define S_SLEEP		3
-#define S_ARMOR		4
-#define S_ID_POTION	5
-#define S_ID_SCROLL	6
-#define S_ID_WEAPON	7
-#define S_ID_ARMOR	8
-#define S_ID_R_OR_S	9
-#define S_SCARE		10
-#define S_FDET		11
-#define S_TELEP		12
-#define S_ENCH		13
-#define S_CREATE	14
-#define S_REMOVE	15
-#define S_AGGR		16
-#define S_PROTECT	17
-#define MAXSCROLLS	18
-
-/*
- * Weapon types
- */
-#define MACE		0
-#define SWORD		1
-#define BOW		2
-#define ARROW		3
-#define DAGGER		4
-#define TWOSWORD	5
-#define DART		6
-#define SHIRAKEN	7
-#define SPEAR		8
-#define FLAME		9	/* fake entry for dragon breath (ick) */
-#define MAXWEAPONS	9	/* this should equal FLAME */
-
-/*
- * Armor types
- */
-#define LEATHER		0
-#define RING_MAIL	1
-#define STUDDED_LEATHER	2
-#define SCALE_MAIL	3
-#define CHAIN_MAIL	4
-#define SPLINT_MAIL	5
-#define BANDED_MAIL	6
-#define PLATE_MAIL	7
-#define MAXARMORS	8
-
-/*
- * Ring types
- */
-#define R_PROTECT	0
-#define R_ADDSTR	1
-#define R_SUSTSTR	2
-#define R_SEARCH	3
-#define R_SEEINVIS	4
-#define R_NOP		5
-#define R_AGGR		6
-#define R_ADDHIT	7
-#define R_ADDDAM	8
-#define R_REGEN		9
-#define R_DIGEST	10
-#define R_TELEPORT	11
-#define R_STEALTH	12
-#define R_SUSTARM	13
-#define MAXRINGS	14
-
-/*
- * Rod/Wand/Staff types
- */
-#define WS_LIGHT	0
-#define WS_INVIS	1
-#define WS_ELECT	2
-#define WS_FIRE		3
-#define WS_COLD		4
-#define WS_POLYMORPH	5
-#define WS_MISSILE	6
-#define WS_HASTE_M	7
-#define WS_SLOW_M	8
-#define WS_DRAIN	9
-#define WS_NOP		10
-#define WS_TELAWAY	11
-#define WS_TELTO	12
-#define WS_CANCEL	13
-#define MAXSTICKS	14
+static constexpr std::size_t MAXSTICKS = 14;
 
 /*
  * Now we define the structures and types
@@ -323,13 +355,14 @@ struct h_list
     bool h_print;
 };
 
-/*
- * Coordinate data type
+/**
+ * Coordinate data type.
  */
-typedef struct {
+struct coord
+{
     int x;
     int y;
-} coord;
+};
 
 typedef unsigned int str_t;
 
@@ -730,8 +763,8 @@ choose_str(const char* ts, const char* ns)
     return on(player, ISHALU) ? ts : ns;
 }
 
+static constexpr std::size_t NCOLORS = 27;
 extern const char* rainbow[];
-extern const int cNCOLORS;
 
 /*
  * pick_color:
@@ -741,7 +774,7 @@ extern const int cNCOLORS;
 inline const char*
 pick_color(const char* col)
 {
-    return on(player, ISHALU) ? rainbow[rnd(cNCOLORS)] : col;
+    return on(player, ISHALU) ? rainbow[rnd(NCOLORS)] : col;
 }
 
 char	*inv_name(THING *obj, bool drop);
@@ -768,7 +801,7 @@ THING	*new_thing();
 
 struct room	*roomin(coord *cp);
 
-#define MAXDAEMONS 20
+static constexpr std::size_t MAXDAEMONS = 20;
 
 extern delayed_action d_list[MAXDAEMONS];
 
@@ -782,9 +815,9 @@ extern int      total;
 extern int      between;
 extern int      group;
 extern coord    nh;
+static constexpr std::size_t NSTONES = 26;
 extern STONE    stones[];
-extern int      cNSTONES;
+static constexpr std::size_t NWOOD = 33;
 extern const char* wood[];
-extern const int cNWOOD;
+static constexpr std::size_t NMETAL = 22;
 extern const char* metal[];
-extern const int cNMETAL;
