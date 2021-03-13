@@ -158,6 +158,21 @@ rs_read_int(FILE* inf, int& i)
 }
 
 static bool
+rs_read_int(FILE* inf, std::size_t& i)
+{
+    int value = 0;
+
+    if (rs_read_int(inf, value))
+    {
+        return true;
+    }
+
+    i = static_cast<std::size_t>(value);
+
+    return false;
+}
+
+static bool
 rs_write_char(FILE *savef, char c)
 {
     if (write_error)
@@ -1218,82 +1233,92 @@ rs_read_obj_info(FILE* inf, obj_info* mi, const std::size_t count)
 }
 
 static bool
-rs_write_room(FILE* savef, const room* r)
+rs_write_room(FILE* savef, const room& r)
 {
     if (write_error)
     {
         return WRITESTAT;
     }
 
-    rs_write_coord(savef, r->r_pos);
-    rs_write_coord(savef, r->r_max);
-    rs_write_coord(savef, r->r_gold);
-    rs_write_int(savef,   r->r_goldval);
-    rs_write_short(savef, r->r_flags);
-    rs_write_int(savef, r->r_nexits);
-    for (std::size_t i = 0; i < 12; ++i)
+    rs_write_coord(savef, r.r_pos);
+    rs_write_coord(savef, r.r_max);
+    rs_write_coord(savef, r.r_gold);
+    rs_write_int(savef,   r.r_goldval);
+    rs_write_short(savef, r.r_flags);
+    rs_write_int(savef, r.r_nexits);
+    for (std::size_t i = 0; i < room::max_exits; ++i)
     {
-        rs_write_coord(savef, r->r_exit[i]);
+        rs_write_coord(savef, r.r_exit[i]);
     }
 
     return WRITESTAT;
 }
 
 static bool
-rs_read_room(FILE* inf, room* r)
+rs_read_room(FILE* inf, room& r)
 {
     if (read_error || format_error)
     {
         return READSTAT;
     }
 
-    rs_read_coord(inf, r->r_pos);
-    rs_read_coord(inf, r->r_max);
-    rs_read_coord(inf, r->r_gold);
-    rs_read_int(inf, r->r_goldval);
-    rs_read_short(inf, &r->r_flags);
-    rs_read_int(inf, r->r_nexits);
-    for (std::size_t i = 0; i < 12; ++i)
+    rs_read_coord(inf, r.r_pos);
+    rs_read_coord(inf, r.r_max);
+    rs_read_coord(inf, r.r_gold);
+    rs_read_int(inf, r.r_goldval);
+    rs_read_short(inf, &r.r_flags);
+    rs_read_int(inf, r.r_nexits);
+    for (std::size_t i = 0; i < room::max_exits; ++i)
     {
-        rs_read_coord(inf, r->r_exit[i]);
+        rs_read_coord(inf, r.r_exit[i]);
     }
 
     return READSTAT;
 }
 
+template<std::size_t N>
 static bool
-rs_write_rooms(FILE* savef, const room* r, const std::size_t count)
+rs_write_rooms(FILE* savef, const std::array<room, N>& r)
 {
     if (write_error)
-        return(WRITESTAT);
+    {
+        return WRITESTAT;
+    }
 
-    rs_write_int(savef, static_cast<const int>(count));
+    rs_write_int(savef, static_cast<const int>(N));
 
-    for (std::size_t n = 0; n < count; n++)
-        rs_write_room(savef, &r[n]);
+    for (std::size_t i = 0; i < N; ++i)
+    {
+        rs_write_room(savef, r[i]);
+    }
 
-    return(WRITESTAT);
+    return WRITESTAT;
 }
 
+template<std::size_t N>
 static bool
-rs_read_rooms(FILE* inf, room* r, const std::size_t count)
+rs_read_rooms(FILE* inf, std::array<room, N>& r)
 {
     int value = 0;
 
     if (read_error || format_error)
-        return(READSTAT);
+    {
+        return READSTAT;
+    }
 
     rs_read_int(inf, value);
 
-    if (value > static_cast<const int>(count))
-        format_error = true;
-
-    for (std::size_t n = 0; n < value; n++)
+    if (value > static_cast<const int>(N))
     {
-        rs_read_room(inf,&r[n]);
+        format_error = true;
     }
 
-    return(READSTAT);
+    for (std::size_t i = 0; i < N; ++i)
+    {
+        rs_read_room(inf, r[i]);
+    }
+
+    return READSTAT;
 }
 
 static bool
@@ -1499,16 +1524,19 @@ rs_read_object_reference(FILE *inf, THING *list, THING **item)
     return(READSTAT);
 }
 
+template<std::size_t N>
 static int
-find_room_coord(struct room *rmlist, coord *c, int n)
+find_room_coord(const std::array<room, N>& rmlist, const coord* c)
 {
-    int i = 0;
+    for (int i = 0; i < static_cast<int>(N); ++i)
+    {
+        if (&rmlist[i].r_gold == c)
+        {
+            return i;
+        }
+    }
 
-    for(i = 0; i < n; i++)
-        if(&rmlist[i].r_gold == c)
-            return(i);
-
-    return(-1);
+    return -1;
 }
 
 static int
@@ -1611,7 +1639,7 @@ rs_write_thing(FILE *savef, THING *t)
             }
             else
             {
-                i = find_room_coord(rooms, t->t_dest, MAXROOMS);
+                i = find_room_coord<MAXROOMS>(rooms, t->t_dest);
 
                 if (i >= 0)
                 {
@@ -1980,9 +2008,9 @@ rs_save_file(FILE *savef)
     rs_write_places(savef,places,MAXLINES*MAXCOLS);
 
     rs_write_stats(savef, max_stats);
-    rs_write_rooms(savef, rooms, MAXROOMS);
+    rs_write_rooms<MAXROOMS>(savef, rooms);
     rs_write_room_reference(savef, oldrp);
-    rs_write_rooms(savef, passages, MAXPASS);
+    rs_write_rooms<MAXPASS>(savef, passages);
 
     rs_write_monsters(savef,monsters,26);
     rs_write_obj_info(savef, things,   NUMTHINGS);
@@ -2112,9 +2140,9 @@ rs_restore_file(FILE *inf)
     rs_read_places(inf,places,MAXLINES*MAXCOLS);
 
     rs_read_stats(inf, max_stats);
-    rs_read_rooms(inf, rooms, MAXROOMS);
+    rs_read_rooms<MAXROOMS>(inf, rooms);
     rs_read_room_reference(inf, &oldrp);
-    rs_read_rooms(inf, passages, MAXPASS);
+    rs_read_rooms<MAXPASS>(inf, passages);
 
     rs_read_monsters(inf,monsters,26);
     rs_read_obj_info(inf, things,   NUMTHINGS);

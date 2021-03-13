@@ -274,7 +274,12 @@ extern THING	*cur_armor, *cur_ring[], *cur_weapon, *l_last_pick,
 
 extern struct h_list	helpstr[];
 
-extern struct room	*oldrp, passages[], rooms[];
+/** Roomin(&oldpos) */
+extern room* oldrp;
+/** One for each passage. */
+extern std::array<room, MAXPASS> passages;
+/** One for each room -- A level. */
+extern std::array<room, MAXROOMS> rooms;
 
 extern struct stats	max_stats;
 
@@ -315,7 +320,6 @@ void	dig(int y, int x);
 void	discard(THING *item);
 void	discovered();
 int	dist(int y1, int x1, int y2, int x2);
-int	dist_cp(coord *c1, coord *c2);
 int	do_chase(THING *th);
 void	do_daemons(int flag);
 void	do_fuses(int flag);
@@ -379,7 +383,6 @@ void	numpass(int y, int x);
 void	option();
 void	open_score();
 void	parse_opts(char *str);
-void 	passnum();
 int	pick_one(struct obj_info *info, int nitems);
 void	pick_up(char ch);
 void	picky_inven();

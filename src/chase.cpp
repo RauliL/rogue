@@ -20,6 +20,8 @@
 
 static coord ch_ret;				/* Where chasing takes you */
 
+static inline int dist_cp(const coord&, const coord&);
+
 /*
  * runners:
  *	Make all the running monsters move.
@@ -42,7 +44,7 @@ runners(int)
 	    wastarget = on(*tp, ISTARGET);
 	    if (move_monst(tp) == -1)
                 continue;
-	    if (on(*tp, ISFLY) && dist_cp(&hero, &tp->t_pos) >= 3)
+	    if (on(*tp, ISFLY) && dist_cp(hero, tp->t_pos) >= 3)
 		move_monst(tp);
 	    if (wastarget && !ce(orig_pos, tp->t_pos))
 	    {
@@ -116,9 +118,8 @@ relocate(THING *th, coord *new_loc)
 int
 do_chase(THING *th)
 {
-    coord *cp;
     struct room *rer, *ree;	/* room of chaser, room of chasee */
-    int mindist = 32767, curdist;
+    int mindist = 32767;
     bool stoprun = false;	/* true means we are there */
     bool door;
     THING *obj;
@@ -143,15 +144,16 @@ do_chase(THING *th)
 over:
     if (rer != ree)
     {
-	for (cp = rer->r_exit; cp < &rer->r_exit[rer->r_nexits]; cp++)
-	{
-	    curdist = dist_cp(th->t_dest, cp);
-	    if (curdist < mindist)
-	    {
-		this_ = *cp;
-		mindist = curdist;
-	    }
-	}
+        for (std::size_t i = 0; i < rer->r_nexits; ++i)
+        {
+            const auto curdist = dist_cp(*th->t_dest, rer->r_exit[i]);
+
+            if (curdist < mindist)
+            {
+                this_ = rer->r_exit[i];
+                mindist = curdist;
+            }
+        }
 	if (door)
 	{
 	    rer = &passages[flat(th->t_pos.y, th->t_pos.x) & F_PNUM];
@@ -169,7 +171,7 @@ over:
 	 */
 	if (th->t_type == 'D' && (th->t_pos.y == hero.y || th->t_pos.x == hero.x
 	    || abs(th->t_pos.y - hero.y) == abs(th->t_pos.x - hero.x))
-	    && dist_cp(&th->t_pos, &hero) <= BOLT_LENGTH * BOLT_LENGTH
+	    && dist_cp(th->t_pos, hero) <= BOLT_LENGTH * BOLT_LENGTH
 	    && !on(*th, ISCANC) && rnd(DRAGONSHOT) == 0)
 	{
 	    delta.y = sign(hero.y - th->t_pos.y);
@@ -248,7 +250,7 @@ set_oldch(THING *tp, coord *cp)
 	    if ((sch == FLOOR || tp->t_oldch == FLOOR) &&
 		(tp->t_room->r_flags & ISDARK))
 		    tp->t_oldch = ' ';
-	    else if (dist_cp(cp, &hero) <= LAMPDIST && see_floor)
+	    else if (dist_cp(*cp, hero) <= LAMPDIST && see_floor)
 		tp->t_oldch = chat(cp->y, cp->x);
     }
 }
@@ -335,7 +337,7 @@ chase(THING *tp, coord *ee)
 	 * get a valid random move
 	 */
 	ch_ret = *rndmove(tp);
-	curdist = dist_cp(&ch_ret, ee);
+	curdist = dist_cp(ch_ret, *ee);
 	/*
 	 * Small chance that it will become un-confused
 	 */
@@ -353,7 +355,7 @@ chase(THING *tp, coord *ee)
 	 * This will eventually hold where we move to get closer
 	 * If we can't find an empty spot, we stay where we are.
 	 */
-	curdist = dist_cp(er, ee);
+	curdist = dist_cp(*er, *ee);
 	ch_ret = *er;
 
 	ey = er->y + 1;
@@ -418,34 +420,39 @@ chase(THING *tp, coord *ee)
     return (bool)(curdist != 0 && !ce(ch_ret, hero));
 }
 
-/*
- * roomin:
- *	Find what room some coordinates are in. nullptr means they aren't
- *	in any room.
+/**
+ *Find what room some coordinates are in. nullptr means they aren't
+ *in any room.
  */
-struct room *
-roomin(coord *cp)
+room*
+roomin(coord* cp)
 {
-    struct room *rp;
-    char *fp;
+    const auto* fp = &flat(cp->y, cp->x);
 
+    if ((*fp & F_PASS))
+    {
+        return &passages[*fp & F_PNUM];
+    }
 
-    fp = &flat(cp->y, cp->x);
-    if (*fp & F_PASS)
-	return &passages[*fp & F_PNUM];
+    for (std::size_t i = 0; i < MAXROOMS; ++i)
+    {
+        auto* rp = &rooms[i];
 
-    for (rp = rooms; rp < &rooms[MAXROOMS]; rp++)
-	if (cp->x <= rp->r_pos.x + rp->r_max.x && rp->r_pos.x <= cp->x
-	 && cp->y <= rp->r_pos.y + rp->r_max.y && rp->r_pos.y <= cp->y)
-	    return rp;
+        if (cp->x <= rp->r_pos.x + rp->r_max.x &&
+            rp->r_pos.x <= cp->x &&
+            cp->y <= rp->r_pos.y + rp->r_max.y &&
+            rp->r_pos.y <= cp->y)
+        {
+            return rp;
+        }
+    }
 
     msg("in some bizarre place (%d, %d)", unc(*cp));
-#ifdef MASTER
+#if defined(MASTER)
     abort();
-    return nullptr;
-#else
-    return nullptr;
 #endif
+
+    return nullptr;
 }
 
 /*
@@ -532,12 +539,11 @@ dist(int y1, int x1, int y2, int x2)
     return ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-/*
- * dist_cp:
- *	Call dist() with appropriate arguments for coord pointers
+/**
+ * Call dist() with appropriate arguments for coord pointers
  */
-int
-dist_cp(coord *c1, coord *c2)
+inline int
+dist_cp(const coord& c1, const coord& c2)
 {
-    return dist(c1->y, c1->x, c2->y, c2->x);
+    return dist(c1.y, c1.x, c2.y, c2.x);
 }

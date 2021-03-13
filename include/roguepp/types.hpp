@@ -189,9 +189,9 @@ struct room
     /** Info about the room. */
     short r_flags;
     /** Number of exits. */
-    int r_nexits;
+    std::size_t r_nexits;
     /** Where the exits are. */
-    coord r_exit[max_exits];
+    std::array<coord, max_exits> r_exit;
 };
 
 /**

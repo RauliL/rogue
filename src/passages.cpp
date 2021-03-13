@@ -16,6 +16,8 @@
 
 #include <roguepp/roguepp.hpp>
 
+static void passnum();
+
 /*
  * do_passages:
  *	Draw all the passages on a level.
@@ -354,30 +356,31 @@ add_pass()
 }
 #endif
 
-/*
- * passnum:
- *	Assign a number to each passageway
- */
 static int pnum;
 static int newpnum;
 
-
-void
+/**
+ *  Assign a number to each passageway
+ */
+static void
 passnum()
 {
-    struct room *rp;
-    int i;
-
     pnum = 0;
-    newpnum = false;
-    for (rp = passages; rp < &passages[MAXPASS]; rp++)
-	rp->r_nexits = 0;
-    for (rp = rooms; rp < &rooms[MAXROOMS]; rp++)
-	for (i = 0; i < rp->r_nexits; i++)
-	{
-	    newpnum++;
-	    numpass(rp->r_exit[i].y, rp->r_exit[i].x);
-	}
+    newpnum = 0;
+    for (std::size_t i = 0; i < MAXPASS; ++i)
+    {
+        passages[i].r_nexits = 0;
+    }
+    for (std::size_t i = 0; i < MAXROOMS; ++i)
+    {
+        const auto& rp = rooms[i];
+
+        for (std::size_t j = 0; j < rp.r_nexits; ++j)
+        {
+            ++newpnum;
+            numpass(rp.r_exit[j].y, rp.r_exit[j].x);
+        }
+    }
 }
 
 /*
