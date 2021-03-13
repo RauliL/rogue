@@ -363,7 +363,7 @@ check_level()
 void
 chg_str(int amt)
 {
-    str_t comp;
+    stats::str_t comp;
 
     if (amt == 0)
 	return;
@@ -382,7 +382,7 @@ chg_str(int amt)
  *	Perform the actual add, checking upper and lower bound limits
  */
 void
-add_str(str_t *sp, int amt)
+add_str(stats::str_t *sp, int amt)
 {
     if ((*sp += amt) < 3)
 	*sp = 3;

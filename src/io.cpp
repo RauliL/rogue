@@ -195,7 +195,7 @@ status()
     static int s_pur = -1;
     static int s_hp = 0;
     static int s_arm = 0;
-    static str_t s_str = 0;
+    static stats::str_t s_str = 0;
     static int s_exp = 0;
 
     /*

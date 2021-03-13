@@ -13,25 +13,18 @@
 
 #include <array>
 #include <optional>
-#include "extern.hpp"
+
+#include <roguepp/extern.hpp>
+#include <roguepp/limits.hpp>
+#include <roguepp/types.hpp>
 
 #undef lines
 
 #define NOOP(x) (x += 0)
 #define CCHAR(x) ( (char) (x & A_CHARTEXT) )
 
-/*
- * Maximum number of different things
- */
-static constexpr std::size_t MAXROOMS = 9;
-static constexpr std::size_t MAXTHINGS = 9;
-static constexpr std::size_t MAXOBJ = 9;
-static constexpr std::size_t MAXPACK = 23;
-static constexpr std::size_t MAXTRAPS = 10;
 #define AMULETLEVEL	26
 #define	NUMTHINGS	7	/* number of types of things */
-/** Upper limit on number of passages. */
-static constexpr std::size_t MAXPASS = 13;
 #define	NUMLINES	24
 #define	NUMCOLS		80
 #define STATLINE		(NUMLINES - 1)
@@ -196,260 +189,6 @@ enum object_type : int
 #define F_PNUM		0x0f		/* passage number mask */
 #define F_TMASK		0x07		/* trap number mask */
 
-/**
- * Trap types.
- */
-enum trap_type : int
-{
-    T_DOOR = 0,
-    T_ARROW = 1,
-    T_SLEEP = 2,
-    T_BEAR = 3,
-    T_TELEP = 4,
-    T_DART = 5,
-    T_RUST = 6,
-    T_MYST = 7,
-};
-
-static constexpr std::size_t NTRAPS = 8;
-
-/**
- * Potion types.
- */
-enum potion_type : int
-{
-    P_CONFUSE = 0,
-    P_LSD = 1,
-    P_POISON = 2,
-    P_STRENGTH = 3,
-    P_SEEINVIS = 4,
-    P_HEALING = 5,
-    P_MFIND = 6,
-    P_TFIND = 7,
-    P_RAISE = 8,
-    P_XHEAL = 9,
-    P_HASTE = 10,
-    P_RESTORE = 11,
-    P_BLIND = 12,
-    P_LEVIT = 13,
-};
-
-static constexpr std::size_t MAXPOTIONS = 14;
-
-/**
- * Scroll types.
- */
-enum scroll_type : int
-{
-    S_CONFUSE = 0,
-    S_MAP = 1,
-    S_HOLD = 2,
-    S_SLEEP = 3,
-    S_ARMOR = 4,
-    S_ID_POTION = 5,
-    S_ID_SCROLL = 6,
-    S_ID_WEAPON = 7,
-    S_ID_ARMOR = 8,
-    S_ID_R_OR_S = 9,
-    S_SCARE = 10,
-    S_FDET = 11,
-    S_TELEP = 12,
-    S_ENCH = 13,
-    S_CREATE = 14,
-    S_REMOVE = 15,
-    S_AGGR = 16,
-    S_PROTECT = 17,
-};
-
-static constexpr std::size_t MAXSCROLLS = 18;
-
-/**
- * Weapon types.
- */
-enum weapon_type : int
-{
-    MACE = 0,
-    SWORD = 1,
-    BOW = 2,
-    ARROW = 3,
-    DAGGER = 4,
-    TWOSWORD = 5,
-    DART = 6,
-    SHIRAKEN = 7,
-    SPEAR = 8,
-    /** Fake entry for dragon breath (ick). */
-    FLAME = 9,
-};
-
-// This should equal FLAME.
-static constexpr std::size_t MAXWEAPONS = 9;
-
-/**
- * Armor types.
- */
-enum armor_type : int
-{
-    LEATHER = 0,
-    RING_MAIL = 1,
-    STUDDED_LEATHER = 2,
-    SCALE_MAIL = 3,
-    CHAIN_MAIL = 4,
-    SPLINT_MAIL = 5,
-    BANDED_MAIL = 6,
-    PLATE_MAIL = 7,
-};
-
-static constexpr std::size_t MAXARMORS = 8;
-
-/**
- * Ring types.
- */
-enum ring_type : int
-{
-    R_PROTECT = 0,
-    R_ADDSTR = 1,
-    R_SUSTSTR = 2,
-    R_SEARCH = 3,
-    R_SEEINVIS = 4,
-    R_NOP = 5,
-    R_AGGR = 6,
-    R_ADDHIT = 7,
-    R_ADDDAM = 8,
-    R_REGEN = 9,
-    R_DIGEST = 10,
-    R_TELEPORT = 11,
-    R_STEALTH = 12,
-    R_SUSTARM = 13,
-};
-
-static constexpr std::size_t MAXRINGS = 14;
-
-/*
- * Rod/Wand/Staff types.
- */
-enum stick_type : int
-{
-    WS_LIGHT = 0,
-    WS_INVIS = 1,
-    WS_ELECT = 2,
-    WS_FIRE = 3,
-    WS_COLD = 4,
-    WS_POLYMORPH = 5,
-    WS_MISSILE = 6,
-    WS_HASTE_M = 7,
-    WS_SLOW_M = 8,
-    WS_DRAIN = 9,
-    WS_NOP = 10,
-    WS_TELAWAY = 11,
-    WS_TELTO = 12,
-    WS_CANCEL = 13,
-};
-
-static constexpr std::size_t MAXSTICKS = 14;
-
-/*
- * Now we define the structures and types
- */
-
-/*
- * Help list
- */
-struct h_list
-{
-    char h_ch;
-    const char* h_desc;
-    bool h_print;
-};
-
-/**
- * Coordinate data type.
- */
-struct coord
-{
-    int x;
-    int y;
-};
-
-typedef unsigned int str_t;
-
-/*
- * Stuff about objects
- */
-struct obj_info
-{
-    const char* oi_name;
-    int oi_prob;
-    int oi_worth;
-    char* oi_guess;
-    bool oi_know;
-};
-
-/*
- * Room structure
- */
-struct room {
-    coord r_pos;			/* Upper left corner */
-    coord r_max;			/* Size of room */
-    coord r_gold;			/* Where the gold is */
-    int r_goldval;			/* How much the gold is worth */
-    short r_flags;			/* info about the room */
-    int r_nexits;			/* Number of exits */
-    coord r_exit[12];			/* Where the exits are */
-};
-
-/*
- * Structure describing a fighting being
- */
-struct stats {
-    str_t s_str;			/* Strength */
-    int s_exp;				/* Experience */
-    int s_lvl;				/* level of mastery */
-    int s_arm;				/* Armor class */
-    int s_hpt;			/* Hit points */
-    char s_dmg[13];			/* String describing damage done */
-    int  s_maxhp;			/* Max hit points */
-};
-
-/*
- * Structure for monsters and player
- */
-union thing {
-    struct {
-	union thing *_l_next, *_l_prev;	/* Next pointer in link */
-	coord _t_pos;			/* Position */
-	bool _t_turn;			/* If slowed, is it a turn to move */
-	char _t_type;			/* What it is */
-	char _t_disguise;		/* What mimic looks like */
-	char _t_oldch;			/* Character that was where it was */
-	coord *_t_dest;			/* Where it is running to */
-	short _t_flags;			/* State word */
-	struct stats _t_stats;		/* Physical description */
-	struct room *_t_room;		/* Current room for thing */
-	union thing *_t_pack;		/* What the thing is carrying */
-        int _t_reserved;
-    } _t;
-    struct {
-	union thing *_l_next, *_l_prev;	/* Next pointer in link */
-	int _o_type;			/* What kind of object it is */
-	coord _o_pos;			/* Where it lives on the screen */
-	char *_o_text;			/* What it says if you read it */
-	int  _o_launch;			/* What you need to launch it */
-	char _o_packch;			/* What character it is in the pack */
-	char _o_damage[8];		/* Damage if used like sword */
-	char _o_hurldmg[8];		/* Damage if thrown */
-	int _o_count;			/* count for plural objects */
-	int _o_which;			/* Which object of a type it is */
-	int _o_hplus;			/* Plusses to hit */
-	int _o_dplus;			/* Plusses to damage */
-	int _o_arm;			/* Armor protection */
-	int _o_flags;			/* information about objects */
-	int _o_group;			/* group number for this object */
-	char *_o_label;			/* Label for object */
-    } _o;
-};
-
-typedef union thing THING;
-
 #define l_next		_t._l_next
 #define l_prev		_t._l_prev
 #define t_pos		_t._t_pos
@@ -480,36 +219,6 @@ typedef union thing THING;
 #define o_flags		_o._o_flags
 #define o_group		_o._o_group
 #define o_label		_o._o_label
-
-/*
- * describe a place on the level map
- */
-typedef struct {
-    char p_ch;
-    char p_flags;
-    THING *p_monst;
-} PLACE;
-
-/*
- * Array containing information on all the various types of monsters
- */
-struct monster {
-    /** What to call the monster. */
-    const char* m_name;
-    int m_carry;			/* Probability of carrying something */
-    short m_flags;			/* things about the monster */
-    struct stats m_stats;		/* Initial stats */
-};
-
-struct delayed_action
-{
-    using callback_type = void(*)(int);
-
-    int d_type;
-    callback_type d_func;
-    int d_arg;
-    int d_time;
-};
 
 /*
  * External variables
@@ -584,7 +293,7 @@ void addmsg(const char* fmt, ...);
 bool	add_haste(bool potion);
 void	add_pack(THING *obj, bool silent);
 void	add_pass();
-void	add_str(str_t *sp, int amt);
+void	add_str(stats::str_t* sp, int amt);
 void	accnt_maze(int y, int x, int ny, int nx);
 void	aggravate();
 int	attack(THING *mp);
@@ -771,7 +480,6 @@ choose_str(const char* ts, const char* ns)
     return on(player, ISHALU) ? ts : ns;
 }
 
-static constexpr std::size_t NCOLORS = 27;
 extern const std::array<std::string, NCOLORS> rainbow;
 
 inline const std::string&
@@ -815,8 +523,6 @@ THING	*new_thing();
 
 struct room	*roomin(coord *cp);
 
-static constexpr std::size_t MAXDAEMONS = 20;
-
 extern delayed_action d_list[MAXDAEMONS];
 
 struct STONE
@@ -829,9 +535,6 @@ extern int      total;
 extern int      between;
 extern int      group;
 extern coord    nh;
-static constexpr std::size_t NSTONES = 26;
 extern const std::array<STONE, NSTONES> stones;
-static constexpr std::size_t NWOOD = 33;
 extern const std::array<std::string, NWOOD> wood;
-static constexpr std::size_t NMETAL = 22;
 extern const std::array<std::string, NMETAL> metal;

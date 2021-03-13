@@ -675,7 +675,7 @@ rs_read_string_index(
 }
 
 static bool
-rs_write_str_t(FILE *savef, str_t st)
+rs_write_str_t(FILE *savef, stats::str_t st)
 {
     if (write_error)
         return(WRITESTAT);
@@ -686,7 +686,7 @@ rs_write_str_t(FILE *savef, str_t st)
 }
 
 static bool
-rs_read_str_t(FILE *inf, str_t *st)
+rs_read_str_t(FILE *inf, stats::str_t *st)
 {
     if (read_error || format_error)
         return(READSTAT);
