@@ -11,8 +11,10 @@
  */
 
 #include <cctype>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 /*
  * used to hold the new hero position

@@ -9,8 +9,10 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 /*
  * msg:

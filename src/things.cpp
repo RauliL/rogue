@@ -15,8 +15,10 @@
 #include <cstdio>
 #include <cstring>
 #include <functional>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 static void set_order(int*, int);
 static const char* nothing(char);

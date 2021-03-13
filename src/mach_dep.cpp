@@ -43,11 +43,14 @@
 #include <csignal>
 #include <cstring>
 #include <ctime>
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
 #include <ncurses.h>
-#include "extern.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 #define NOOP(x) (x += 0)
 

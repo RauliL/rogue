@@ -13,8 +13,10 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 /*
  * look:

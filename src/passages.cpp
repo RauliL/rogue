@@ -11,8 +11,10 @@
  */
 
 #include <cstdlib>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 /*
  * do_passages:

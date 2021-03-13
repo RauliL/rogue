@@ -1,4 +1,4 @@
-/* config.h.in.  Generated from configure.ac by autoheader.  */
+#pragma once
 
 /* Define if scorefile is top scores, not top players */
 #undef ALLSCORES

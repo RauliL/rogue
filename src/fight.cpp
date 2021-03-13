@@ -15,7 +15,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 #define	EQSTR(a, b)	(std::strcmp(a, b) == 0)
 

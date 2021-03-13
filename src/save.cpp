@@ -15,11 +15,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #include <ncurses.h>
-#include "rogue.hpp"
-#include "score.hpp"
+
+#include <roguepp/roguepp.hpp>
+#include <roguepp/score.hpp>
 
 typedef struct stat STAT;
 

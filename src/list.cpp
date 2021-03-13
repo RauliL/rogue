@@ -11,8 +11,10 @@
  */
 
 #include <cstdlib>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 #ifdef MASTER
 int total = 0;			/* total dynamic memory bytes */

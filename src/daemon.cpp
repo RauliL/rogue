@@ -12,7 +12,8 @@
  */
 
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 #define EMPTY 0
 #define DAEMON -1

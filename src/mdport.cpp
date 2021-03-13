@@ -51,7 +51,8 @@
 #endif
 
 #include <ncurses.h>
-#include "extern.hpp"
+
+#include <roguepp/extern.hpp>
 
 #if defined(HAVE_SYS_TYPES)
 #include <sys/types.h>

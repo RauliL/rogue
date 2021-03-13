@@ -13,8 +13,10 @@
 
 #include <cctype>
 #include <cstring>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 /*
  * fix_stick:

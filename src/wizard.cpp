@@ -15,8 +15,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <unordered_map>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 static const char* type_name(int);
 

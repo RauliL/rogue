@@ -12,8 +12,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 /*
  * main:

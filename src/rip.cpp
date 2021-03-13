@@ -17,11 +17,14 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+
 #include <fcntl.h>
 #include <sys/types.h>
+
 #include <ncurses.h>
-#include "rogue.hpp"
-#include "score.hpp"
+
+#include <roguepp/roguepp.hpp>
+#include <roguepp/score.hpp>
 
 static const char* rip[] =
 {

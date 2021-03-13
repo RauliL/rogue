@@ -11,7 +11,8 @@
  */
 
 #include <ncurses.h>
-#include "rogue.hpp"
+
+#include <roguepp/roguepp.hpp>
 
 bool after;				/* True if we want after daemons */
 bool again;				/* Repeating the last command */

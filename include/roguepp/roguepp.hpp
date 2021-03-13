@@ -525,8 +525,10 @@ extern bool	after, again, allscore, amulet, door_stop, fight_flush,
 extern std::array<bool, 26> pack_used;
 
 extern char	dir_ch, file_name[], home[], huh[],
-		l_last_comm, l_last_dir, last_comm, last_dir, *Numname,
+		l_last_comm, l_last_dir, last_comm, last_dir,
 		outbuf[], runch, take;
+
+extern const char* Numname;
 
 extern std::string release;
 extern std::array<const char*, 3> inv_t_name;

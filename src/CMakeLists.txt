@@ -35,8 +35,8 @@ CHECK_SYMBOL_EXISTS(fork "unistd.h" HAVE_WORKING_FORK)
 CHECK_SYMBOL_EXISTS(_spawnl "process.h" HAVE__SPAWNL)
 
 CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
-  "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../include/roguepp/config.hpp.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../include/roguepp/config.hpp"
 )
 
 ADD_EXECUTABLE(
@@ -87,6 +87,7 @@ TARGET_INCLUDE_DIRECTORIES(
   rogue++
   PRIVATE
     ${CURSES_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
 TARGET_LINK_LIBRARIES(
